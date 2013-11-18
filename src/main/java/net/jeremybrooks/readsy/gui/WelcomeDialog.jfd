@@ -22,7 +22,7 @@ new FormModel {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "logoLabel"
-						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/Icon64.png" )
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/icon64.png" )
 						"verticalAlignment": 1
 						"horizontalAlignment": 2
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {

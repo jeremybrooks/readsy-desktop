@@ -99,7 +99,7 @@ public class WelcomeDialog extends JDialog {
 				((GridBagLayout)contentPanel.getLayout()).rowWeights = new double[] {1.0, 0.0, 1.0E-4};
 
 				//---- logoLabel ----
-				logoLabel.setIcon(new ImageIcon(getClass().getResource("/images/Icon64.png")));
+				logoLabel.setIcon(new ImageIcon(getClass().getResource("/images/icon64.png")));
 				logoLabel.setVerticalAlignment(SwingConstants.TOP);
 				logoLabel.setHorizontalAlignment(SwingConstants.LEFT);
 				contentPanel.add(logoLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,

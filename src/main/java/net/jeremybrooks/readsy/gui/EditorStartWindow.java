@@ -118,7 +118,7 @@ public class EditorStartWindow extends JFrame {
 		((GridBagLayout)contentPane.getLayout()).rowWeights = new double[] {0.0, 1.0, 0.0, 1.0E-4};
 
 		//---- label1 ----
-		label1.setIcon(new ImageIcon(getClass().getResource("/images/Icon64.png")));
+		label1.setIcon(new ImageIcon(getClass().getResource("/images/icon64.png")));
 		contentPane.add(label1, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
 			GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
 			new Insets(0, 0, 0, 0), 0, 0));
