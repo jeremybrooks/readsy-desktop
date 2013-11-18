@@ -68,7 +68,6 @@ public class AboutDialog extends javax.swing.JDialog {
 		setIconImage(Readsy.WINDOW_IMAGE);
 		this.versionLabel.setText(this.versionLabel.getText() + " " + Readsy.VERSION);
 
-		// TODO: Verify that this data shows up correctly
 		// add some data to credits
 		StringBuilder sb = new StringBuilder(this.creditsTextArea.getText());
 		if (Readsy.getMainWindow().getTabList().size() > 0) {
