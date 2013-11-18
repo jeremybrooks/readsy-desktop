@@ -1,0 +1,97 @@
+JFDML JFormDesigner: "5.2.0.0.54" Java: "1.6.0_65" encoding: "UTF-8"
+
+new FormModel {
+	"i18n.bundleName": "about_dialog"
+	"i18n.bundlePackage": "localization"
+	contentType: "form/swing"
+	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "bundle = this.bundle;"
+		}
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"title": new FormMessage( null, "this.title" )
+			"alwaysOnTop": true
+			"modal": true
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "panel1"
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "iconLabel"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/icon500x300.png" )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "versionLabel"
+					"text": new FormMessage( null, "versionLabel.text" )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "South"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "North"
+			} )
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "jTabbedPane1"
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "jScrollPane3"
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "helpTextArea"
+						"columns": 20
+						"editable": false
+						"lineWrap": true
+						"rows": 5
+						"text": new FormMessage( null, "helpTextArea.text" )
+						"wrapStyleWord": true
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": new FormMessage( null, "jScrollPane3.tab.title" )
+				} )
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "jScrollPane1"
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "creditsTextArea"
+						"editable": false
+						"lineWrap": true
+						"rows": 10
+						"text": new FormMessage( null, "creditsTextArea.text" )
+						"wrapStyleWord": true
+						"margin": new java.awt.Insets( 3, 3, 3, 3 )
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": new FormMessage( null, "jScrollPane1.tab.title" )
+				} )
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "jScrollPane2"
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "licenseTextArea"
+						"editable": false
+						"lineWrap": true
+						"rows": 15
+						"text": new FormMessage( null, "licenseTextArea.text" )
+						"wrapStyleWord": true
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": new FormMessage( null, "jScrollPane2.tab.title" )
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+				"alignment": 2
+			} ) {
+				name: "panel2"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "okButton"
+					"text": new FormMessage( null, "okButton.text" )
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "jButton1ActionPerformed", false ) )
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "South"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 505, 670 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}

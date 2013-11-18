@@ -1,0 +1,199 @@
+JFDML JFormDesigner: "5.2.0.0.54" Java: "1.6.0_65" encoding: "UTF-8"
+
+new FormModel {
+	"i18n.bundlePackage": "localization"
+	"i18n.bundleName": "editor_window"
+	"i18n.autoExternalize": true
+	"i18n.keyPrefix": "EditorWindow"
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.GridBagLayout ) {
+			"$columnSpecs": "0, 0, 0, 0"
+			"$rowSpecs": "0, 0, 0, 0, 0, 0, 0, 0, 0"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 0
+			"$sizePolicy": 1
+			"title": new FormMessage( null, "EditorWindow.this.title" )
+			addEvent( new FormEvent( "java.awt.event.WindowListener", "windowClosing", "formWindowClosing", false ) )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/icon64.png" )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel1"
+				"text": new FormMessage( null, "EditorWindow.jLabel1.text" )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 1
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+				"gridx": 1
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel2"
+				"text": new FormMessage( null, "EditorWindow.jLabel2.text" )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 2
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+				"gridx": 1
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "txtDescription"
+				"columns": 40
+				"toolTipText": new FormMessage( null, "EditorWindow.txtDescription.toolTipText" )
+				auxiliary() {
+					"JavaCodeGenerator.postInitCode": "this.txtDescription.setText(this.dataFile.getReadsyRootElement().getDescription());"
+				}
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 1
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "txtShortDescription"
+				"columns": 40
+				"toolTipText": new FormMessage( null, "EditorWindow.txtShortDescription.toolTipText" )
+				auxiliary() {
+					"JavaCodeGenerator.postInitCode": "this.txtShortDescription.setText(this.dataFile.getReadsyRootElement().getShortDescription());"
+				}
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblDate"
+				"text": new FormMessage( null, "EditorWindow.lblDate.text" )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 5
+				"hAlign": 0
+				"vAlign": 0
+				"weightx": 1.0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "buttonPrevious"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/765-arrow-left_16.png" )
+				"toolTipText": new FormMessage( null, "EditorWindow.buttonPrevious.toolTipText" )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "buttonPreviousActionPerformed", false ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 5
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+				"gridx": 1
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "buttonNext"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/766-arrow-right_16.png" )
+				"toolTipText": new FormMessage( null, "EditorWindow.buttonNext.toolTipText" )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "buttonNextActionPerformed", false ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 3
+				"gridy": 5
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel5"
+				"text": new FormMessage( null, "EditorWindow.jLabel5.text" )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 6
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+				"gridx": 1
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "txtHeading"
+				"columns": 40
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 6
+				"gridwidth": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel6"
+				"text": new FormMessage( null, "EditorWindow.jLabel6.text" )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 7
+				"hAlign": 4
+				"vAlign": 1
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+				"gridx": 1
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane1"
+				add( new FormComponent( "javax.swing.JTextArea" ) {
+					name: "txtText"
+					"lineWrap": true
+					"wrapStyleWord": true
+				} )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 7
+				"gridwidth": 2
+				"weightx": 1.0
+				"weighty": 1.0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel3"
+				"text": new FormMessage( null, "EditorWindow.jLabel3.text" )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+				"gridx": 1
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblFilename"
+				"text": "filename"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblYear"
+				"text": new FormMessage( null, "EditorWindow.lblYear.text" )
+				"horizontalAlignment": 4
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 3
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+				"gridx": 1
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblYearValue"
+				"text": new FormMessage( null, "EditorWindow.lblYearValue.text" )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 3
+				"insets": new java.awt.Insets( 0, 7, 0, 0 )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "doneButton"
+				"text": new FormMessage( null, "EditorWindow.doneButton.text" )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "doneButtonActionPerformed", false ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 3
+				"gridy": 8
+				"hAlign": 0
+				"vAlign": 0
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 600, 500 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}

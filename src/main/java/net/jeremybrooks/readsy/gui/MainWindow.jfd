@@ -1,0 +1,204 @@
+JFDML JFormDesigner: "5.2.0.0.54" Java: "1.6.0_65" encoding: "UTF-8"
+
+new FormModel {
+	"i18n.bundlePackage": "localization"
+	"i18n.bundleName": "main_window"
+	"i18n.keyPrefix": "MainWindow"
+	contentType: "form/swing"
+	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "this.bundle"
+		}
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.GridBagLayout ) {
+			"$columnSpecs": "0"
+			"$rowSpecs": "0, 0, 0"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 0
+			"$sizePolicy": 2
+			addEvent( new FormEvent( "java.awt.event.WindowListener", "windowClosing", "formWindowClosing", false ) )
+			add( new FormContainer( "javax.swing.JToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
+				name: "jToolBar1"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "backButton"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/765-arrow-left_16.png" )
+					"toolTipText": new FormMessage( null, "MainWindow.backButton.toolTipText" )
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "backButtonActionPerformed", false ) )
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "homeButton"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/750-home_16.png" )
+					"toolTipText": new FormMessage( null, "MainWindow.homeButton.toolTipText" )
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "homeButtonActionPerformed", false ) )
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "nextButton"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/766-arrow-right_16.png" )
+					"toolTipText": new FormMessage( null, "MainWindow.nextButton.toolTipText" )
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "nextButtonActionPerformed", false ) )
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "updateButton"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/726-star_16.png" )
+					"text": new FormMessage( null, "MainWindow.updateButton.text" )
+					"toolTipText": new FormMessage( null, "MainWindow.updateButton.toolTipText" )
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "updateButtonActionPerformed", false ) )
+				} )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "tabPane"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 2
+				"weightx": 1.0
+				"weighty": 1.0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblDate"
+				"text": new FormMessage( null, "MainWindow.lblDate.text" )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 1
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
+				name: "jMenuBar1"
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "fileMenu"
+					"mnemonic": new FormMessage( null, "MainWindow.fileMenu.mnemonic" )
+					"text": new FormMessage( null, "MainWindow.fileMenu.text" )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "installMenu"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/709-plus_16.png" )
+						"mnemonic": new FormMessage( null, "MainWindow.installMenu.mnemonic" )
+						"text": new FormMessage( null, "MainWindow.installMenu.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "installMenuActionPerformed", false ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "deleteMenu"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/711-trash_16.png" )
+						"mnemonic": new FormMessage( null, "MainWindow.deleteMenu.mnemonic" )
+						"text": new FormMessage( null, "MainWindow.deleteMenu.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "deleteMenuActionPerformed", false ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItemExit"
+						"mnemonic": new FormMessage( null, "MainWindow.menuItemExit.mnemonic" )
+						"text": new FormMessage( null, "MainWindow.menuItemExit.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuItemExitActionPerformed", false ) )
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "goMenu"
+					"mnemonic": new FormMessage( null, "MainWindow.goMenu.mnemonic" )
+					"text": new FormMessage( null, "MainWindow.goMenu.text" )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuPreviousDay"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 37, 520, false )
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/765-arrow-left_16.png" )
+						"mnemonic": new FormMessage( null, "MainWindow.menuPreviousDay.mnemonic" )
+						"text": new FormMessage( null, "MainWindow.menuPreviousDay.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuPreviousDayActionPerformed", false ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuToday"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 36, 520, false )
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/750-home_16.png" )
+						"mnemonic": new FormMessage( null, "MainWindow.menuToday.mnemonic" )
+						"text": new FormMessage( null, "MainWindow.menuToday.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuTodayActionPerformed", false ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuNextDay"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 39, 520, false )
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/766-arrow-right_16.png" )
+						"mnemonic": new FormMessage( null, "MainWindow.menuNextDay.mnemonic" )
+						"text": new FormMessage( null, "MainWindow.menuNextDay.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuNextDayActionPerformed", false ) )
+					} )
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "jSeparator1"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuPreviousWeek"
+						"text": new FormMessage( null, "MainWindow.menuPreviousWeek.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuPreviousWeekActionPerformed", false ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuNextWeek"
+						"text": new FormMessage( null, "MainWindow.menuNextWeek.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuNextWeekActionPerformed", false ) )
+					} )
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "jSeparator2"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuPreviousMonth"
+						"text": new FormMessage( null, "MainWindow.menuPreviousMonth.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuPreviousMonthActionPerformed", false ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuNextMonth"
+						"text": new FormMessage( null, "MainWindow.menuNextMonth.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuNextMonthActionPerformed", false ) )
+					} )
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "jSeparator3"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuFirstUnread"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 85, 520, false )
+						"text": new FormMessage( null, "MainWindow.menuFirstUnread.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuFirstUnreadActionPerformed", false ) )
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "toolsMenu"
+					"mnemonic": new FormMessage( null, "MainWindow.toolsMenu.mnemonic" )
+					"text": new FormMessage( null, "MainWindow.toolsMenu.text" )
+					auxiliary() {
+						"JavaCodeGenerator.postCreateCode": "toolsMenu.addMenuListener(new ToolsMenuHandler());"
+					}
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "editorMenu"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/704-compose_16.png" )
+						"text": new FormMessage( null, "MainWindow.editorMenu.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "editorMenuActionPerformed", false ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "preferencesMenu"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/740-gear_16.png" )
+						"text": new FormMessage( null, "MainWindow.preferencesMenu.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "preferencesMenuActionPerformed", false ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "defineMenu"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/721-bookmarks_16.png" )
+						"text": new FormMessage( null, "MainWindow.defineMenu.text" )
+						"name": new FormMessage( null, "MainWindow.defineMenu.name" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "defineMenuActionPerformed", false ) )
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "helpMenu"
+					"mnemonic": new FormMessage( null, "MainWindow.helpMenu.mnemonic" )
+					"text": new FormMessage( null, "MainWindow.helpMenu.text" )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "aboutMenu"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 112, 0, false )
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/739-question_16.png" )
+						"text": new FormMessage( null, "MainWindow.aboutMenu.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aboutMenuActionPerformed", false ) )
+					} )
+				} )
+			}
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 600, 404 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}
