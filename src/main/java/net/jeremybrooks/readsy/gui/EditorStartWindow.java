@@ -72,6 +72,7 @@ public class EditorStartWindow extends JFrame {
 	 */
 	public EditorStartWindow() {
 		initComponents();
+		setIconImage(Readsy.WINDOW_IMAGE);
 		this.setLocation(Readsy.getMainWindow().getX(), Readsy.getMainWindow().getY());
 	}
 

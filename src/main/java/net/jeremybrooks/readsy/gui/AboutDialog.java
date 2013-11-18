@@ -65,7 +65,7 @@ public class AboutDialog extends javax.swing.JDialog {
 	public AboutDialog(Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
-
+		setIconImage(Readsy.WINDOW_IMAGE);
 		this.versionLabel.setText(this.versionLabel.getText() + " " + Readsy.VERSION);
 
 		// TODO: Verify that this data shows up correctly

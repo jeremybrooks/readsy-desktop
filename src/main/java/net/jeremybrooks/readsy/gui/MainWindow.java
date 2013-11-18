@@ -99,6 +99,7 @@ public class MainWindow extends javax.swing.JFrame {
 		this.bundle = ResourceBundle.getBundle("localization.main_window");
 		this.currentDate.setTime(new Date());
 		initComponents();
+		setIconImage(Readsy.WINDOW_IMAGE);
 		this.updateButton.setVisible(false);
 
 		// restore last window size and position

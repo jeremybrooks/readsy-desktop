@@ -79,6 +79,7 @@ public class EditorWindow extends javax.swing.JFrame {
 	public EditorWindow(ReadsyDataFile dataFile) {
 		this.dataFile = dataFile;
 		initComponents();
+		setIconImage(Readsy.WINDOW_IMAGE);
 		this.lblFilename.setText(dataFile.getReadsyRootElement().getFile().getAbsolutePath());
 		if (dataFile.getReadsyRootElement().getYear() != 0) {
 			this.lblYearValue.setText(Integer.toString(dataFile.getReadsyRootElement().getYear()));

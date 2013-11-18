@@ -154,6 +154,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
 		this.initialFontSize = PropertyManager.getInstance().getPropertyAsInt(PropertyManager.PROPERTY_FONT_SIZE);
 		this.cmbFont.setSelectedItem(Integer.toString(this.initialFontSize));
 		this.cbxDropbox.setSelected(PropertyManager.getInstance().getPropertyAsBoolean(PropertyManager.DROPBOX_ENABLED));
+		setIconImage(Readsy.WINDOW_IMAGE);
 
 		getRootPane().setDefaultButton(this.btnOk);
 	}

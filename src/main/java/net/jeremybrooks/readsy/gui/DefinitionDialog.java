@@ -24,6 +24,7 @@ package net.jeremybrooks.readsy.gui;
 import net.jeremybrooks.knicker.Knicker.SourceDictionary;
 import net.jeremybrooks.knicker.WordApi;
 import net.jeremybrooks.knicker.dto.Definition;
+import net.jeremybrooks.readsy.Readsy;
 import org.apache.log4j.Logger;
 
 import javax.swing.GroupLayout;
@@ -56,6 +57,7 @@ public class DefinitionDialog extends javax.swing.JDialog {
 	public DefinitionDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
+		setIconImage(Readsy.WINDOW_IMAGE);
 		logger.info("init complete");
 		setBounds((parent.getWidth() / 2) + parent.getX() - (400 / 2),
 				(parent.getHeight() / 2) + parent.getY() - (322 / 2),

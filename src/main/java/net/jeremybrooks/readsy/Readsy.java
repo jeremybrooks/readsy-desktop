@@ -27,7 +27,9 @@ import net.jeremybrooks.readsy.parser.XMLParser;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import java.awt.Image;
 import java.io.File;
 
 
@@ -54,6 +56,8 @@ public class Readsy {
 
 	private static File dataDir = new File(System.getProperty("user.home"), ".readsy");
 	private static File contentDir = new File(dataDir, "content");
+
+	public static Image WINDOW_IMAGE = (new ImageIcon(Readsy.class.getResource("/images/icon16.png")).getImage());
 
 	/* Default constructor is private. */
 	private Readsy() {

@@ -52,6 +52,7 @@ public class WelcomeDialog extends JDialog {
 	public WelcomeDialog() {
 		super();
 		initComponents();
+		setIconImage(Readsy.WINDOW_IMAGE);
 		this.getRootPane().setDefaultButton(this.buttonYes);
 	}
 
