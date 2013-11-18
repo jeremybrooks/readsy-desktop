@@ -1,0 +1,21 @@
+tmp/*
+tmp/**/*
+db/*.sqlite3
+*.swp
+*~
+.DS_Store
+
+# java
+*.class
+*.jar
+*.war
+*.ear
+
+# maven
+target/
+*.releaseBackup
+
+# IntelliJ
+*.iml
+.idea
+nbproject/
