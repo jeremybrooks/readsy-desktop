@@ -172,6 +172,12 @@ public class FileUtil {
 		}
 	}
 
+	/**
+	 * Recursively delete a local directory.
+	 *
+	 * @param directory the directory to delete.
+	 * @throws Exception if there are any errors.
+	 */
 	public static void deleteLocalDirectory(File directory) throws Exception {
 		if (!directory.isDirectory()) {
 			throw new Exception("File " + directory.getAbsolutePath() + " is not a directory.");
@@ -197,5 +203,20 @@ public class FileUtil {
 				}
 			}
 		});
+	}
+
+
+	/**
+	 * Delete a local file or directory.
+	 * Directories will be deleted recursively.
+	 * @param file file or directory to delete.
+	 * @throws Exception if there are any errors.
+	 */
+	public static void deleteLocalFileOrDirectory(File file) throws Exception {
+		if (file.isFile()) {
+			Files.delete(file.toPath());
+		} else if (file.isDirectory()) {
+			deleteLocalDirectory(file);
+		}
 	}
 }
