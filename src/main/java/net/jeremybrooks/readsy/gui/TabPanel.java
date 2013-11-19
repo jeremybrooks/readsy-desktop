@@ -291,8 +291,8 @@ public class TabPanel extends javax.swing.JPanel {
 		//---- lblDescription ----
 		lblDescription.setFont(new Font("SansSerif", Font.BOLD | Font.ITALIC, 12));
 		add(lblDescription, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-			GridBagConstraints.WEST, GridBagConstraints.NONE,
-			new Insets(5, 5, 5, 5), 0, 0));
+				GridBagConstraints.WEST, GridBagConstraints.NONE,
+				new Insets(5, 5, 5, 5), 0, 0));
 
 		//---- txtHeading ----
 		txtHeading.setEditable(false);
@@ -301,8 +301,8 @@ public class TabPanel extends javax.swing.JPanel {
 		txtHeading.setMargin(new Insets(3, 3, 3, 3));
 		txtHeading.setFont(new Font("SansSerif", txtHeading.getFont().getStyle(), txtHeading.getFont().getSize()));
 		add(txtHeading, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0,
-			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(5, 5, 5, 5), 0, 0));
+				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+				new Insets(5, 5, 5, 5), 0, 0));
 
 		//======== jScrollPane1 ========
 		{
@@ -319,6 +319,7 @@ public class TabPanel extends javax.swing.JPanel {
 				public void mousePressed(MouseEvent e) {
 					txtTextMousePressed(e);
 				}
+
 				@Override
 				public void mouseReleased(MouseEvent e) {
 					txtTextMouseReleased(e);
@@ -327,8 +328,8 @@ public class TabPanel extends javax.swing.JPanel {
 			jScrollPane1.setViewportView(txtText);
 		}
 		add(jScrollPane1, new GridBagConstraints(0, 2, 2, 1, 1.0, 1.0,
-			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-			new Insets(5, 5, 5, 5), 0, 0));
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(5, 5, 5, 5), 0, 0));
 
 		//---- cbxRead ----
 		cbxRead.setText(bundle.getString("TabPanel.cbxRead.text"));
@@ -339,8 +340,8 @@ public class TabPanel extends javax.swing.JPanel {
 			}
 		});
 		add(cbxRead, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-			GridBagConstraints.EAST, GridBagConstraints.NONE,
-			new Insets(5, 5, 5, 5), 0, 0));
+				GridBagConstraints.EAST, GridBagConstraints.NONE,
+				new Insets(5, 5, 5, 5), 0, 0));
 
 		//======== mnuPopup ========
 		{
@@ -533,6 +534,66 @@ public class TabPanel extends javax.swing.JPanel {
 	}//GEN-LAST:event_txtTextMouseReleased
 
 
+	public String getStats() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(metadata.getProperty(KEY_METADATA_DESCRIPTION)).append(": ");
+		sb.append(getReadItemCount()).append(" of ").append(getTotalItemCount()).append(" have been read.");
+		return sb.toString();
+	}
+
+	public void markAllRead() {
+		Calendar calendar = new GregorianCalendar();
+		if (metadata.getProperty(KEY_METADATA_YEAR).equals("0")) {
+			calendar.set(Calendar.YEAR, 2013);
+		} else {
+			calendar.set(Calendar.YEAR, Integer.parseInt(metadata.getProperty(KEY_METADATA_YEAR)));
+		}
+		calendar.set(Calendar.DAY_OF_YEAR, 1);
+		do {
+			bitHelper.setRead(calendar.getTime(), true);
+			calendar.add(Calendar.DAY_OF_YEAR, 1);
+		} while (calendar.get(Calendar.DAY_OF_YEAR) != 1);
+		metadata.setProperty(KEY_METADATA_READ, bitHelper.toString());
+		WorkerDialog wd = new WorkerDialog(Readsy.getMainWindow(), new SaveMetadata(), bundle.getString("worker.saving"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
+		wd.executeAndShowDialog();
+		this.displayDataForDate(this.currentDate);
+	}
+
+	public void markAllUnread() {
+		Calendar calendar = new GregorianCalendar();
+		if (metadata.getProperty(KEY_METADATA_YEAR).equals("0")) {
+			calendar.set(Calendar.YEAR, 2013);
+		} else {
+			calendar.set(Calendar.YEAR, Integer.parseInt(metadata.getProperty(KEY_METADATA_YEAR)));
+		}
+		calendar.set(Calendar.DAY_OF_YEAR, 1);
+		do {
+			bitHelper.setRead(calendar.getTime(), false);
+			calendar.add(Calendar.DAY_OF_YEAR, 1);
+		} while (calendar.get(Calendar.DAY_OF_YEAR) != 1);
+		metadata.setProperty(KEY_METADATA_READ, bitHelper.toString());
+		WorkerDialog wd = new WorkerDialog(Readsy.getMainWindow(), new SaveMetadata(), bundle.getString("worker.saving"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
+		wd.executeAndShowDialog();
+		this.displayDataForDate(this.currentDate);
+	}
+
+	public void markReadUpToDate() {
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(currentDate);
+		calendar.set(Calendar.DAY_OF_YEAR, 1);
+		Calendar stopAfter = new GregorianCalendar();
+		stopAfter.setTime(currentDate);
+		do {
+			bitHelper.setRead(calendar.getTime(), true);
+			calendar.add(Calendar.DAY_OF_YEAR, 1);
+		} while (calendar.before(stopAfter) || calendar.equals(stopAfter));
+		metadata.setProperty(KEY_METADATA_READ, bitHelper.toString());
+		WorkerDialog wd = new WorkerDialog(Readsy.getMainWindow(), new SaveMetadata(), bundle.getString("worker.saving"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
+		wd.executeAndShowDialog();
+		this.displayDataForDate(this.currentDate);
+	}
+
+
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private JLabel lblDescription;
 	private JTextArea txtHeading;
@@ -572,10 +633,23 @@ public class TabPanel extends javax.swing.JPanel {
 		}
 	}
 
-	public String getStats() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(metadata.getProperty(KEY_METADATA_DESCRIPTION)).append(": ");
-		sb.append(getReadItemCount()).append( " of ").append(getTotalItemCount()).append(" have been read.");
-		return sb.toString();
+	/**
+	 * Class to save the metadata in a background thread.
+	 */
+	class SaveMetadata extends javax.swing.SwingWorker<Void, Void> {
+		@Override
+		protected Void doInBackground() throws Exception {
+			try {
+				DataAccess.saveMetadata(contentDirectory, metadata);
+				updateTabTitle();
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(Readsy.getMainWindow(),
+						bundle.getString("TabPanel.joption.saveError.message"),
+						bundle.getString("TabPanel.joption.saveError.title"),
+						JOptionPane.INFORMATION_MESSAGE);
+			}
+			return null;
+		}
 	}
+
 }

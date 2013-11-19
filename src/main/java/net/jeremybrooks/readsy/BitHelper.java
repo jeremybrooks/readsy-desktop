@@ -32,13 +32,13 @@ public class BitHelper {
 
 	private byte[] bytes;
 	private GregorianCalendar calendar;
-
+	private static final String EMPTY_BITSET = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 	/**
 	 * Create an instance of BitHelper with enough space to store a years worth of flags.
 	 *
 	 */
 	public BitHelper() {
-		this("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+		this(EMPTY_BITSET);
 	}
 
 

@@ -182,6 +182,24 @@ new FormModel {
 						"name": new FormMessage( null, "MainWindow.defineMenu.name" )
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "defineMenuActionPerformed", false ) )
 					} )
+					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+						name: "separator1"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "markReadMenu"
+						"text": new FormMessage( null, "MainWindow.markReadMenu.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "markReadMenuActionPerformed", false ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "markUnreadMenu"
+						"text": new FormMessage( null, "MainWindow.markUnreadMenu.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "markUnreadMenuActionPerformed", false ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "markPreviousMenu"
+						"text": "Mark All Days Up To Displayed Day \"Read\""
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "markPreviousMenuActionPerformed", false ) )
+					} )
 				} )
 				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
 					name: "helpMenu"

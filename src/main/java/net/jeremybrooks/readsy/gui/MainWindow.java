@@ -81,6 +81,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private Calendar currentDate = new GregorianCalendar();
 	private List<TabPanel> tabList;
 	private ResourceBundle bundle;
+
 	/**
 	 * Change the date for day, week, or month.
 	 */
@@ -88,7 +89,9 @@ public class MainWindow extends javax.swing.JFrame {
 		DAY, WEEK, MONTH
 	}
 
-	/** Reference to the window instance. */
+	/**
+	 * Reference to the window instance.
+	 */
 	public static MainWindow instance;
 
 	/**
@@ -155,6 +158,9 @@ public class MainWindow extends javax.swing.JFrame {
 		editorMenu = new JMenuItem();
 		preferencesMenu = new JMenuItem();
 		defineMenu = new JMenuItem();
+		markReadMenu = new JMenuItem();
+		markUnreadMenu = new JMenuItem();
+		markPreviousMenu = new JMenuItem();
 		helpMenu = new JMenu();
 		aboutMenu = new JMenuItem();
 		jToolBar1 = new JToolBar();
@@ -359,6 +365,37 @@ public class MainWindow extends javax.swing.JFrame {
 					}
 				});
 				toolsMenu.add(defineMenu);
+				toolsMenu.addSeparator();
+
+				//---- markReadMenu ----
+				markReadMenu.setText(bundle.getString("MainWindow.markReadMenu.text"));
+				markReadMenu.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						markReadMenuActionPerformed();
+					}
+				});
+				toolsMenu.add(markReadMenu);
+
+				//---- markUnreadMenu ----
+				markUnreadMenu.setText(bundle.getString("MainWindow.markUnreadMenu.text"));
+				markUnreadMenu.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						markUnreadMenuActionPerformed();
+					}
+				});
+				toolsMenu.add(markUnreadMenu);
+
+				//---- markPreviousMenu ----
+				markPreviousMenu.setText("Mark All Days Up To Displayed Day \"Read\"");
+				markPreviousMenu.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						markPreviousMenuActionPerformed();
+					}
+				});
+				toolsMenu.add(markPreviousMenu);
 			}
 			jMenuBar1.add(toolsMenu);
 
@@ -479,11 +516,11 @@ public class MainWindow extends javax.swing.JFrame {
 		if (c != null) {
 			if (c instanceof TabPanel) {
 				logger.debug("Found tab panel.");
-					Date date = ((TabPanel)c).getFirstUnreadItemDate();
-					if (date != null) {
-						this.currentDate.setTime(date);
-						updateDisplay();
-					}
+				Date date = ((TabPanel) c).getFirstUnreadItemDate();
+				if (date != null) {
+					this.currentDate.setTime(date);
+					updateDisplay();
+				}
 			} else {
 				logger.debug("Not a tab panel.");
 			}
@@ -804,11 +841,31 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 	}
 
+	/* Mark all items in the currently selected tab "read" */
+	private void markReadMenuActionPerformed() {
+		TabPanel tabPanel = (TabPanel)this.tabPane.getSelectedComponent();
+		tabPanel.markAllRead();
+	}
+
+
+	/* Mark all items in the currently selected tab "unread" */
+	private void markUnreadMenuActionPerformed() {
+		TabPanel tabPanel = (TabPanel)this.tabPane.getSelectedComponent();
+		tabPanel.markAllUnread();
+	}
+
+
+	/* Mark all items in the currently selected tab from first entry to currently displayed item "read" */
+	private void markPreviousMenuActionPerformed() {
+		TabPanel tabPanel = (TabPanel)this.tabPane.getSelectedComponent();
+		tabPanel.markReadUpToDate();
+	}
+
 
 	/**
 	 * Make this window visible, optionally creating content tabs.
 	 *
-	 * @param visible visibility of the window.
+	 * @param visible    visibility of the window.
 	 * @param createTabs if true, content tabs will be created.
 	 */
 	public void setVisible(boolean visible, boolean createTabs) {
@@ -927,6 +984,9 @@ public class MainWindow extends javax.swing.JFrame {
 	private JMenuItem editorMenu;
 	private JMenuItem preferencesMenu;
 	private JMenuItem defineMenu;
+	private JMenuItem markReadMenu;
+	private JMenuItem markUnreadMenu;
+	private JMenuItem markPreviousMenu;
 	private JMenu helpMenu;
 	private JMenuItem aboutMenu;
 	private JToolBar jToolBar1;
