@@ -34,6 +34,8 @@ import net.jeremybrooks.readsy.gui.PreferencesDialog;
 import javax.swing.JFrame;
 
 /**
+ * Handle OS X about/quit/preferences menus.
+ *
  * @author Jeremy Brooks
  */
 public class OSXSetup {
