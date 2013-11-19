@@ -896,9 +896,10 @@ public class MainWindow extends javax.swing.JFrame {
 			int count = 1;
 			for (TabPanel tab : tabList) {
 				firePropertyChange(WorkerDialog.EVENT_DIALOG_MESSAGE, "",
-						bundle.getString("worker.loadingEntry") + " " + (count + 1) + "/" + tabList.size());
+						bundle.getString("worker.loadingEntry") + " " + count + "/" + tabList.size());
 				tab.displayDataForDate(date);
 				tab.updateTabTitle();
+				count++;
 			}
 			return null;
 		}
