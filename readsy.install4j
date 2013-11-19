@@ -645,7 +645,7 @@
       <includedDownloadableComponents />
     </macosFolder>
   </mediaSets>
-  <buildIds buildAll="false" />
+  <buildIds buildAll="true" />
   <buildOptions verbose="false" faster="false" disableSigning="false" debug="false" />
 </install4j>
 
