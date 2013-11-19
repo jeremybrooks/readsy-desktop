@@ -36,7 +36,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
 
 /**
@@ -47,8 +51,6 @@ import java.text.SimpleDateFormat;
 public class FileUtil {
 
 	private static Logger logger = Logger.getLogger(FileUtil.class);
-	private static SimpleDateFormat yyyy = new SimpleDateFormat("yyyy");
-	private static SimpleDateFormat MMdd = new SimpleDateFormat("MMdd");
 
 	/**
 	 * Private default constructor.
@@ -168,5 +170,32 @@ public class FileUtil {
 			FileUtil.close(in);
 			FileUtil.close(out);
 		}
+	}
+
+	public static void deleteLocalDirectory(File directory) throws Exception {
+		if (!directory.isDirectory()) {
+			throw new Exception("File " + directory.getAbsolutePath() + " is not a directory.");
+		}
+		logger.debug("Deleting directory " + directory.getAbsolutePath());
+		Files.walkFileTree(directory.toPath(), new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+					throws IOException {
+				Files.delete(file);
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult postVisitDirectory(Path dir, IOException e)
+					throws IOException {
+				if (e == null) {
+					Files.delete(dir);
+					return FileVisitResult.CONTINUE;
+				} else {
+					// directory iteration failed
+					throw e;
+				}
+			}
+		});
 	}
 }

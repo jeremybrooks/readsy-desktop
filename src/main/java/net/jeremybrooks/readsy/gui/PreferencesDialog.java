@@ -51,6 +51,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -89,21 +90,31 @@ public class PreferencesDialog extends javax.swing.JDialog {
 				daw.setComponent(this);
 				wd.executeAndShowDialog();
 
-				// if no errors during authorization, start the copy
+				// if no errors during authorization, see if we should start copying
 				if (daw.getException() == null) {
-					DropboxCopyWorker dcw = new DropboxCopyWorker();
-					wd = new WorkerDialog(this, dcw, bundle.getString("worker.copying.title"), "");
-					wd.executeAndShowDialog();
+					File[] files = Readsy.getContentDir().listFiles();
+					if (files != null && files.length > 0) {
+						int response = JOptionPane.showConfirmDialog(this,
+								bundle.getString("PreferencesDialog.joption.copyData.message"),
+								bundle.getString("PreferencesDialog.joption.copyData.title"),
+								JOptionPane.YES_NO_OPTION,
+								JOptionPane.QUESTION_MESSAGE);
+						if (response == JOptionPane.YES_OPTION) {
+							DropboxCopyWorker dcw = new DropboxCopyWorker();
+							wd = new WorkerDialog(this, dcw, bundle.getString("worker.copying.title"), "");
+							wd.executeAndShowDialog();
 
-					String message = bundle.getString("PreferencesDialog.joption.syncEnabled.message1");
-					if (dcw.getException() != null) {
-						logger.error("Error copying files to dropbox.", dcw.getException());
-						message += "\n" + bundle.getString("PreferencesDialog.joption.syncEnabled.message2");
+							String message = bundle.getString("PreferencesDialog.joption.syncEnabled.message1");
+							if (dcw.getException() != null) {
+								logger.error("Error copying files to dropbox.", dcw.getException());
+								message += "\n" + bundle.getString("PreferencesDialog.joption.syncEnabled.message2");
+							}
+							JOptionPane.showMessageDialog(this,
+									message,
+									bundle.getString("PreferencesDialog.joption.syncEnabled.title"),
+									JOptionPane.INFORMATION_MESSAGE);
+						}
 					}
-					JOptionPane.showMessageDialog(this,
-							message,
-							bundle.getString("PreferencesDialog.joption.syncEnabled.title"),
-							JOptionPane.INFORMATION_MESSAGE);
 					Readsy.getMainWindow().createTabs();
 				} else {
 					// error during authorization, so uncheck the checkbox
@@ -118,32 +129,51 @@ public class PreferencesDialog extends javax.swing.JDialog {
 				}
 			}
 		} else {
-			int confirm = JOptionPane.showConfirmDialog(this,
+			String[] options = {
+					bundle.getString("PreferencesDialog.joption.syncDisable.optionCancel"),
+					bundle.getString("PreferencesDialog.joption.syncDisable.optionNoDelete"),
+					bundle.getString("PreferencesDialog.joption.syncDisable.optionDelete")
+			};
+			int option = JOptionPane.showOptionDialog(this,
 					bundle.getString("PreferencesDialog.joption.syncDisable.message"),
 					bundle.getString("PreferencesDialog.joption.syncDisable.title"),
-					JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE);
-			if (confirm == JOptionPane.YES_OPTION) {
-				DropboxDeleteContentWorker d = new DropboxDeleteContentWorker();
-				WorkerDialog wd = new WorkerDialog(this, d, bundle.getString("worker.deleting"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
-				wd.executeAndShowDialog();
+					JOptionPane.DEFAULT_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					options,
+					options[2]);
 
-				String message = bundle.getString("PreferencesDialog.joption.syncDisabled.message1");
-				if (d.getException() != null) {
-					logger.error("Error deleting files from dropbox.", d.getException());
-					message += "\n" + bundle.getString("PreferencesDialog.joption.syncDisabled.message2");
-				}
-				JOptionPane.showMessageDialog(this,
-						message,
-						bundle.getString("PreferencesDialog.joption.syncDisabled.title"),
-						JOptionPane.INFORMATION_MESSAGE);
-				Readsy.getMainWindow().createTabs();
+			switch (option) {
+				case 0:
+					this.cbxDropbox.setSelected(true);
+					break;
+				case 1:
+					PropertyManager.getInstance().deleteProperty(PropertyManager.DROPBOX_ACCESS_TOKEN);
+					PropertyManager.getInstance().setProperty(PropertyManager.DROPBOX_ENABLED, "false");
+					JOptionPane.showMessageDialog(this,
+							bundle.getString("PreferencesDialog.joption.syncDisable.disableNoDeleteMessage"),
+							bundle.getString("PreferencesDialog.joption.syncDisabled.title"),
+							JOptionPane.INFORMATION_MESSAGE);
+					Readsy.getMainWindow().createTabs();
+					break;
+				case 2:
+					DropboxDeleteContentWorker d = new DropboxDeleteContentWorker();
+					WorkerDialog wd = new WorkerDialog(this, d, bundle.getString("worker.deleting"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
+					wd.executeAndShowDialog();
 
-			} else {
-				this.cbxDropbox.setSelected(true);
+					String message = bundle.getString("PreferencesDialog.joption.syncDisabled.message1");
+					if (d.getException() != null) {
+						logger.error("Error deleting files from dropbox.", d.getException());
+						message += "\n" + bundle.getString("PreferencesDialog.joption.syncDisabled.message2");
+					}
+					JOptionPane.showMessageDialog(this,
+							message,
+							bundle.getString("PreferencesDialog.joption.syncDisabled.title"),
+							JOptionPane.INFORMATION_MESSAGE);
+					Readsy.getMainWindow().createTabs();
+					break;
 			}
 		}
-
 	}
 
 	public PreferencesDialog(Frame parent, boolean modal) {
@@ -205,18 +235,18 @@ public class PreferencesDialog extends javax.swing.JDialog {
 				GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
 				jPanel1.setLayout(jPanel1Layout);
 				jPanel1Layout.setHorizontalGroup(
-					jPanel1Layout.createParallelGroup()
-						.addGroup(jPanel1Layout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(cbxUpdates)
-							.addContainerGap(310, Short.MAX_VALUE))
+						jPanel1Layout.createParallelGroup()
+								.addGroup(jPanel1Layout.createSequentialGroup()
+										.addContainerGap()
+										.addComponent(cbxUpdates)
+										.addContainerGap(310, Short.MAX_VALUE))
 				);
 				jPanel1Layout.setVerticalGroup(
-					jPanel1Layout.createParallelGroup()
-						.addGroup(jPanel1Layout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(cbxUpdates)
-							.addContainerGap(139, Short.MAX_VALUE))
+						jPanel1Layout.createParallelGroup()
+								.addGroup(jPanel1Layout.createSequentialGroup()
+										.addContainerGap()
+										.addComponent(cbxUpdates)
+										.addContainerGap(139, Short.MAX_VALUE))
 				);
 			}
 			panel2.add(jPanel1);
@@ -226,16 +256,16 @@ public class PreferencesDialog extends javax.swing.JDialog {
 				jPanel3.setBorder(new TitledBorder(bundle.getString("PreferencesDialog.jPanel3.border")));
 
 				//---- cmbFont ----
-				cmbFont.setModel(new DefaultComboBoxModel<>(new String[] {
-					"8",
-					"10",
-					"12",
-					"14",
-					"18",
-					"20",
-					"24",
-					"30",
-					"36"
+				cmbFont.setModel(new DefaultComboBoxModel<>(new String[]{
+						"8",
+						"10",
+						"12",
+						"14",
+						"18",
+						"20",
+						"24",
+						"30",
+						"36"
 				}));
 				cmbFont.addActionListener(new ActionListener() {
 					@Override
@@ -253,25 +283,25 @@ public class PreferencesDialog extends javax.swing.JDialog {
 				GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
 				jPanel3.setLayout(jPanel3Layout);
 				jPanel3Layout.setHorizontalGroup(
-					jPanel3Layout.createParallelGroup()
-						.addGroup(jPanel3Layout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(cmbFont, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-							.addGroup(jPanel3Layout.createParallelGroup()
-								.addComponent(jLabel3)
-								.addComponent(jLabel2))
-							.addContainerGap(191, Short.MAX_VALUE))
+						jPanel3Layout.createParallelGroup()
+								.addGroup(jPanel3Layout.createSequentialGroup()
+										.addContainerGap()
+										.addComponent(cmbFont, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addGroup(jPanel3Layout.createParallelGroup()
+												.addComponent(jLabel3)
+												.addComponent(jLabel2))
+										.addContainerGap(191, Short.MAX_VALUE))
 				);
 				jPanel3Layout.setVerticalGroup(
-					jPanel3Layout.createParallelGroup()
-						.addGroup(jPanel3Layout.createSequentialGroup()
-							.addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-								.addComponent(cmbFont, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(jLabel2))
-							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-							.addComponent(jLabel3)
-							.addContainerGap(114, Short.MAX_VALUE))
+						jPanel3Layout.createParallelGroup()
+								.addGroup(jPanel3Layout.createSequentialGroup()
+										.addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+												.addComponent(cmbFont, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+												.addComponent(jLabel2))
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(jLabel3)
+										.addContainerGap(114, Short.MAX_VALUE))
 				);
 			}
 			panel2.add(jPanel3);

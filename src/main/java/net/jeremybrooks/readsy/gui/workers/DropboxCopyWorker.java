@@ -22,6 +22,7 @@
 package net.jeremybrooks.readsy.gui.workers;
 
 import net.jeremybrooks.readsy.DirectoryFileFilter;
+import net.jeremybrooks.readsy.FileUtil;
 import net.jeremybrooks.readsy.Readsy;
 import net.jeremybrooks.readsy.dropbox.DropboxHelper;
 import net.jeremybrooks.readsy.gui.WorkerDialog;
@@ -88,9 +89,12 @@ public class DropboxCopyWorker extends SwingWorker<Void, Void> {
 							setProgress((int) (count / total * 100));
 						}
 					}
+					logger.debug("Deleting local directory " + source.getAbsolutePath());
+					FileUtil.deleteLocalDirectory(source);
 				}
 			}
 		} catch (Exception e) {
+			logger.error("Error during copy.", e);
 			this.exception = e;
 		}
 

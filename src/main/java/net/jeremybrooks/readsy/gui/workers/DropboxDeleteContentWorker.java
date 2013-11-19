@@ -49,7 +49,6 @@ public class DropboxDeleteContentWorker extends SwingWorker<Void, Void> {
 		} finally {
 			PropertyManager.getInstance().deleteProperty(PropertyManager.DROPBOX_ACCESS_TOKEN);
 			PropertyManager.getInstance().setProperty(PropertyManager.DROPBOX_ENABLED, "false");
-
 		}
 		return null;
 	}
