@@ -21,6 +21,7 @@
 
 package net.jeremybrooks.readsy.gui;
 
+import javax.swing.JFrame;
 import net.jeremybrooks.readsy.DataAccess;
 import net.jeremybrooks.readsy.PropertyManager;
 import net.jeremybrooks.readsy.Readsy;
@@ -176,6 +177,7 @@ public class MainWindow extends javax.swing.JFrame {
 
 		//======== this ========
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		setTitle(bundle.getString("MainWindow.this.title"));
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
