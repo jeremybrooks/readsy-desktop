@@ -36,9 +36,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import javax.swing.event.MenuEvent;
@@ -46,6 +46,7 @@ import javax.swing.event.MenuListener;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Desktop;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -65,7 +66,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
-
 
 /**
  * The main window.
@@ -114,14 +114,16 @@ public class MainWindow extends javax.swing.JFrame {
 
 		if (System.getProperty("os.name").contains("Mac")) {
 			// HIDE THE File -> Exit and Help MENU ITEMS
-			Component[] items = this.fileMenu.getMenuComponents();
-			for (Component item : items) {
-				javax.swing.JMenuItem jmi = (javax.swing.JMenuItem) item;
-				if (jmi.getText().equals(bundle.getString("MainWindow.menuItemExit.text"))) {
-					fileMenu.remove(item);
-				}
-			}
-			this.helpMenu.setVisible(false);
+//			Component[] items = this.fileMenu.getMenuComponents();
+//			for (Component item : items) {
+//				javax.swing.JMenuItem jmi = (javax.swing.JMenuItem) item;
+//				if (jmi.getText().equals(bundle.getString("MainWindow.menuItemExit.text"))) {
+//					fileMenu.remove(item);
+//				}
+//			}
+			this.menuItemExit.setVisible(false);
+			this.preferencesMenu.setVisible(false);
+			this.aboutMenu.setVisible(false);
 		}
 		instance = this;
 	}
@@ -163,7 +165,8 @@ public class MainWindow extends javax.swing.JFrame {
 		markPreviousMenu = new JMenuItem();
 		helpMenu = new JMenu();
 		aboutMenu = new JMenuItem();
-		jToolBar1 = new JToolBar();
+		homePageMenu = new JMenuItem();
+		panel1 = new JPanel();
 		backButton = new JButton();
 		homeButton = new JButton();
 		nextButton = new JButton();
@@ -415,13 +418,24 @@ public class MainWindow extends javax.swing.JFrame {
 					}
 				});
 				helpMenu.add(aboutMenu);
+
+				//---- homePageMenu ----
+				homePageMenu.setText(bundle.getString("MainWindow.homePageMenu.text"));
+				homePageMenu.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						homePageMenuActionPerformed();
+					}
+				});
+				helpMenu.add(homePageMenu);
 			}
 			jMenuBar1.add(helpMenu);
 		}
 		setJMenuBar(jMenuBar1);
 
-		//======== jToolBar1 ========
+		//======== panel1 ========
 		{
+			panel1.setLayout(new FlowLayout(FlowLayout.LEFT));
 
 			//---- backButton ----
 			backButton.setIcon(new ImageIcon(getClass().getResource("/images/765-arrow-left_16.png")));
@@ -432,7 +446,7 @@ public class MainWindow extends javax.swing.JFrame {
 					backButtonActionPerformed();
 				}
 			});
-			jToolBar1.add(backButton);
+			panel1.add(backButton);
 
 			//---- homeButton ----
 			homeButton.setIcon(new ImageIcon(getClass().getResource("/images/750-home_16.png")));
@@ -443,7 +457,7 @@ public class MainWindow extends javax.swing.JFrame {
 					homeButtonActionPerformed();
 				}
 			});
-			jToolBar1.add(homeButton);
+			panel1.add(homeButton);
 
 			//---- nextButton ----
 			nextButton.setIcon(new ImageIcon(getClass().getResource("/images/766-arrow-right_16.png")));
@@ -454,7 +468,7 @@ public class MainWindow extends javax.swing.JFrame {
 					nextButtonActionPerformed();
 				}
 			});
-			jToolBar1.add(nextButton);
+			panel1.add(nextButton);
 
 			//---- updateButton ----
 			updateButton.setIcon(new ImageIcon(getClass().getResource("/images/726-star_16.png")));
@@ -466,11 +480,11 @@ public class MainWindow extends javax.swing.JFrame {
 					updateButtonActionPerformed();
 				}
 			});
-			jToolBar1.add(updateButton);
+			panel1.add(updateButton);
 		}
-		contentPane.add(jToolBar1, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(5, 5, 5, 5), 0, 0));
+		contentPane.add(panel1, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+			new Insets(0, 0, 0, 0), 0, 0));
 		contentPane.add(tabPane, new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0,
 			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 			new Insets(5, 5, 5, 5), 0, 0));
@@ -506,10 +520,24 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 	}//GEN-LAST:event_preferencesMenuActionPerformed
 
+	private void homePageMenuActionPerformed() {
+		this.openHomePage();
+	}
 
+	public void openHomePage() {
+		try {
+			Desktop.getDesktop().browse(new URI(Readsy.HOME_PAGE));
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this,
+					bundle.getString("homepage.error.message"),
+					bundle.getString("homepage.error.title"),
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
 	/*
 	 * Find the date with the first unread item and go to it.
 	 */
+
 	private void menuFirstUnreadActionPerformed() {//GEN-FIRST:event_menuFirstUnreadActionPerformed
 		// GET SELECTED TAB
 		Component c = this.tabPane.getSelectedComponent();
@@ -546,15 +574,7 @@ public class MainWindow extends javax.swing.JFrame {
 				null, null, null);
 
 		if (response == JOptionPane.YES_OPTION) {
-			try {
-				Desktop.getDesktop().browse(new URI(Readsy.HOME_PAGE));
-			} catch (Exception e) {
-				logger.error("Could not launch browser.", e);
-				JOptionPane.showMessageDialog(this,
-						bundle.getString("MainWindow.joption.newVersionError.message1") + " " + Readsy.HOME_PAGE + '\n' + bundle.getString("MainWindow.joption.newVersionError.message2"),
-						bundle.getString("MainWindow.joption.newVersionError.title"),
-						JOptionPane.INFORMATION_MESSAGE);
-			}
+			this.openHomePage();
 		}
 	}//GEN-LAST:event_updateButtonActionPerformed
 
@@ -843,21 +863,21 @@ public class MainWindow extends javax.swing.JFrame {
 
 	/* Mark all items in the currently selected tab "read" */
 	private void markReadMenuActionPerformed() {
-		TabPanel tabPanel = (TabPanel)this.tabPane.getSelectedComponent();
+		TabPanel tabPanel = (TabPanel) this.tabPane.getSelectedComponent();
 		tabPanel.markAllRead();
 	}
 
 
 	/* Mark all items in the currently selected tab "unread" */
 	private void markUnreadMenuActionPerformed() {
-		TabPanel tabPanel = (TabPanel)this.tabPane.getSelectedComponent();
+		TabPanel tabPanel = (TabPanel) this.tabPane.getSelectedComponent();
 		tabPanel.markAllUnread();
 	}
 
 
 	/* Mark all items in the currently selected tab from first entry to currently displayed item "read" */
 	private void markPreviousMenuActionPerformed() {
-		TabPanel tabPanel = (TabPanel)this.tabPane.getSelectedComponent();
+		TabPanel tabPanel = (TabPanel) this.tabPane.getSelectedComponent();
 		tabPanel.markReadUpToDate();
 	}
 
@@ -989,7 +1009,8 @@ public class MainWindow extends javax.swing.JFrame {
 	private JMenuItem markPreviousMenu;
 	private JMenu helpMenu;
 	private JMenuItem aboutMenu;
-	private JToolBar jToolBar1;
+	private JMenuItem homePageMenu;
+	private JPanel panel1;
 	private JButton backButton;
 	private JButton homeButton;
 	private JButton nextButton;

@@ -21,6 +21,7 @@
 
 package net.jeremybrooks.readsy.gui;
 
+import javax.swing.JDialog;
 import net.jeremybrooks.readsy.PropertyManager;
 import net.jeremybrooks.readsy.Readsy;
 import net.jeremybrooks.readsy.gui.workers.DropboxAuthWorker;
@@ -30,16 +31,13 @@ import org.apache.log4j.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
@@ -202,9 +200,9 @@ public class PreferencesDialog extends javax.swing.JDialog {
 		jPanel1 = new JPanel();
 		cbxUpdates = new JCheckBox();
 		jPanel3 = new JPanel();
+		textArea2 = new JTextArea();
+		panel3 = new JPanel();
 		cmbFont = new JComboBox<>();
-		jLabel2 = new JLabel();
-		jLabel3 = new JLabel();
 		panel4 = new JPanel();
 		cbxDropbox = new JCheckBox();
 		textArea1 = new JTextArea();
@@ -226,37 +224,35 @@ public class PreferencesDialog extends javax.swing.JDialog {
 			//======== jPanel1 ========
 			{
 				jPanel1.setBorder(new TitledBorder(bundle.getString("PreferencesDialog.jPanel1.border")));
+				jPanel1.setLayout(new FlowLayout(FlowLayout.LEFT));
 
 				//---- cbxUpdates ----
 				cbxUpdates.setText(bundle.getString("PreferencesDialog.cbxUpdates.text"));
 				cbxUpdates.setBorder(BorderFactory.createEmptyBorder());
 				cbxUpdates.setMargin(new Insets(0, 0, 0, 0));
-
-				GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
-				jPanel1.setLayout(jPanel1Layout);
-				jPanel1Layout.setHorizontalGroup(
-						jPanel1Layout.createParallelGroup()
-								.addGroup(jPanel1Layout.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(cbxUpdates)
-										.addContainerGap(310, Short.MAX_VALUE))
-				);
-				jPanel1Layout.setVerticalGroup(
-						jPanel1Layout.createParallelGroup()
-								.addGroup(jPanel1Layout.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(cbxUpdates)
-										.addContainerGap(139, Short.MAX_VALUE))
-				);
+				jPanel1.add(cbxUpdates);
 			}
 			panel2.add(jPanel1);
 
 			//======== jPanel3 ========
 			{
 				jPanel3.setBorder(new TitledBorder(bundle.getString("PreferencesDialog.jPanel3.border")));
+				jPanel3.setLayout(new BorderLayout());
 
-				//---- cmbFont ----
-				cmbFont.setModel(new DefaultComboBoxModel<>(new String[]{
+				//---- textArea2 ----
+				textArea2.setBackground(UIManager.getColor("Label.background"));
+				textArea2.setEditable(false);
+				textArea2.setLineWrap(true);
+				textArea2.setWrapStyleWord(true);
+				textArea2.setText(bundle.getString("PreferencesDialog.textArea2.text"));
+				jPanel3.add(textArea2, BorderLayout.CENTER);
+
+				//======== panel3 ========
+				{
+					panel3.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+					//---- cmbFont ----
+					cmbFont.setModel(new DefaultComboBoxModel<>(new String[] {
 						"8",
 						"10",
 						"12",
@@ -266,43 +262,16 @@ public class PreferencesDialog extends javax.swing.JDialog {
 						"24",
 						"30",
 						"36"
-				}));
-				cmbFont.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						cmbFontActionPerformed();
-					}
-				});
-
-				//---- jLabel2 ----
-				jLabel2.setText(bundle.getString("PreferencesDialog.jLabel2.text"));
-
-				//---- jLabel3 ----
-				jLabel3.setText(bundle.getString("PreferencesDialog.jLabel3.text"));
-
-				GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
-				jPanel3.setLayout(jPanel3Layout);
-				jPanel3Layout.setHorizontalGroup(
-						jPanel3Layout.createParallelGroup()
-								.addGroup(jPanel3Layout.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(cmbFont, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(jPanel3Layout.createParallelGroup()
-												.addComponent(jLabel3)
-												.addComponent(jLabel2))
-										.addContainerGap(191, Short.MAX_VALUE))
-				);
-				jPanel3Layout.setVerticalGroup(
-						jPanel3Layout.createParallelGroup()
-								.addGroup(jPanel3Layout.createSequentialGroup()
-										.addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-												.addComponent(cmbFont, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-												.addComponent(jLabel2))
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jLabel3)
-										.addContainerGap(114, Short.MAX_VALUE))
-				);
+					}));
+					cmbFont.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							cmbFontActionPerformed();
+						}
+					});
+					panel3.add(cmbFont);
+				}
+				jPanel3.add(panel3, BorderLayout.LINE_START);
 			}
 			panel2.add(jPanel3);
 
@@ -358,7 +327,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
 			panel1.add(btnCancel);
 		}
 		contentPane.add(panel1, BorderLayout.SOUTH);
-		setSize(535, 635);
+		setSize(460, 425);
 		setLocationRelativeTo(getOwner());
 	}// </editor-fold>//GEN-END:initComponents
 
@@ -419,9 +388,9 @@ public class PreferencesDialog extends javax.swing.JDialog {
 	private JPanel jPanel1;
 	private JCheckBox cbxUpdates;
 	private JPanel jPanel3;
+	private JTextArea textArea2;
+	private JPanel panel3;
 	private JComboBox<String> cmbFont;
-	private JLabel jLabel2;
-	private JLabel jLabel3;
 	private JPanel panel4;
 	private JCheckBox cbxDropbox;
 	private JTextArea textArea1;

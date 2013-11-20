@@ -36,7 +36,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -66,22 +65,22 @@ public class AboutDialog extends javax.swing.JDialog {
 		super(parent, modal);
 		initComponents();
 		setIconImage(Readsy.WINDOW_IMAGE);
-		this.versionLabel.setText(this.versionLabel.getText() + " " + Readsy.VERSION);
 
 		// add some data to credits
-		StringBuilder sb = new StringBuilder(this.creditsTextArea.getText());
+		StringBuilder sb = new StringBuilder(bundle.getString("versionLabel.text"));
+		sb.append(' ').append(Readsy.VERSION).append("\n\n");
+
+		sb.append(this.helpTextArea.getText());
 		if (Readsy.getMainWindow().getTabList().size() > 0) {
-			sb.append(bundle.getString("installedFiles"));
 			for (TabPanel tp : Readsy.getMainWindow().getTabList()) {
 				sb.append(tp.getStats()).append('\n');
 			}
 		} else {
 			sb.append(bundle.getString("nothingInstalled"));
 		}
-		this.creditsTextArea.setText(sb.toString());
+		this.helpTextArea.setText(sb.toString());
 
 		// put the cursor at the beginning of the about stuff
-		this.creditsTextArea.setCaretPosition(0);
 		this.licenseTextArea.setCaretPosition(0);
 		this.helpTextArea.setCaretPosition(0);
 
@@ -103,15 +102,13 @@ public class AboutDialog extends javax.swing.JDialog {
 		ResourceBundle bundle = bundle = this.bundle;;
 		panel1 = new JPanel();
 		iconLabel = new JLabel();
-		versionLabel = new JLabel();
 		jTabbedPane1 = new JTabbedPane();
 		jScrollPane3 = new JScrollPane();
 		helpTextArea = new JTextArea();
-		jScrollPane1 = new JScrollPane();
-		creditsTextArea = new JTextArea();
 		jScrollPane2 = new JScrollPane();
 		licenseTextArea = new JTextArea();
 		panel2 = new JPanel();
+		homePageButton = new JButton();
 		okButton = new JButton();
 
 		//======== this ========
@@ -129,10 +126,6 @@ public class AboutDialog extends javax.swing.JDialog {
 			//---- iconLabel ----
 			iconLabel.setIcon(new ImageIcon(getClass().getResource("/images/icon500x300.png")));
 			panel1.add(iconLabel, BorderLayout.CENTER);
-
-			//---- versionLabel ----
-			versionLabel.setText(bundle.getString("versionLabel.text"));
-			panel1.add(versionLabel, BorderLayout.SOUTH);
 		}
 		contentPane.add(panel1, BorderLayout.NORTH);
 
@@ -153,20 +146,6 @@ public class AboutDialog extends javax.swing.JDialog {
 			}
 			jTabbedPane1.addTab(bundle.getString("jScrollPane3.tab.title"), jScrollPane3);
 
-			//======== jScrollPane1 ========
-			{
-
-				//---- creditsTextArea ----
-				creditsTextArea.setEditable(false);
-				creditsTextArea.setLineWrap(true);
-				creditsTextArea.setRows(10);
-				creditsTextArea.setText(bundle.getString("creditsTextArea.text"));
-				creditsTextArea.setWrapStyleWord(true);
-				creditsTextArea.setMargin(new Insets(3, 3, 3, 3));
-				jScrollPane1.setViewportView(creditsTextArea);
-			}
-			jTabbedPane1.addTab(bundle.getString("jScrollPane1.tab.title"), jScrollPane1);
-
 			//======== jScrollPane2 ========
 			{
 
@@ -186,6 +165,16 @@ public class AboutDialog extends javax.swing.JDialog {
 		{
 			panel2.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
+			//---- homePageButton ----
+			homePageButton.setText(bundle.getString("homePageButton.text"));
+			homePageButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					homePageButtonActionPerformed();
+				}
+			});
+			panel2.add(homePageButton);
+
 			//---- okButton ----
 			okButton.setText(bundle.getString("okButton.text"));
 			okButton.addActionListener(new ActionListener() {
@@ -202,6 +191,11 @@ public class AboutDialog extends javax.swing.JDialog {
 	}// </editor-fold>//GEN-END:initComponents
 
 
+	private void homePageButtonActionPerformed() {
+		Readsy.getMainWindow().openHomePage();
+	}
+
+
 	private void jButton1ActionPerformed() {//GEN-FIRST:event_jButton1ActionPerformed
 		this.setVisible(false);
 		this.dispose();
@@ -210,15 +204,13 @@ public class AboutDialog extends javax.swing.JDialog {
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private JPanel panel1;
 	private JLabel iconLabel;
-	private JLabel versionLabel;
 	private JTabbedPane jTabbedPane1;
 	private JScrollPane jScrollPane3;
 	private JTextArea helpTextArea;
-	private JScrollPane jScrollPane1;
-	private JTextArea creditsTextArea;
 	private JScrollPane jScrollPane2;
 	private JTextArea licenseTextArea;
 	private JPanel panel2;
+	private JButton homePageButton;
 	private JButton okButton;
 	// End of variables declaration//GEN-END:variables
 }

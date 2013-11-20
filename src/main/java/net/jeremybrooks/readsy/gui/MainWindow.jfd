@@ -17,8 +17,10 @@ new FormModel {
 			"defaultCloseOperation": 0
 			"$sizePolicy": 2
 			addEvent( new FormEvent( "java.awt.event.WindowListener", "windowClosing", "formWindowClosing", false ) )
-			add( new FormContainer( "javax.swing.JToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
-				name: "jToolBar1"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+				"alignment": 0
+			} ) {
+				name: "panel1"
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "backButton"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/765-arrow-left_16.png" )
@@ -44,10 +46,7 @@ new FormModel {
 					"toolTipText": new FormMessage( null, "MainWindow.updateButton.toolTipText" )
 					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "updateButtonActionPerformed", false ) )
 				} )
-			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-				"vAlign": 0
-				"insets": new java.awt.Insets( 5, 5, 5, 5 )
-			} )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
 				name: "tabPane"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
@@ -211,6 +210,11 @@ new FormModel {
 						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/739-question_16.png" )
 						"text": new FormMessage( null, "MainWindow.aboutMenu.text" )
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aboutMenuActionPerformed", false ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "homePageMenu"
+						"text": new FormMessage( null, "MainWindow.homePageMenu.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "homePageMenuActionPerformed", false ) )
 					} )
 				} )
 			}

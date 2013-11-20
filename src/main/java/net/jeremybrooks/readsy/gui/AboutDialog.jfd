@@ -22,12 +22,6 @@ new FormModel {
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
 				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "versionLabel"
-					"text": new FormMessage( null, "versionLabel.text" )
-				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "South"
-				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "North"
 			} )
@@ -46,20 +40,6 @@ new FormModel {
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": new FormMessage( null, "jScrollPane3.tab.title" )
-				} )
-				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-					name: "jScrollPane1"
-					add( new FormComponent( "javax.swing.JTextArea" ) {
-						name: "creditsTextArea"
-						"editable": false
-						"lineWrap": true
-						"rows": 10
-						"text": new FormMessage( null, "creditsTextArea.text" )
-						"wrapStyleWord": true
-						"margin": new java.awt.Insets( 3, 3, 3, 3 )
-					} )
-				}, new FormLayoutConstraints( null ) {
-					"title": new FormMessage( null, "jScrollPane1.tab.title" )
 				} )
 				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 					name: "jScrollPane2"
@@ -81,6 +61,11 @@ new FormModel {
 				"alignment": 2
 			} ) {
 				name: "panel2"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "homePageButton"
+					"text": new FormMessage( null, "homePageButton.text" )
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "homePageButtonActionPerformed", false ) )
+				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "okButton"
 					"text": new FormMessage( null, "okButton.text" )
