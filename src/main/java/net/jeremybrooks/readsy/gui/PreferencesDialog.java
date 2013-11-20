@@ -21,7 +21,6 @@
 
 package net.jeremybrooks.readsy.gui;
 
-import javax.swing.JDialog;
 import net.jeremybrooks.readsy.PropertyManager;
 import net.jeremybrooks.readsy.Readsy;
 import net.jeremybrooks.readsy.gui.workers.DropboxAuthWorker;
@@ -107,11 +106,16 @@ public class PreferencesDialog extends javax.swing.JDialog {
 								logger.error("Error copying files to dropbox.", dcw.getException());
 								message += "\n" + bundle.getString("PreferencesDialog.joption.syncEnabled.message2");
 							}
-							JOptionPane.showMessageDialog(this,
-									message,
-									bundle.getString("PreferencesDialog.joption.syncEnabled.title"),
-									JOptionPane.INFORMATION_MESSAGE);
+								JOptionPane.showMessageDialog(this,
+										message,
+										bundle.getString("PreferencesDialog.joption.syncEnabled.title"),
+										JOptionPane.INFORMATION_MESSAGE);
 						}
+					} else {
+						JOptionPane.showMessageDialog(this,
+								bundle.getString("PreferencesDialog.joption.syncEnabled.message1"),
+								bundle.getString("PreferencesDialog.joption.syncEnabled.title"),
+								JOptionPane.INFORMATION_MESSAGE);
 					}
 					Readsy.getMainWindow().createTabs();
 				} else {
@@ -252,16 +256,16 @@ public class PreferencesDialog extends javax.swing.JDialog {
 					panel3.setLayout(new FlowLayout(FlowLayout.LEFT));
 
 					//---- cmbFont ----
-					cmbFont.setModel(new DefaultComboBoxModel<>(new String[] {
-						"8",
-						"10",
-						"12",
-						"14",
-						"18",
-						"20",
-						"24",
-						"30",
-						"36"
+					cmbFont.setModel(new DefaultComboBoxModel<>(new String[]{
+							"8",
+							"10",
+							"12",
+							"14",
+							"18",
+							"20",
+							"24",
+							"30",
+							"36"
 					}));
 					cmbFont.addActionListener(new ActionListener() {
 						@Override
