@@ -108,31 +108,29 @@ public class BitHelper {
 		return calendar.get(Calendar.DAY_OF_YEAR);
 	}
 
+
+	/**
+	 *
+	 * @param stopDate the date to stop looking for unread items, inclusive.
+	 * @param year the year that the data file is good for, "0" for all years.
+	 * @return number of unread items from Jan 1 to stopDate.
+	 */
 	public int getUnreadItemCount(Date stopDate, String year) {
 		int count = 0;
 
-		Calendar stopHere = new GregorianCalendar();
-		stopHere.setTime(stopDate);
-		stopHere.set(Calendar.HOUR_OF_DAY, 0);
-		stopHere.set(Calendar.MINUTE, 0);
-		stopHere.set(Calendar.SECOND, 0);
-
-		Calendar calendar = new GregorianCalendar();
-		if (!year.equals("0")) {
-			calendar.set(Calendar.YEAR, Integer.parseInt(year));
-		}
-		calendar.set(Calendar.DAY_OF_YEAR, 1);
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		do {
-			if (!calendar.after(stopHere)) {    // count up to and including today
-				if (!this.isRead(calendar.getTime())) {
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(stopDate);
+		int stopDay = cal.get(Calendar.DAY_OF_YEAR);
+		if (year.equals("0") || year.equals(Integer.toString(cal.get(Calendar.YEAR)))) {
+			Calendar theDay = new GregorianCalendar();
+			theDay.set(Calendar.DAY_OF_YEAR, 1);
+			while (theDay.get(Calendar.DAY_OF_YEAR) <= stopDay) {
+				if (!isRead(theDay.getTime())) {
 					count++;
 				}
+				theDay.add(Calendar.DAY_OF_YEAR, 1);
 			}
-			calendar.add(Calendar.DAY_OF_YEAR, 1);
-		} while (calendar.get(Calendar.DAY_OF_YEAR) != 1);
+		}
 		return count;
 	}
 

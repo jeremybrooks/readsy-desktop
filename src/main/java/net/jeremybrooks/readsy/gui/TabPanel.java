@@ -129,28 +129,7 @@ public class TabPanel extends javax.swing.JPanel {
 	}
 
 	public int getUnreadItemCount() {
-		int count = 0;
-
-		Calendar today = new GregorianCalendar();
-		today.set(Calendar.HOUR_OF_DAY, 0);
-		today.set(Calendar.MINUTE, 0);
-		today.set(Calendar.SECOND, 0);
-
-		Calendar calendar = new GregorianCalendar();
-		if (!metadata.getProperty(KEY_METADATA_YEAR).equals("0")) {
-			calendar.set(Calendar.YEAR, Integer.parseInt(metadata.getProperty(KEY_METADATA_YEAR)));
-		}
-		calendar.set(Calendar.DAY_OF_YEAR, 1);
-
-		do {
-			if (!calendar.after(today)) {	// count up to and including today
-				if (!bitHelper.isRead(calendar.getTime())) {
-					count++;
-				}
-			}
-			calendar.add(Calendar.DAY_OF_YEAR, 1);
-		} while (calendar.get(Calendar.DAY_OF_YEAR) != 1);
-		return count;
+		return bitHelper.getUnreadItemCount(new Date(), metadata.getProperty(KEY_METADATA_YEAR));
 	}
 
 	public int getReadItemCount() {

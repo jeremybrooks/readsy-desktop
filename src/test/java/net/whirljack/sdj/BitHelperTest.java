@@ -115,5 +115,20 @@ public class BitHelperTest {
 		stopDate.set(Calendar.DAY_OF_MONTH, 25);
 		int count = bitHelper.getUnreadItemCount(stopDate.getTime(), "2013");
 		assertEquals(2, count);
+		count = bitHelper.getUnreadItemCount(stopDate.getTime(), "0");
+		assertEquals(2, count);
 	}
+
+	@Test
+		public void testGetUnreadItemCountInvalidYear() throws Exception {
+			// this string has unread items at Nov 23, and Nov 25 to end of the year for year 2013
+			String read = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffbf0000000000";
+			BitHelper bitHelper = new BitHelper(read);
+			Calendar stopDate = new GregorianCalendar();
+			stopDate.set(Calendar.YEAR, 2012);
+			stopDate.set(Calendar.MONTH, 10);
+			stopDate.set(Calendar.DAY_OF_MONTH, 25);
+			int count = bitHelper.getUnreadItemCount(stopDate.getTime(), "2013");
+			assertEquals(0, count);
+		}
 }
