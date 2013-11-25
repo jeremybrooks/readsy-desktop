@@ -87,4 +87,20 @@ public class BitHelperTest {
 			assertFalse(bitHelper.isRead(cal.getTime()));
 		}
 	}
+
+	/*
+	 * Creates a read string for a known number of read days. Used to test other platform compatibility.
+	 */
+	@Test
+	public void createTestString() throws Exception {
+		int[] days = {3,9,35,76,138,166,210,248,299,309,333,365};
+		String none = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+		BitHelper bitHelper = new BitHelper(none);
+		Calendar cal = new GregorianCalendar();
+		for (int i : days) {
+			cal.set(Calendar.DAY_OF_YEAR, i);
+			bitHelper.setRead(cal.getTime(), true);
+		}
+		System.out.println(bitHelper.toString());
+	}
 }
