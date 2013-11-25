@@ -33,7 +33,6 @@ import net.jeremybrooks.readsy.PropertyManager;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -138,25 +137,19 @@ public class DropboxHelper {
 	 * Save a Properties object to a remote path.
 	 *
 	 * @param remotePath remote destination.
-	 * @param properties object to save.
+	 * @param data bytes to save.
 	 * @throws DbxException if there are any errors.
 	 */
-	public void uploadProperties(String remotePath, Properties properties) throws DbxException {
+	public void uploadPropertiesData(String remotePath, byte[] data) throws DbxException {
 		remotePath = normalizePath(remotePath);
 
-		logger.debug("Attempting to save properties " + properties + " to " + remotePath);
-		ByteArrayOutputStream baos = null;
+		logger.debug("Attempting to save property data to " + remotePath);
 		try {
-			baos = new ByteArrayOutputStream();
-			properties.store(baos, "");
-			byte[] data = baos.toByteArray();
 			uploadFile(remotePath, data);
 		} catch (DbxException de) {
 			throw de;
 		} catch (Exception e) {
 			throw new DbxException("Unable to upload properties due to exception.", e);
-		} finally {
-			FileUtil.close(baos);
 		}
 	}
 

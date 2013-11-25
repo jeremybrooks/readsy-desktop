@@ -30,15 +30,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -108,15 +102,22 @@ public class DataAccess {
 
 	public static void saveMetadata(String contentDirectory, Properties metadata) throws Exception {
 		logger.debug("Saving metadata. contentDirectory=" + contentDirectory + ",metadata=" + metadata + ",useDropbox=" + useDropbox());
+		// write properties using a StringBuilder so we control the line separator
+		StringBuilder sb = new StringBuilder("#\n");
+		sb.append("#readsy desktop ").append(System.getProperty("os.name")).append(new Date()).append('\n');
+		for (String name : metadata.stringPropertyNames()) {
+			sb.append(name).append('=').append(metadata.getProperty(name)).append('\n');
+		}
+		byte[] propertiesData = sb.toString().getBytes("UTF-8");
 		if (useDropbox()) {
-			DropboxHelper.getInstance().uploadProperties(contentDirectory + "/metadata", metadata);
+			DropboxHelper.getInstance().uploadPropertiesData(contentDirectory + "/metadata", propertiesData);
 		} else {
 			OutputStream out = null;
 			File dir = new File(Readsy.getContentDir(), contentDirectory);
 			File metadataFile = new File(dir, "metadata");
 			try {
 				out = new FileOutputStream(metadataFile);
-				metadata.store(out, "");
+				out.write(propertiesData);
 			} finally {
 				FileUtil.close(out);
 			}
