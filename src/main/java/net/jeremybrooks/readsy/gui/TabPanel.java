@@ -143,7 +143,7 @@ public class TabPanel extends javax.swing.JPanel {
 		calendar.set(Calendar.DAY_OF_YEAR, 1);
 
 		do {
-			if (calendar.before(today)) {
+			if (!calendar.after(today)) {	// count up to and including today
 				if (!bitHelper.isRead(calendar.getTime())) {
 					count++;
 				}
