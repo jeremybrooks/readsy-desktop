@@ -33,9 +33,9 @@ public class BitHelper {
 	private byte[] bytes;
 	private GregorianCalendar calendar;
 	private static final String EMPTY_BITSET = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+
 	/**
 	 * Create an instance of BitHelper with enough space to store a years worth of flags.
-	 *
 	 */
 	public BitHelper() {
 		this(EMPTY_BITSET);
@@ -49,7 +49,7 @@ public class BitHelper {
 	 */
 	public BitHelper(String hexBytes) {
 		int len = hexBytes.length();
-		bytes = new byte[len/2];
+		bytes = new byte[len / 2];
 		for (int i = 0; i < len; i += 2) {
 			bytes[i / 2] = (byte) ((Character.digit(hexBytes.charAt(i), 16) << 4)
 					+ Character.digit(hexBytes.charAt(i + 1), 16));
@@ -65,7 +65,7 @@ public class BitHelper {
 	 */
 	public boolean isRead(Date date) {
 		int dayOfYear = this.getDayOfYear(date);
-		int mask = (int) Math.pow(2, (dayOfYear - 1) % 8);			// adjust to zero-based index
+		int mask = (int) Math.pow(2, (dayOfYear - 1) % 8);            // adjust to zero-based index
 		return ((this.bytes[whichByte(dayOfYear)]) & mask) == mask;
 	}
 
@@ -80,8 +80,8 @@ public class BitHelper {
 	public void setRead(Date date, boolean read) {
 		if (this.isRead(date) != read) {
 			int dayOfYear = this.getDayOfYear(date);
-			int result = ((int)this.bytes[whichByte(dayOfYear)]) ^ (int) Math.pow(2, (dayOfYear - 1) % 8);
-			this.bytes[whichByte(dayOfYear)] = (byte)result;
+			int result = ((int) this.bytes[whichByte(dayOfYear)]) ^ (int) Math.pow(2, (dayOfYear - 1) % 8);
+			this.bytes[whichByte(dayOfYear)] = (byte) result;
 		}
 	}
 
@@ -106,6 +106,34 @@ public class BitHelper {
 	public int getDayOfYear(Date date) {
 		this.calendar.setTime(date);
 		return calendar.get(Calendar.DAY_OF_YEAR);
+	}
+
+	public int getUnreadItemCount(Date stopDate, String year) {
+		int count = 0;
+
+		Calendar stopHere = new GregorianCalendar();
+		stopHere.setTime(stopDate);
+		stopHere.set(Calendar.HOUR_OF_DAY, 0);
+		stopHere.set(Calendar.MINUTE, 0);
+		stopHere.set(Calendar.SECOND, 0);
+
+		Calendar calendar = new GregorianCalendar();
+		if (!year.equals("0")) {
+			calendar.set(Calendar.YEAR, Integer.parseInt(year));
+		}
+		calendar.set(Calendar.DAY_OF_YEAR, 1);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		do {
+			if (!calendar.after(stopHere)) {    // count up to and including today
+				if (!this.isRead(calendar.getTime())) {
+					count++;
+				}
+			}
+			calendar.add(Calendar.DAY_OF_YEAR, 1);
+		} while (calendar.get(Calendar.DAY_OF_YEAR) != 1);
+		return count;
 	}
 
 	/**
