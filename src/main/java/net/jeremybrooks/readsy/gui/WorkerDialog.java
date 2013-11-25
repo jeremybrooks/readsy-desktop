@@ -24,9 +24,13 @@ package net.jeremybrooks.readsy.gui;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
+import javax.swing.border.LineBorder;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.GridLayout;
@@ -89,33 +93,38 @@ public class WorkerDialog implements PropertyChangeListener {
 		this.dialog = new JDialog(owner, Dialog.ModalityType.APPLICATION_MODAL);
 		this.dialog.setUndecorated(true);
 
-		Container contentPane = dialog.getContentPane();
-		contentPane.setLayout(new GridLayout(3, 0));
+		JPanel contentPanel = new JPanel();
+		contentPanel.setLayout(new GridLayout(3, 0));
+		contentPanel.setBorder(new LineBorder(Color.BLACK, 2));
 
 		// top grid is the title label
 		titleLabel = new JLabel();
 		titleLabel.setText(title);
 		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		contentPane.add(titleLabel);
+		contentPanel.add(titleLabel);
 
 		// middle grid is the progress bar or spinner icon
 		if (useProgressBar) {
 			progressBar = new JProgressBar();
 			progressBar.setStringPainted(true);
-			contentPane.add(progressBar);
+			contentPanel.add(progressBar);
 		} else {
 			spinnerLabel = new JLabel();
 			spinnerLabel.setText("");
 			spinnerLabel.setIcon(spinnerIcon);
 			spinnerLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			contentPane.add(spinnerLabel);
+			contentPanel.add(spinnerLabel);
 		}
 
 		// bottom grid is the message label
 		messageLabel = new JLabel();
 		messageLabel.setText(message);
 		messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		contentPane.add(messageLabel);
+		contentPanel.add(messageLabel);
+
+		Container contentPane = dialog.getContentPane();
+		contentPane.setLayout(new BorderLayout());
+		contentPane.add(contentPanel, BorderLayout.CENTER);
 
 		// set up size and position on owner
 		this.dialog.setSize(width, height);
