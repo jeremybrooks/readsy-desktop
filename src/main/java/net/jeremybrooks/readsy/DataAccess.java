@@ -81,7 +81,7 @@ public class DataAccess {
 		} catch (Exception e) {
 			logger.error("Error getting data directory names.", e);
 		}
-		Collections.sort(names);
+		Collections.sort(names, new StringComparator());
 		return names;
 	}
 
