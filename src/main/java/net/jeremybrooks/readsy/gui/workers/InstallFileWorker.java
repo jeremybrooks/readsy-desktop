@@ -21,11 +21,11 @@
 
 package net.jeremybrooks.readsy.gui.workers;
 
+import net.jeremybrooks.common.gui.WorkerDialog;
 import net.jeremybrooks.readsy.BitHelper;
 import net.jeremybrooks.readsy.DataAccess;
 import net.jeremybrooks.readsy.bo.ReadsyDataFile;
 import net.jeremybrooks.readsy.bo.ReadsyEntryElement;
-import net.jeremybrooks.readsy.gui.WorkerDialog;
 import org.apache.log4j.Logger;
 
 import javax.swing.SwingWorker;

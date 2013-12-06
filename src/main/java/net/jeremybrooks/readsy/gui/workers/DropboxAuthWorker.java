@@ -21,9 +21,9 @@
 
 package net.jeremybrooks.readsy.gui.workers;
 
+import net.jeremybrooks.common.gui.WorkerDialog;
 import net.jeremybrooks.readsy.PropertyManager;
 import net.jeremybrooks.readsy.dropbox.DropboxHelper;
-import net.jeremybrooks.readsy.gui.WorkerDialog;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;

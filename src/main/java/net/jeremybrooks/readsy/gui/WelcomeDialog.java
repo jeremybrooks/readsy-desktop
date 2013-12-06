@@ -25,6 +25,7 @@
 
 package net.jeremybrooks.readsy.gui;
 
+import net.jeremybrooks.common.gui.WorkerDialog;
 import net.jeremybrooks.readsy.Readsy;
 import net.jeremybrooks.readsy.gui.workers.DropboxAuthWorker;
 

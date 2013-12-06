@@ -22,10 +22,10 @@
 package net.jeremybrooks.readsy.gui.workers;
 
 import net.jeremybrooks.common.filter.DirectoryFilter;
+import net.jeremybrooks.common.gui.WorkerDialog;
 import net.jeremybrooks.common.util.FileUtil;
 import net.jeremybrooks.readsy.Readsy;
 import net.jeremybrooks.readsy.dropbox.DropboxHelper;
-import net.jeremybrooks.readsy.gui.WorkerDialog;
 import org.apache.log4j.Logger;
 
 import javax.swing.SwingWorker;

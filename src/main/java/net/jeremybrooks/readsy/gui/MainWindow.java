@@ -21,6 +21,7 @@
 
 package net.jeremybrooks.readsy.gui;
 
+import net.jeremybrooks.common.gui.WorkerDialog;
 import net.jeremybrooks.common.util.MacUtil;
 import net.jeremybrooks.readsy.DataAccess;
 import net.jeremybrooks.readsy.PropertyManager;
