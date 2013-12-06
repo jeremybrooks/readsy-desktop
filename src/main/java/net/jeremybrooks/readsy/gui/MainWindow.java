@@ -21,6 +21,8 @@
 
 package net.jeremybrooks.readsy.gui;
 
+import javax.swing.JFrame;
+import net.jeremybrooks.common.gui.FileDrop;
 import net.jeremybrooks.common.gui.WorkerDialog;
 import net.jeremybrooks.common.util.MacUtil;
 import net.jeremybrooks.readsy.DataAccess;
@@ -61,6 +63,7 @@ import java.io.File;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -180,6 +183,12 @@ public class MainWindow extends javax.swing.JFrame {
 		});
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new GridBagLayout());
+		new FileDrop( this, new FileDrop.Listener()
+		      {   public void filesDropped( List<File> files )
+		           {
+		               handleFileDrop(files);
+		           }   // end filesDropped
+		       }); // end FileDrop.Listener
 
 		//======== jMenuBar1 ========
 		{
@@ -652,29 +661,62 @@ public class MainWindow extends javax.swing.JFrame {
 
 		if (jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File[] files = jfc.getSelectedFiles();
-			for (File source : files) {
-				InstallFileWorker worker = new InstallFileWorker(source);
-				WorkerDialog wd = new WorkerDialog(this, worker, bundle.getString("worker.installingFile"), "");
-				wd.executeAndShowDialog();
-				if (worker.getError() != null) {
-					errList.add(source.getAbsolutePath() + " - " + worker.getError().getMessage());
-				}
-			}
-			if (errList.size() > 0) {
-				StringBuilder sb = new StringBuilder();
-				sb.append(bundle.getString("MainWindow.joption.installError.message")).append('\n');
-				for (String s : errList) {
-					sb.append(s).append('\n');
-				}
-				JOptionPane.showMessageDialog(this,
-						sb.toString(), bundle.getString("MainWindow.joption.installError.title"), JOptionPane.ERROR_MESSAGE);
-			}
-
-			this.tabList = null;
-			this.createTabs();
+			installFiles(Arrays.asList(new File[files.length]));
+//
+//			for (File source : files) {
+//				InstallFileWorker worker = new InstallFileWorker(source);
+//				WorkerDialog wd = new WorkerDialog(this, worker, bundle.getString("worker.installingFile"), "");
+//				wd.executeAndShowDialog();
+//				if (worker.getError() != null) {
+//					errList.add(source.getAbsolutePath() + " - " + worker.getError().getMessage());
+//				}
+//			}
+//			if (errList.size() > 0) {
+//				StringBuilder sb = new StringBuilder();
+//				sb.append(bundle.getString("MainWindow.joption.installError.message")).append('\n');
+//				for (String s : errList) {
+//					sb.append(s).append('\n');
+//				}
+//				JOptionPane.showMessageDialog(this,
+//						sb.toString(), bundle.getString("MainWindow.joption.installError.title"), JOptionPane.ERROR_MESSAGE);
+//			}
+//
+//			this.tabList = null;
+//			this.createTabs();
 		}
 	}//GEN-LAST:event_installMenuActionPerformed
 
+	private void handleFileDrop(List<File> files) {
+		installFiles(files);
+	}
+
+	private void installFiles(List<File> files) {
+		List<String> errList = new ArrayList<>();
+
+		for (File source : files) {
+			if (source.getName().endsWith(".xml")) {
+			InstallFileWorker worker = new InstallFileWorker(source);
+							WorkerDialog wd = new WorkerDialog(this, worker, bundle.getString("worker.installingFile"), "");
+							wd.executeAndShowDialog();
+							if (worker.getError() != null) {
+								errList.add(source.getAbsolutePath() + " - " + worker.getError().getMessage());
+							}
+			} else {
+				errList.add(source.getAbsolutePath() + " - not a valid file format.");
+			}
+		}
+		if (errList.size() > 0) {
+						StringBuilder sb = new StringBuilder();
+						sb.append(bundle.getString("MainWindow.joption.installError.message")).append('\n');
+						for (String s : errList) {
+							sb.append(s).append('\n');
+						}
+						JOptionPane.showMessageDialog(this,
+								sb.toString(), bundle.getString("MainWindow.joption.installError.title"), JOptionPane.ERROR_MESSAGE);
+					}
+		this.tabList = null;
+		this.createTabs();
+	}
 
 	/**
 	 * Display the about dialog as modal.
