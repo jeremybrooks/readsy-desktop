@@ -21,7 +21,7 @@
 
 package net.jeremybrooks.readsy.bo;
 
-import net.jeremybrooks.readsy.FileUtil;
+import net.jeremybrooks.common.util.IOUtil;
 import net.jeremybrooks.readsy.parser.XMLParser;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -276,7 +276,7 @@ public class ReadsyDataFile {
 					+ sw.toString());
 
 		} finally {
-			FileUtil.close(out);
+			IOUtil.close(out);
 		}
 	}
 

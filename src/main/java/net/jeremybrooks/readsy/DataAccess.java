@@ -21,6 +21,10 @@
 
 package net.jeremybrooks.readsy;
 
+import net.jeremybrooks.common.comparator.StringComparator;
+import net.jeremybrooks.common.filter.DirectoryFilter;
+import net.jeremybrooks.common.util.FileUtil;
+import net.jeremybrooks.common.util.IOUtil;
 import net.jeremybrooks.readsy.bo.Entry;
 import net.jeremybrooks.readsy.dropbox.DropboxHelper;
 import org.apache.log4j.Logger;
@@ -71,7 +75,7 @@ public class DataAccess {
 			if (useDropbox()) {
 				names.addAll(DropboxHelper.getInstance().getFoldersAtPath("/"));
 			} else {
-				File[] files = Readsy.getContentDir().listFiles(new DirectoryFileFilter());
+				File[] files = Readsy.getContentDir().listFiles(new DirectoryFilter());
 				if (files != null) {
 					for (File file : files) {
 						names.add(file.getName());
@@ -119,7 +123,7 @@ public class DataAccess {
 				out = new FileOutputStream(metadataFile);
 				out.write(propertiesData);
 			} finally {
-				FileUtil.close(out);
+				IOUtil.close(out);
 			}
 		}
 	}
@@ -183,7 +187,7 @@ public class DataAccess {
 			}
 			entry.setText(sb.toString());
 		} finally {
-			FileUtil.close(in);
+			IOUtil.close(in);
 		}
 		return entry;
 	}
@@ -223,7 +227,7 @@ public class DataAccess {
 				out.write(data);
 				out.flush();
 			} finally {
-				FileUtil.close(out);
+				IOUtil.close(out);
 			}
 		}
 	}

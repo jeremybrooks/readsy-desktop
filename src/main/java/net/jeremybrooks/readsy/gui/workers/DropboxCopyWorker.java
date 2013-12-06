@@ -21,8 +21,8 @@
 
 package net.jeremybrooks.readsy.gui.workers;
 
-import net.jeremybrooks.readsy.DirectoryFileFilter;
-import net.jeremybrooks.readsy.FileUtil;
+import net.jeremybrooks.common.filter.DirectoryFilter;
+import net.jeremybrooks.common.util.FileUtil;
 import net.jeremybrooks.readsy.Readsy;
 import net.jeremybrooks.readsy.dropbox.DropboxHelper;
 import net.jeremybrooks.readsy.gui.WorkerDialog;
@@ -47,7 +47,7 @@ public class DropboxCopyWorker extends SwingWorker<Void, Void> {
 	protected Void doInBackground() throws Exception {
 		ResourceBundle bundle = ResourceBundle.getBundle("localization.worker");
 		try {
-			File[] sources = Readsy.getContentDir().listFiles(new DirectoryFileFilter());
+			File[] sources = Readsy.getContentDir().listFiles(new DirectoryFilter());
 			if (sources != null) {
 				DropboxHelper dbx = DropboxHelper.getInstance();
 				Map<String, Integer> countMap = new HashMap<>();

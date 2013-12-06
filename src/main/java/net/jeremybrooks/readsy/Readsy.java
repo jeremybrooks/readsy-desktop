@@ -21,6 +21,7 @@
 
 package net.jeremybrooks.readsy;
 
+import net.jeremybrooks.common.util.MacUtil;
 import net.jeremybrooks.readsy.gui.MainWindow;
 import net.jeremybrooks.readsy.gui.WelcomeDialog;
 import net.jeremybrooks.readsy.parser.XMLParser;
@@ -71,8 +72,8 @@ public class Readsy {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		if (System.getProperty("os.name").contains("Mac")) {
-			System.setProperty("apple.laf.useScreenMenuBar", "true");
+		if (MacUtil.isRunningOnMac()) {
+			MacUtil.setMacMenuBar();
 			new OSXSetup();
 		}
 

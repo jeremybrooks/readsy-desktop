@@ -21,6 +21,7 @@
 
 package net.jeremybrooks.readsy;
 
+import net.jeremybrooks.common.util.IOUtil;
 import net.jeremybrooks.readsy.gui.MainWindow;
 import org.apache.log4j.Logger;
 
@@ -93,7 +94,7 @@ public class VersionChecker implements Runnable {
 		} catch (Exception e) {
 			logger.warn("ERROR WHILE CHECKING FOR A NEW VERSION.", e);
 		} finally {
-			FileUtil.close(in);
+			IOUtil.close(in);
 			if (conn != null) {
 				conn.disconnect();
 			}

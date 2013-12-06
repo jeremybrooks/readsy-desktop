@@ -21,7 +21,7 @@
 
 package net.jeremybrooks.readsy.gui;
 
-import javax.swing.JFrame;
+import net.jeremybrooks.common.util.MacUtil;
 import net.jeremybrooks.readsy.DataAccess;
 import net.jeremybrooks.readsy.PropertyManager;
 import net.jeremybrooks.readsy.Readsy;
@@ -113,15 +113,8 @@ public class MainWindow extends javax.swing.JFrame {
 				PropertyManager.getInstance().getPropertyAsInt(PropertyManager.PROPERTY_WINDOW_WIDTH),
 				PropertyManager.getInstance().getPropertyAsInt(PropertyManager.PROPERTY_WINDOW_HEIGHT));
 
-		if (System.getProperty("os.name").contains("Mac")) {
+		if (MacUtil.isRunningOnMac()) {
 			// HIDE THE File -> Exit and Help MENU ITEMS
-//			Component[] items = this.fileMenu.getMenuComponents();
-//			for (Component item : items) {
-//				javax.swing.JMenuItem jmi = (javax.swing.JMenuItem) item;
-//				if (jmi.getText().equals(bundle.getString("MainWindow.menuItemExit.text"))) {
-//					fileMenu.remove(item);
-//				}
-//			}
 			this.menuItemExit.setVisible(false);
 			this.preferencesMenu.setVisible(false);
 			this.aboutMenu.setVisible(false);

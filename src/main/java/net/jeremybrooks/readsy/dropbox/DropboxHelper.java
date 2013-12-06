@@ -28,7 +28,7 @@ import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.DbxWebAuthNoRedirect;
 import com.dropbox.core.DbxWriteMode;
-import net.jeremybrooks.readsy.FileUtil;
+import net.jeremybrooks.common.util.IOUtil;
 import net.jeremybrooks.readsy.PropertyManager;
 import org.apache.log4j.Logger;
 
@@ -100,7 +100,7 @@ public class DropboxHelper {
 		} catch (Exception e) {
 			throw new DbxException("Unable to upload file due to exception.", e);
 		} finally {
-			FileUtil.close(fis);
+			IOUtil.close(fis);
 		}
 	}
 
@@ -232,7 +232,7 @@ public class DropboxHelper {
 		} catch (Exception e) {
 			throw new DbxException("Error while reading file from " + remotePath, e);
 		} finally {
-			FileUtil.close(in);
+			IOUtil.close(in);
 			if (downloader != null) {
 				downloader.close();
 			}

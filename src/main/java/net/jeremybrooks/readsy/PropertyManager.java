@@ -22,6 +22,7 @@
 
 package net.jeremybrooks.readsy;
 
+import net.jeremybrooks.common.util.IOUtil;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -170,7 +171,7 @@ public class PropertyManager {
 			secretProps.load(Readsy.class.getResourceAsStream("/secret.properties"));
 
 		} finally {
-			FileUtil.close(in);
+			IOUtil.close(in);
 		}
 	}
 
@@ -200,7 +201,7 @@ public class PropertyManager {
 		} catch (Exception e) {
 			logger.error("COULD NOT SAVE PROPERTIES.", e);
 		} finally {
-			FileUtil.close(out);
+			IOUtil.close(out);
 		}
 	}
 

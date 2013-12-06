@@ -21,7 +21,7 @@
 
 package net.jeremybrooks.readsy.gui;
 
-import net.jeremybrooks.readsy.FileUtil;
+import net.jeremybrooks.common.util.FileUtil;
 import net.jeremybrooks.readsy.Readsy;
 import net.jeremybrooks.readsy.bo.ReadsyDataFile;
 import org.apache.log4j.Logger;
