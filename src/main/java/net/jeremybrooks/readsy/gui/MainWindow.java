@@ -21,6 +21,7 @@
 
 package net.jeremybrooks.readsy.gui;
 
+import java.awt.Font;
 import javax.swing.JFrame;
 import net.jeremybrooks.common.gui.FileDrop;
 import net.jeremybrooks.common.gui.WorkerDialog;
@@ -496,8 +497,9 @@ public class MainWindow extends javax.swing.JFrame {
 
 		//---- lblDate ----
 		lblDate.setText(bundle.getString("MainWindow.lblDate.text"));
+		lblDate.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 13));
 		contentPane.add(lblDate, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
-			GridBagConstraints.WEST, GridBagConstraints.NONE,
+			GridBagConstraints.CENTER, GridBagConstraints.NONE,
 			new Insets(5, 5, 5, 5), 0, 0));
 		setLocationRelativeTo(getOwner());
 	}// </editor-fold>//GEN-END:initComponents
@@ -662,27 +664,6 @@ public class MainWindow extends javax.swing.JFrame {
 		if (jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File[] files = jfc.getSelectedFiles();
 			installFiles(Arrays.asList(new File[files.length]));
-//
-//			for (File source : files) {
-//				InstallFileWorker worker = new InstallFileWorker(source);
-//				WorkerDialog wd = new WorkerDialog(this, worker, bundle.getString("worker.installingFile"), "");
-//				wd.executeAndShowDialog();
-//				if (worker.getError() != null) {
-//					errList.add(source.getAbsolutePath() + " - " + worker.getError().getMessage());
-//				}
-//			}
-//			if (errList.size() > 0) {
-//				StringBuilder sb = new StringBuilder();
-//				sb.append(bundle.getString("MainWindow.joption.installError.message")).append('\n');
-//				for (String s : errList) {
-//					sb.append(s).append('\n');
-//				}
-//				JOptionPane.showMessageDialog(this,
-//						sb.toString(), bundle.getString("MainWindow.joption.installError.title"), JOptionPane.ERROR_MESSAGE);
-//			}
-//
-//			this.tabList = null;
-//			this.createTabs();
 		}
 	}//GEN-LAST:event_installMenuActionPerformed
 
@@ -944,7 +925,7 @@ public class MainWindow extends javax.swing.JFrame {
 
 		@Override
 		protected Void doInBackground() throws Exception {
-			lblDate.setText(bundle.getString("MainWindow.lblDate.text") + " " + dateFormatter.format(currentDate.getTime()));
+			lblDate.setText(dateFormatter.format(currentDate.getTime()));
 			tabList = new LinkedList<>();
 
 			try {
@@ -969,6 +950,7 @@ public class MainWindow extends javax.swing.JFrame {
 											bundle.getString("worker.loadingEntry.for") + " " + dateFormatter.format(currentDate.getTime()));
 							tab.displayDataForDate(currentDate.getTime());
 							tabPane.add(tab.getTabTitle(), tab);
+							tabPane.setToolTipTextAt(index, tab.getDescription());
 
 							// tell the tab panel which index it is using
 							tab.setIndex(index);

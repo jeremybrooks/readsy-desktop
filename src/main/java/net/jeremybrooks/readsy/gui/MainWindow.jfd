@@ -62,9 +62,10 @@ new FormModel {
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "lblDate"
 				"text": new FormMessage( null, "MainWindow.lblDate.text" )
+				"font": new java.awt.Font( "Lucida Grande", 3, 13 )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 				"gridy": 1
-				"hAlign": 2
+				"hAlign": 0
 				"vAlign": 0
 				"insets": new java.awt.Insets( 5, 5, 5, 5 )
 			} )

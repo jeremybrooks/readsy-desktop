@@ -113,6 +113,10 @@ public class TabPanel extends javax.swing.JPanel {
 		return this.metadata.getProperty(KEY_METADATA_SHORT_DESCRIPTION);
 	}
 
+	public String getDescription() {
+		return this.metadata.getProperty(KEY_METADATA_DESCRIPTION);
+	}
+
 
 	/**
 	 * Get the tab title.
@@ -186,6 +190,7 @@ public class TabPanel extends javax.swing.JPanel {
 	 */
 	public void updateTabTitle() {
 		this.tabbedPane.setTitleAt(this.index, this.getTabTitle());
+		this.tabbedPane.setToolTipTextAt(this.index, this.getDescription());
 	}
 
 
