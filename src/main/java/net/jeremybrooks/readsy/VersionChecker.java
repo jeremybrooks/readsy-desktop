@@ -88,7 +88,7 @@ public class VersionChecker implements Runnable {
 			latestVersion = in.readLine();
 
 			logger.debug(String.format("Got version %s from %s", latestVersion, VERSION_URL));
-			if (latestVersion.compareTo(Readsy.VERSION) > 0) {
+			if (this.updated(Readsy.VERSION, latestVersion)) {
 				logger.debug("New version is available.");
 				mainWindow.newVersionAvailable();
 			}
