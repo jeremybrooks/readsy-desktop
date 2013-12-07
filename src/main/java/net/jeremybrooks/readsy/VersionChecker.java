@@ -22,6 +22,7 @@
 package net.jeremybrooks.readsy;
 
 import net.jeremybrooks.common.util.IOUtil;
+import net.jeremybrooks.common.util.StringUtil;
 import net.jeremybrooks.readsy.gui.MainWindow;
 import org.apache.log4j.Logger;
 
@@ -29,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.StringTokenizer;
 
 /**
  * Check for a new version of the program.
@@ -85,7 +87,7 @@ public class VersionChecker implements Runnable {
 			in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			latestVersion = in.readLine();
 
-			logger.debug("Got version " + latestVersion + " from " + VERSION_URL);
+			logger.debug(String.format("Got version %s from %s", latestVersion, VERSION_URL));
 			if (latestVersion.compareTo(Readsy.VERSION) > 0) {
 				logger.debug("New version is available.");
 				mainWindow.newVersionAvailable();
@@ -99,6 +101,56 @@ public class VersionChecker implements Runnable {
 				conn.disconnect();
 			}
 		}
+	}
 
+	/**
+	 * Compare a new version with an old version to see if there is an update available.
+	 *
+	 * <p>If the parameters are null or empty, this method will return false. Each part of the version
+	 * must be an Integer value. So "1.0.0" is a valid version; "1.0.0a" is not.</p>
+	 *
+	 * <p>The versions are compared by splitting on the "." and then comparing each unit</p>.
+	 * If the "old" unit is greater than the "new" unit, comparison stops and returns false.
+	 * If the "new" unit is greater than the "old" unit, comparison stops and returns true.</p>
+	 *
+	 * @param oldVersion the old (or current) version.
+	 * @param newVersion the new version to compare with old version.
+	 * @return true if newVersion is greater than oldVersion.
+	 */
+	public boolean updated(String oldVersion, String newVersion) {
+		if (StringUtil.isNullOrEmpty(oldVersion)) {
+			return false;
+		}
+		if (StringUtil.isNullOrEmpty(newVersion)) {
+			return false;
+		}
+		if (oldVersion.equals(newVersion)) {
+			return false;
+		}
+
+		boolean updated = false;
+
+		StringTokenizer oldT = new StringTokenizer(oldVersion, ".");
+		StringTokenizer newT = new StringTokenizer(newVersion, ".");
+
+		try {
+			while (oldT.hasMoreTokens() && newT.hasMoreTokens()) {
+				Integer oldPart = Integer.decode(oldT.nextToken());
+				Integer newPart = Integer.decode(newT.nextToken());
+				if (oldPart > newPart) {
+					updated = false;
+					break;
+				}
+				if (newPart > oldPart) {
+					updated = true;
+					break;
+				}
+			}
+		} catch (Exception e) {
+			updated = false;
+			logger.warn(String.format("Error trying to determine version [oldVersion=%s] [newVersion=%s]. Returning false.", oldVersion, newVersion));
+		}
+
+		return updated;
 	}
 }
