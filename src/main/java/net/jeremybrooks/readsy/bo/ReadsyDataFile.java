@@ -112,6 +112,7 @@ public class ReadsyDataFile {
 		this.root.setDescription(description);
 		this.root.setShortDescription(shortDescription);
 		this.root.setIgnoreYear(ignoreYear);
+		this.root.setYear(year);
 
 		// if data file should be for ANY year, set it to a year that is not a leap year
 		if (year == 0) {
