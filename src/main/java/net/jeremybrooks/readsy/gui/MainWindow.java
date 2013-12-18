@@ -21,8 +21,6 @@
 
 package net.jeremybrooks.readsy.gui;
 
-import java.awt.Font;
-import javax.swing.JFrame;
 import net.jeremybrooks.common.gui.FileDrop;
 import net.jeremybrooks.common.gui.WorkerDialog;
 import net.jeremybrooks.common.util.MacUtil;
@@ -52,6 +50,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -184,12 +183,11 @@ public class MainWindow extends javax.swing.JFrame {
 		});
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new GridBagLayout());
-		new FileDrop( this, new FileDrop.Listener()
-		      {   public void filesDropped( List<File> files )
-		           {
-		               handleFileDrop(files);
-		           }   // end filesDropped
-		       }); // end FileDrop.Listener
+		new FileDrop(this, new FileDrop.Listener() {
+			public void filesDropped(List<File> files) {
+				handleFileDrop(files);
+			}   // end filesDropped
+		}); // end FileDrop.Listener
 
 		//======== jMenuBar1 ========
 		{
@@ -489,18 +487,18 @@ public class MainWindow extends javax.swing.JFrame {
 			panel1.add(updateButton);
 		}
 		contentPane.add(panel1, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-			new Insets(0, 0, 0, 0), 0, 0));
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(0, 0, 0, 0), 0, 0));
 		contentPane.add(tabPane, new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0,
-			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-			new Insets(5, 5, 5, 5), 0, 0));
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(5, 5, 5, 5), 0, 0));
 
 		//---- lblDate ----
 		lblDate.setText(bundle.getString("MainWindow.lblDate.text"));
 		lblDate.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 13));
 		contentPane.add(lblDate, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
-			GridBagConstraints.CENTER, GridBagConstraints.NONE,
-			new Insets(5, 5, 5, 5), 0, 0));
+				GridBagConstraints.CENTER, GridBagConstraints.NONE,
+				new Insets(5, 5, 5, 5), 0, 0));
 		setLocationRelativeTo(getOwner());
 	}// </editor-fold>//GEN-END:initComponents
 
@@ -663,7 +661,7 @@ public class MainWindow extends javax.swing.JFrame {
 
 		if (jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File[] files = jfc.getSelectedFiles();
-			installFiles(Arrays.asList(new File[files.length]));
+			installFiles(Arrays.asList(files));
 		}
 	}//GEN-LAST:event_installMenuActionPerformed
 
@@ -674,27 +672,32 @@ public class MainWindow extends javax.swing.JFrame {
 	private void installFiles(List<File> files) {
 		List<String> errList = new ArrayList<>();
 
-		for (File source : files) {
-			if (source.getName().endsWith(".xml")) {
-			InstallFileWorker worker = new InstallFileWorker(source);
-							WorkerDialog wd = new WorkerDialog(this, worker, bundle.getString("worker.installingFile"), "");
-							wd.executeAndShowDialog();
-							if (worker.getError() != null) {
-								errList.add(source.getAbsolutePath() + " - " + worker.getError().getMessage());
-							}
-			} else {
-				errList.add(source.getAbsolutePath() + " - not a valid file format.");
+		if (files == null || files.size() == 0) {
+			errList.add("File list was null or empty. This should not happen. Please report this bug.");
+		} else {
+			for (File source : files) {
+				if (source.getName().endsWith(".xml")) {
+					System.out.println(source.getName());
+					InstallFileWorker worker = new InstallFileWorker(source);
+					WorkerDialog wd = new WorkerDialog(this, worker, bundle.getString("worker.installingFile"), "");
+					wd.executeAndShowDialog();
+					if (worker.getError() != null) {
+						errList.add(source.getAbsolutePath() + " - " + worker.getError().getMessage());
+					}
+				} else {
+					errList.add(source.getAbsolutePath() + " - not a valid file format.");
+				}
 			}
 		}
 		if (errList.size() > 0) {
-						StringBuilder sb = new StringBuilder();
-						sb.append(bundle.getString("MainWindow.joption.installError.message")).append('\n');
-						for (String s : errList) {
-							sb.append(s).append('\n');
-						}
-						JOptionPane.showMessageDialog(this,
-								sb.toString(), bundle.getString("MainWindow.joption.installError.title"), JOptionPane.ERROR_MESSAGE);
-					}
+			StringBuilder sb = new StringBuilder();
+			sb.append(bundle.getString("MainWindow.joption.installError.message")).append('\n');
+			for (String s : errList) {
+				sb.append(s).append('\n');
+			}
+			JOptionPane.showMessageDialog(this,
+					sb.toString(), bundle.getString("MainWindow.joption.installError.title"), JOptionPane.ERROR_MESSAGE);
+		}
 		this.tabList = null;
 		this.createTabs();
 	}
