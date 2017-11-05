@@ -79,9 +79,6 @@ public class PropertyManager {
 	 */
 	public static final String PROPERTY_WINDOW_Y = "readsy.windowY";
 
-	public static final String DROPBOX_APP_KEY = "readsy.dropboxAppKey";
-	public static final String DROPBOX_APP_SECRET = "readsy.dropboxAppSecret";
-	public static final String DROPBOX_ENABLED = "readsy.dropboxEnabled";
 	public static final String DROPBOX_ACCESS_TOKEN = "readsy.dropboxAccessToken";
 
 
@@ -136,8 +133,6 @@ public class PropertyManager {
 				props.setProperty("log4j.appender.FILE.MaxFileSize", "2000KB");
 				props.setProperty("log4j.appender.FILE.MaxBackupIndex", "5");
 
-				props.setProperty(DROPBOX_ENABLED, "false");
-
 				// SAVE THE NEW CONFIGURATION FILE
 				this.saveProperties();
 			}
@@ -158,12 +153,6 @@ public class PropertyManager {
 				props.setProperty(PROPERTY_WINDOW_Y, Integer.toString((screenSize.height - 426) / 2));
 				props.setProperty(PROPERTY_WINDOW_WIDTH, "600");
 				props.setProperty(PROPERTY_WINDOW_HEIGHT, "426");
-				this.saveProperties();
-			}
-
-			// SET DROPBOX ENABLED IF NEEDED
-			if (props.getProperty(DROPBOX_ENABLED) == null) {
-				props.setProperty(DROPBOX_ENABLED, "false");
 				this.saveProperties();
 			}
 

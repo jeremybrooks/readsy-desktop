@@ -65,7 +65,6 @@ public class DropboxAuthWorker extends SwingWorker<Void, Void> {
 					throw new Exception("Dropbox authorization failed: access token was null.");
 				}
 				PropertyManager.getInstance().setProperty(PropertyManager.DROPBOX_ACCESS_TOKEN, accessToken);
-				PropertyManager.getInstance().setProperty(PropertyManager.DROPBOX_ENABLED, "true");
 			}
 		} catch (Exception e) {
 			this.e = e;
