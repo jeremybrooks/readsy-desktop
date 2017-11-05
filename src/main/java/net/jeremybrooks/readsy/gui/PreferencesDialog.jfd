@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "5.2.0.0.54" Java: "1.6.0_65" encoding: "UTF-8"
+JFDML JFormDesigner: "6.0.2.0.116" Java: "1.8.0_152-release" encoding: "UTF-8"
 
 new FormModel {
 	"i18n.bundlePackage": "localization"
@@ -16,9 +16,11 @@ new FormModel {
 			"alwaysOnTop": true
 			"$sizePolicy": 1
 			"$locationPolicy": 0
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
-				"rows": 3
-				"columns": 1
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+				"$columnSpecs": "0:1.0"
+				"$rowSpecs": "0:1.0, 0:1.0, 0:1.0"
+				"$alignTop": true
+				"$alignLeft": true
 			} ) {
 				name: "panel2"
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
@@ -32,7 +34,7 @@ new FormModel {
 						"border": new javax.swing.border.EmptyBorder( 0, 0, 0, 0 )
 						"margin": new java.awt.Insets( 0, 0, 0, 0 )
 					} )
-				} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 					name: "jPanel3"
 					"border": new javax.swing.border.TitledBorder( "i18nKey=PreferencesDialog.jPanel3.border" )
@@ -69,17 +71,12 @@ new FormModel {
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "Before"
 					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 1
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 					name: "panel4"
 					"border": new javax.swing.border.TitledBorder( "i18nKey=PreferencesDialog.panel4.border" )
-					add( new FormComponent( "javax.swing.JCheckBox" ) {
-						name: "cbxDropbox"
-						"text": new FormMessage( null, "PreferencesDialog.cbxDropbox.text" )
-						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "cbxDropboxActionPerformed", false ) )
-					}, new FormLayoutConstraints( class java.lang.String ) {
-						"value": "North"
-					} )
 					add( new FormComponent( "javax.swing.JTextArea" ) {
 						name: "textArea1"
 						"editable": false
@@ -90,6 +87,15 @@ new FormModel {
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "Center"
 					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button1"
+						"text": new FormMessage( null, "PreferencesDialog.button1.text" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "button1ActionPerformed", false ) )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "South"
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 2
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"
@@ -112,7 +118,7 @@ new FormModel {
 				"value": "South"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 460, 425 )
+			"size": new java.awt.Dimension( 440, 370 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 	}

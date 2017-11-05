@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "5.2.0.0.54" Java: "1.6.0_65" encoding: "UTF-8"
+JFDML JFormDesigner: "6.0.2.0.116" Java: "1.8.0_152-release" encoding: "UTF-8"
 
 new FormModel {
 	"i18n.autoExternalize": true
@@ -15,7 +15,7 @@ new FormModel {
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
 					"$columnSpecs": "0, 0:1.0"
-					"$rowSpecs": "0:1.0, 0"
+					"$rowSpecs": "0, 0:1.0, 0"
 					"$alignTop": true
 					"$alignLeft": true
 				} ) {
@@ -27,15 +27,18 @@ new FormModel {
 						"horizontalAlignment": 2
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"vAlign": 1
+						"gridy": 1
 					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "textLabel"
-						"icon": sfield com.jformdesigner.model.FormObject NULL_VALUE
-						"text": new FormMessage( null, "WelcomeDialog.textLabel.text" )
-						"verticalAlignment": 1
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane1"
+						add( new FormComponent( "javax.swing.JTextPane" ) {
+							name: "textPane1"
+							"text": new FormMessage( null, "WelcomeDialog.textPane1.text" )
+							"editable": false
+						} )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
-						"vAlign": 1
+						"gridy": 1
 						"insets": new java.awt.Insets( 5, 5, 5, 5 )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {

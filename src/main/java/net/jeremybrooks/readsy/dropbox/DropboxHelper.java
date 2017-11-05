@@ -22,22 +22,25 @@
 package net.jeremybrooks.readsy.dropbox;
 
 import com.dropbox.core.DbxAppInfo;
-import com.dropbox.core.DbxClient;
-import com.dropbox.core.DbxEntry;
+import com.dropbox.core.DbxAuthFinish;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
-import com.dropbox.core.DbxWebAuthNoRedirect;
-import com.dropbox.core.DbxWriteMode;
-import net.jeremybrooks.common.util.IOUtil;
+import com.dropbox.core.DbxWebAuth;
+import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.FolderMetadata;
+import com.dropbox.core.v2.files.ListFolderResult;
+import com.dropbox.core.v2.files.Metadata;
+import com.dropbox.core.v2.files.WriteMode;
 import net.jeremybrooks.readsy.PropertyManager;
 import org.apache.log4j.Logger;
 
-import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -45,18 +48,18 @@ import java.util.Properties;
  */
 public class DropboxHelper {
 	private Logger logger = Logger.getLogger(DropboxHelper.class);
-	private DbxClient client;
+	private DbxClientV2 client;
 	private static DropboxHelper instance;
-	private static DbxWebAuthNoRedirect webAuth;
+	private static DbxWebAuth webAuth;
 
 
-	private DropboxHelper() throws DbxException {
+  private DropboxHelper() throws DbxException {
 		String accessToken = PropertyManager.getInstance().getProperty(PropertyManager.DROPBOX_ACCESS_TOKEN);
 		if (accessToken == null) {
 			throw new DbxException("Dropbox access has not been configured.");
 		}
-		DbxRequestConfig requestConfig = new DbxRequestConfig("readsy/1.0", Locale.getDefault().toString());
-		client = new DbxClient(requestConfig, accessToken);
+		DbxRequestConfig requestConfig = new DbxRequestConfig("readsy/1.0");
+		client = new DbxClientV2(requestConfig, accessToken);
 	}
 
 	public static DropboxHelper getInstance() throws DbxException {
@@ -75,7 +78,7 @@ public class DropboxHelper {
 	public void createFolder(String remotePath) throws DbxException {
 		remotePath = normalizePath(remotePath);
 		logger.debug("Creating " + remotePath);
-		client.createFolder(remotePath);
+		client.files().createFolderV2(remotePath);
 	}
 
 
@@ -89,18 +92,18 @@ public class DropboxHelper {
 	public void uploadFile(String remotePath, File file) throws DbxException {
 		remotePath = normalizePath(remotePath);
 
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(file);
+		try (FileInputStream fis = new FileInputStream(file)) {
 			logger.debug("Attempting to upload file " + file.getAbsolutePath() + " to " + remotePath);
-			client.uploadFile(remotePath, DbxWriteMode.force(), file.length(), fis);
+			client.files().uploadBuilder(remotePath)
+          .withMode(WriteMode.OVERWRITE)
+          .withAutorename(false)
+          .start()
+          .uploadAndFinish(fis);
 			logger.debug("Upload successful.");
 		} catch (DbxException de) {
 			throw de;
 		} catch (Exception e) {
 			throw new DbxException("Unable to upload file due to exception.", e);
-		} finally {
-			IOUtil.close(fis);
 		}
 	}
 
@@ -116,19 +119,16 @@ public class DropboxHelper {
 		remotePath = normalizePath(remotePath);
 
 			logger.debug("Attempting to upload data to " + remotePath);
-			DbxClient.Uploader uploader = null;
-			try {
-				uploader = client.startUploadFile(remotePath, DbxWriteMode.force(), data.length);
-				uploader.getBody().write(data);
-				uploader.finish();
+			try (ByteArrayInputStream in = new ByteArrayInputStream(data)) {
+				client.files().uploadBuilder(remotePath)
+            .withMode(WriteMode.OVERWRITE)
+            .withAutorename(false)
+            .start()
+            .uploadAndFinish(in);
 			} catch (DbxException de) {
 				throw de;
 			} catch (Exception e) {
 				throw new DbxException("Unable to upload file due to exception.", e);
-			} finally {
-				if (uploader != null) {
-					uploader.close();
-				}
 			}
 		}
 
@@ -164,7 +164,7 @@ public class DropboxHelper {
 		remotePath = normalizePath(remotePath);
 
 		logger.debug("Deleting remote path " + remotePath);
-		client.delete(remotePath);
+		client.files().deleteV2(remotePath);
 	}
 
 
@@ -178,7 +178,7 @@ public class DropboxHelper {
 	public boolean pathExists(String remotePath) throws DbxException {
 		remotePath = normalizePath(remotePath);
 
-		return (client.getMetadata(remotePath) != null);
+		return (client.files().getMetadata(remotePath) != null);
 	}
 
 
@@ -192,18 +192,15 @@ public class DropboxHelper {
 	public void loadPropertiesFromFile(Properties properties, String remotePath) throws DbxException {
 		remotePath = normalizePath(remotePath);
 
-		DbxClient.Downloader downloader = null;
-		try {
-			downloader = this.client.startGetFile(remotePath, null);
-			properties.load(downloader.body);
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+			client.files().downloadBuilder(remotePath)
+          .start()
+          .download(out);
+			properties.load(new ByteArrayInputStream(out.toByteArray()));
 		} catch (DbxException de) {
 			throw de;
 		} catch (Exception e) {
 			throw new DbxException("There was an error while getting file " + remotePath, e);
-		} finally {
-			if (downloader != null) {
-				downloader.close();
-			}
 		}
 		logger.debug("Loaded properties from Dropbox: " + properties);
 	}
@@ -220,22 +217,16 @@ public class DropboxHelper {
 		remotePath = normalizePath(remotePath);
 
 		logger.debug("Getting file " + remotePath + " from Dropbox...");
-		DbxClient.Downloader downloader = null;
-		BufferedReader in = null;
-		byte[] data = null;
-		try {
-			downloader = this.client.startGetFile(remotePath, null);
-			data = new byte[(int)downloader.metadata.numBytes];
-			downloader.body.read(data);
+		byte[] data;
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+			client.files().downloadBuilder(remotePath)
+          .start()
+          .download(out);
+			data = out.toByteArray();
 		} catch (DbxException de) {
 			throw de;
 		} catch (Exception e) {
 			throw new DbxException("Error while reading file from " + remotePath, e);
-		} finally {
-			IOUtil.close(in);
-			if (downloader != null) {
-				downloader.close();
-			}
 		}
 		return data;
 	}
@@ -251,37 +242,53 @@ public class DropboxHelper {
 	public List<String> getFoldersAtPath(String remotePath) throws DbxException {
 		remotePath = normalizePath(remotePath);
 
+		// root directory should be specified as "" rather than "/"
+		if (remotePath.equals("/")) {
+		  remotePath = "";
+    }
 		logger.debug("Getting folders at path " + remotePath);
-		DbxEntry.WithChildren withChildren = client.getMetadataWithChildren(remotePath);
+		ListFolderResult folderResult = null;
+		List<Metadata> metadataList = new ArrayList<>();
+		do {
+		  if (folderResult == null) {
+		    folderResult = client.files().listFolder(remotePath);
+      } else {
+		    folderResult = client.files().listFolderContinue(folderResult.getCursor());
+      }
+      metadataList.addAll(folderResult.getEntries());
+    } while (folderResult.getHasMore());
+
 		List<String> list = new ArrayList<>();
-		if (withChildren != null) {
-			for (DbxEntry entry : withChildren.children) {
-				if (entry.isFolder()) {
-					logger.debug("Found folder " + entry.path);
-					list.add(entry.path);
-				}
-			}
-		}
+		for (Metadata metadata : metadataList) {
+      System.out.println(metadata);
+      if (metadata instanceof FolderMetadata) {
+        list.add(metadata.getName());
+      }
+    }
 		return list;
 	}
 
 
-	public static String startWebAuth() {
-		DbxAppInfo appInfo = new DbxAppInfo(PropertyManager.getInstance().getProperty(PropertyManager.DROPBOX_APP_KEY),
-				PropertyManager.getInstance().getProperty(PropertyManager.DROPBOX_APP_SECRET));
-		DbxRequestConfig requestConfig = new DbxRequestConfig("readsy/1.0", Locale.getDefault().toString());
+	public static String startWebAuth() throws Exception {
+	  InputStream in = DropboxHelper.class.getResourceAsStream("/secret.json");
+      DbxAppInfo appInfo = DbxAppInfo.Reader.readFully(in);
+      DbxRequestConfig requestConfig = new DbxRequestConfig("readsy/1.0");
+      webAuth = new DbxWebAuth(requestConfig, appInfo);
+      DbxWebAuth.Request webAuthRequest = DbxWebAuth.newRequestBuilder()
+          .withNoRedirect()
+          .build();
 
-		webAuth = new DbxWebAuthNoRedirect(requestConfig, appInfo);
-		return webAuth.start();
+      return webAuth.authorize(webAuthRequest);
 	}
 
 	public static String finishWebAuth(String authorizationCode) throws DbxException {
 		if (webAuth == null) {
 			return null;
 		}
-		String accessToken = webAuth.finish(authorizationCode).accessToken;
-		webAuth = null;
-		return accessToken;
+
+    DbxAuthFinish authFinish = webAuth.finishFromCode(authorizationCode.trim());
+    webAuth = null;
+    return authFinish.getAccessToken();
 	}
 
 

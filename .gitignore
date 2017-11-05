@@ -1,3 +1,5 @@
+**/secret.json
+**/secret.properties
 tmp/*
 tmp/**/*
 db/*.sqlite3

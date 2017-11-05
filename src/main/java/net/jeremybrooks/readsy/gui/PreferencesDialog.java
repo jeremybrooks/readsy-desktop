@@ -21,18 +21,12 @@
 
 package net.jeremybrooks.readsy.gui;
 
-import javax.swing.*;
-import net.jeremybrooks.common.gui.WorkerDialog;
 import net.jeremybrooks.readsy.PropertyManager;
 import net.jeremybrooks.readsy.Readsy;
-import net.jeremybrooks.readsy.gui.workers.DropboxAuthWorker;
-import net.jeremybrooks.readsy.gui.workers.DropboxCopyWorker;
-import net.jeremybrooks.readsy.gui.workers.DropboxDeleteContentWorker;
 import org.apache.log4j.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -46,11 +40,11 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -75,110 +69,122 @@ public class PreferencesDialog extends javax.swing.JDialog {
 	 * Creates new form PreferencesDialog.
 	 * The state will be set from the currently saved preferences.
 	 */
-	private void cbxDropboxActionPerformed() {
-		if (cbxDropbox.isSelected()) {
-			// enable
-			int confirm = JOptionPane.showConfirmDialog(this,
-					bundle.getString("PreferencesDialog.joption.authorizeConfirm.message"),
-					bundle.getString("PreferencesDialog.joption.authorizeConfirm.title"),
-					JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE);
-			if (confirm == JOptionPane.YES_OPTION) {
-				DropboxAuthWorker daw = new DropboxAuthWorker();
-				WorkerDialog wd = new WorkerDialog(this, daw, bundle.getString("worker.authorize.title"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
-				daw.setComponent(this);
-				wd.executeAndShowDialog();
+//	private void cbxDropboxActionPerformed() {
+//		if (cbxDropbox.isSelected()) {
+//			// enable
+//			int confirm = JOptionPane.showConfirmDialog(this,
+//					bundle.getString("PreferencesDialog.joption.authorizeConfirm.message"),
+//					bundle.getString("PreferencesDialog.joption.authorizeConfirm.title"),
+//					JOptionPane.YES_NO_OPTION,
+//					JOptionPane.QUESTION_MESSAGE);
+//			if (confirm == JOptionPane.YES_OPTION) {
+//				DropboxAuthWorker daw = new DropboxAuthWorker();
+//				WorkerDialog wd = new WorkerDialog(this, daw, bundle.getString("worker.authorize.title"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
+//				daw.setComponent(this);
+//				wd.executeAndShowDialog();
+//
+//				// if no errors during authorization, see if we should start copying
+//				if (daw.getException() == null) {
+//					File[] files = Readsy.getContentDir().listFiles();
+//					if (files != null && files.length > 0) {
+//						int response = JOptionPane.showConfirmDialog(this,
+//								bundle.getString("PreferencesDialog.joption.copyData.message"),
+//								bundle.getString("PreferencesDialog.joption.copyData.title"),
+//								JOptionPane.YES_NO_OPTION,
+//								JOptionPane.QUESTION_MESSAGE);
+//						if (response == JOptionPane.YES_OPTION) {
+//							DropboxCopyWorker dcw = new DropboxCopyWorker();
+//							wd = new WorkerDialog(this, dcw, bundle.getString("worker.copying.title"), "");
+//							wd.executeAndShowDialog();
+//
+//							String message = bundle.getString("PreferencesDialog.joption.syncEnabled.message1");
+//							if (dcw.getException() != null) {
+//								logger.error("Error copying files to dropbox.", dcw.getException());
+//								message += "\n" + bundle.getString("PreferencesDialog.joption.syncEnabled.message2");
+//							}
+//								JOptionPane.showMessageDialog(this,
+//										message,
+//										bundle.getString("PreferencesDialog.joption.syncEnabled.title"),
+//										JOptionPane.INFORMATION_MESSAGE);
+//						}
+//					} else {
+//						JOptionPane.showMessageDialog(this,
+//								bundle.getString("PreferencesDialog.joption.syncEnabled.message1"),
+//								bundle.getString("PreferencesDialog.joption.syncEnabled.title"),
+//								JOptionPane.INFORMATION_MESSAGE);
+//					}
+//					Readsy.getMainWindow().createTabs();
+//				} else {
+//					// error during authorization, so uncheck the checkbox
+////					this.cbxDropbox.setSelected(false);
+//					logger.error("Error during dropbox authorization.", daw.getException());
+//					JOptionPane.showMessageDialog(this,
+//							bundle.getString("PreferencesDialog.joption.authorizeError.message1") +
+//									daw.getException().getMessage() + bundle.getString("PreferencesDialog.joption.authorizeError.message2"),
+//							bundle.getString("PreferencesDialog.joption.authorizeError.title"),
+//							JOptionPane.ERROR_MESSAGE
+//					);
+//				}
+//			}
+//		} else {
+//			String[] options = {
+//					bundle.getString("PreferencesDialog.joption.syncDisable.optionCancel"),
+//					bundle.getString("PreferencesDialog.joption.syncDisable.optionNoDelete"),
+//					bundle.getString("PreferencesDialog.joption.syncDisable.optionDelete")
+//			};
+//			int option = JOptionPane.showOptionDialog(this,
+//					bundle.getString("PreferencesDialog.joption.syncDisable.message"),
+//					bundle.getString("PreferencesDialog.joption.syncDisable.title"),
+//					JOptionPane.DEFAULT_OPTION,
+//					JOptionPane.QUESTION_MESSAGE,
+//					null,
+//					options,
+//					options[2]);
+//
+//			switch (option) {
+//				case 0:
+////					this.cbxDropbox.setSelected(true);
+//					break;
+//				case 1:
+//					PropertyManager.getInstance().deleteProperty(PropertyManager.DROPBOX_ACCESS_TOKEN);
+//					PropertyManager.getInstance().setProperty(PropertyManager.DROPBOX_ENABLED, "false");
+//					JOptionPane.showMessageDialog(this,
+//							bundle.getString("PreferencesDialog.joption.syncDisable.disableNoDeleteMessage"),
+//							bundle.getString("PreferencesDialog.joption.syncDisabled.title"),
+//							JOptionPane.INFORMATION_MESSAGE);
+//					Readsy.getMainWindow().createTabs();
+//					break;
+//				case 2:
+//					DropboxDeleteContentWorker d = new DropboxDeleteContentWorker();
+//					WorkerDialog wd = new WorkerDialog(this, d, bundle.getString("worker.deleting"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
+//					wd.executeAndShowDialog();
+//
+//					String message = bundle.getString("PreferencesDialog.joption.syncDisabled.message1");
+//					if (d.getException() != null) {
+//						logger.error("Error deleting files from dropbox.", d.getException());
+//						message += "\n" + bundle.getString("PreferencesDialog.joption.syncDisabled.message2");
+//					}
+//					JOptionPane.showMessageDialog(this,
+//							message,
+//							bundle.getString("PreferencesDialog.joption.syncDisabled.title"),
+//							JOptionPane.INFORMATION_MESSAGE);
+//					Readsy.getMainWindow().createTabs();
+//					break;
+//			}
+//		}
+//	}
 
-				// if no errors during authorization, see if we should start copying
-				if (daw.getException() == null) {
-					File[] files = Readsy.getContentDir().listFiles();
-					if (files != null && files.length > 0) {
-						int response = JOptionPane.showConfirmDialog(this,
-								bundle.getString("PreferencesDialog.joption.copyData.message"),
-								bundle.getString("PreferencesDialog.joption.copyData.title"),
-								JOptionPane.YES_NO_OPTION,
-								JOptionPane.QUESTION_MESSAGE);
-						if (response == JOptionPane.YES_OPTION) {
-							DropboxCopyWorker dcw = new DropboxCopyWorker();
-							wd = new WorkerDialog(this, dcw, bundle.getString("worker.copying.title"), "");
-							wd.executeAndShowDialog();
-
-							String message = bundle.getString("PreferencesDialog.joption.syncEnabled.message1");
-							if (dcw.getException() != null) {
-								logger.error("Error copying files to dropbox.", dcw.getException());
-								message += "\n" + bundle.getString("PreferencesDialog.joption.syncEnabled.message2");
-							}
-								JOptionPane.showMessageDialog(this,
-										message,
-										bundle.getString("PreferencesDialog.joption.syncEnabled.title"),
-										JOptionPane.INFORMATION_MESSAGE);
-						}
-					} else {
-						JOptionPane.showMessageDialog(this,
-								bundle.getString("PreferencesDialog.joption.syncEnabled.message1"),
-								bundle.getString("PreferencesDialog.joption.syncEnabled.title"),
-								JOptionPane.INFORMATION_MESSAGE);
-					}
-					Readsy.getMainWindow().createTabs();
-				} else {
-					// error during authorization, so uncheck the checkbox
-					this.cbxDropbox.setSelected(false);
-					logger.error("Error during dropbox authorization.", daw.getException());
-					JOptionPane.showMessageDialog(this,
-							bundle.getString("PreferencesDialog.joption.authorizeError.message1") +
-									daw.getException().getMessage() + bundle.getString("PreferencesDialog.joption.authorizeError.message2"),
-							bundle.getString("PreferencesDialog.joption.authorizeError.title"),
-							JOptionPane.ERROR_MESSAGE
-					);
-				}
-			}
-		} else {
-			String[] options = {
-					bundle.getString("PreferencesDialog.joption.syncDisable.optionCancel"),
-					bundle.getString("PreferencesDialog.joption.syncDisable.optionNoDelete"),
-					bundle.getString("PreferencesDialog.joption.syncDisable.optionDelete")
-			};
-			int option = JOptionPane.showOptionDialog(this,
-					bundle.getString("PreferencesDialog.joption.syncDisable.message"),
-					bundle.getString("PreferencesDialog.joption.syncDisable.title"),
-					JOptionPane.DEFAULT_OPTION,
-					JOptionPane.QUESTION_MESSAGE,
-					null,
-					options,
-					options[2]);
-
-			switch (option) {
-				case 0:
-					this.cbxDropbox.setSelected(true);
-					break;
-				case 1:
-					PropertyManager.getInstance().deleteProperty(PropertyManager.DROPBOX_ACCESS_TOKEN);
-					PropertyManager.getInstance().setProperty(PropertyManager.DROPBOX_ENABLED, "false");
-					JOptionPane.showMessageDialog(this,
-							bundle.getString("PreferencesDialog.joption.syncDisable.disableNoDeleteMessage"),
-							bundle.getString("PreferencesDialog.joption.syncDisabled.title"),
-							JOptionPane.INFORMATION_MESSAGE);
-					Readsy.getMainWindow().createTabs();
-					break;
-				case 2:
-					DropboxDeleteContentWorker d = new DropboxDeleteContentWorker();
-					WorkerDialog wd = new WorkerDialog(this, d, bundle.getString("worker.deleting"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
-					wd.executeAndShowDialog();
-
-					String message = bundle.getString("PreferencesDialog.joption.syncDisabled.message1");
-					if (d.getException() != null) {
-						logger.error("Error deleting files from dropbox.", d.getException());
-						message += "\n" + bundle.getString("PreferencesDialog.joption.syncDisabled.message2");
-					}
-					JOptionPane.showMessageDialog(this,
-							message,
-							bundle.getString("PreferencesDialog.joption.syncDisabled.title"),
-							JOptionPane.INFORMATION_MESSAGE);
-					Readsy.getMainWindow().createTabs();
-					break;
-			}
-		}
-	}
+  private void button1ActionPerformed() {
+	  int choice = JOptionPane.showConfirmDialog(this,
+        bundle.getString("PreferencesDialog.disconnect.message"),
+        bundle.getString("PreferencesDialog.disconnect.title"),
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE);
+	  if (choice == JOptionPane.YES_OPTION) {
+	    PropertyManager.getInstance().deleteProperty(PropertyManager.DROPBOX_ACCESS_TOKEN);
+	    System.exit(0);
+    }
+  }
 
 	public PreferencesDialog(Frame parent, boolean modal) {
 		super(parent, modal);
@@ -187,7 +193,11 @@ public class PreferencesDialog extends javax.swing.JDialog {
 		this.cbxUpdates.setSelected(PropertyManager.getInstance().getPropertyAsBoolean(PropertyManager.PROPERTY_CHECK_FOR_UPDATES));
 		this.initialFontSize = PropertyManager.getInstance().getPropertyAsInt(PropertyManager.PROPERTY_FONT_SIZE);
 		this.cmbFont.setSelectedItem(Integer.toString(this.initialFontSize));
-		this.cbxDropbox.setSelected(PropertyManager.getInstance().getPropertyAsBoolean(PropertyManager.DROPBOX_ENABLED));
+		if (PropertyManager.getInstance().getProperty(PropertyManager.DROPBOX_ACCESS_TOKEN) == null) {
+		  panel4.setVisible(false);
+    } else {
+		  panel4.setVisible(true);
+    }
 		setIconImage(Readsy.WINDOW_IMAGE);
 
 		getRootPane().setDefaultButton(this.btnOk);
@@ -210,8 +220,8 @@ public class PreferencesDialog extends javax.swing.JDialog {
     panel3 = new JPanel();
     cmbFont = new JComboBox<>();
     panel4 = new JPanel();
-    cbxDropbox = new JCheckBox();
     textArea1 = new JTextArea();
+    button1 = new JButton();
     panel1 = new JPanel();
     btnOk = new JButton();
     btnCancel = new JButton();
@@ -225,7 +235,11 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
     //======== panel2 ========
     {
-      panel2.setLayout(new GridLayout(3, 1));
+      panel2.setLayout(new GridBagLayout());
+      ((GridBagLayout)panel2.getLayout()).columnWidths = new int[] {0, 0};
+      ((GridBagLayout)panel2.getLayout()).rowHeights = new int[] {0, 0, 0, 0};
+      ((GridBagLayout)panel2.getLayout()).columnWeights = new double[] {1.0, 1.0E-4};
+      ((GridBagLayout)panel2.getLayout()).rowWeights = new double[] {1.0, 1.0, 1.0, 1.0E-4};
 
       //======== jPanel1 ========
       {
@@ -238,7 +252,9 @@ public class PreferencesDialog extends javax.swing.JDialog {
         cbxUpdates.setMargin(new Insets(0, 0, 0, 0));
         jPanel1.add(cbxUpdates);
       }
-      panel2.add(jPanel1);
+      panel2.add(jPanel1, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        new Insets(0, 0, 0, 0), 0, 0));
 
       //======== jPanel3 ========
       {
@@ -279,22 +295,14 @@ public class PreferencesDialog extends javax.swing.JDialog {
         }
         jPanel3.add(panel3, BorderLayout.LINE_START);
       }
-      panel2.add(jPanel3);
+      panel2.add(jPanel3, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        new Insets(0, 0, 0, 0), 0, 0));
 
       //======== panel4 ========
       {
         panel4.setBorder(new TitledBorder(bundle.getString("PreferencesDialog.panel4.border")));
         panel4.setLayout(new BorderLayout());
-
-        //---- cbxDropbox ----
-        cbxDropbox.setText(bundle.getString("PreferencesDialog.cbxDropbox.text"));
-        cbxDropbox.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            cbxDropboxActionPerformed();
-          }
-        });
-        panel4.add(cbxDropbox, BorderLayout.NORTH);
 
         //---- textArea1 ----
         textArea1.setEditable(false);
@@ -303,8 +311,20 @@ public class PreferencesDialog extends javax.swing.JDialog {
         textArea1.setText(bundle.getString("PreferencesDialog.textArea1.text"));
         textArea1.setBackground(UIManager.getColor("Label.background"));
         panel4.add(textArea1, BorderLayout.CENTER);
+
+        //---- button1 ----
+        button1.setText(bundle.getString("PreferencesDialog.button1.text"));
+        button1.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            button1ActionPerformed();
+          }
+        });
+        panel4.add(button1, BorderLayout.SOUTH);
       }
-      panel2.add(panel4);
+      panel2.add(panel4, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
+        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        new Insets(0, 0, 0, 0), 0, 0));
     }
     contentPane.add(panel2, BorderLayout.CENTER);
 
@@ -333,7 +353,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
       panel1.add(btnCancel);
     }
     contentPane.add(panel1, BorderLayout.SOUTH);
-    setSize(460, 425);
+    setSize(440, 370);
     setLocationRelativeTo(getOwner());
 	}// </editor-fold>//GEN-END:initComponents
 
@@ -384,9 +404,11 @@ public class PreferencesDialog extends javax.swing.JDialog {
 		}
 
 		List<TabPanel> tabs = ((MainWindow) this.getParent()).getTabList();
-		for (TabPanel tab : tabs) {
-			tab.updateFontSize(size);
-		}
+		if (tabs != null) {
+      for (TabPanel tab : tabs) {
+        tab.updateFontSize(size);
+      }
+    }
 	}//GEN-LAST:event_cmbFontActionPerformed
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
@@ -398,8 +420,8 @@ public class PreferencesDialog extends javax.swing.JDialog {
   private JPanel panel3;
   private JComboBox<String> cmbFont;
   private JPanel panel4;
-  private JCheckBox cbxDropbox;
   private JTextArea textArea1;
+  private JButton button1;
   private JPanel panel1;
   private JButton btnOk;
   private JButton btnCancel;

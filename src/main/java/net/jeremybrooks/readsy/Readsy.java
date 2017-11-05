@@ -154,12 +154,12 @@ public class Readsy {
 			System.exit(1);
 		}
 		mainWindow = new MainWindow();
-		if (firstRun) {
-			logger.debug("First run; showing welcome dialog.");
-			new WelcomeDialog().setVisible(true);
-		} else {
-			mainWindow.setVisible(true, true);
-		}
+		if (PropertyManager.getInstance().getProperty(PropertyManager.DROPBOX_ACCESS_TOKEN) == null) {
+      new WelcomeDialog().setVisible(true);
+    } else {
+      mainWindow.setVisible(true, true);
+      logger.debug("No Dropbox token, showing welcome dialog.");
+    }
 
 		Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(mainWindow)));
 
