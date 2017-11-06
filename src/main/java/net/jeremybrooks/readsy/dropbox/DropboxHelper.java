@@ -260,7 +260,6 @@ public class DropboxHelper {
 
 		List<String> list = new ArrayList<>();
 		for (Metadata metadata : metadataList) {
-      System.out.println(metadata);
       if (metadata instanceof FolderMetadata) {
         list.add(metadata.getName());
       }

@@ -21,17 +21,10 @@
 
 package net.jeremybrooks.readsy.gui.workers;
 
-import net.jeremybrooks.common.gui.WorkerDialog;
-import net.jeremybrooks.readsy.BitHelper;
-import net.jeremybrooks.readsy.DataAccess;
-import net.jeremybrooks.readsy.bo.ReadsyDataFile;
-import net.jeremybrooks.readsy.bo.ReadsyEntryElement;
 import org.apache.log4j.Logger;
 
 import javax.swing.SwingWorker;
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 /**
@@ -51,54 +44,65 @@ public class InstallFileWorker extends SwingWorker<Void, Void> {
 	protected Void doInBackground() throws Exception {
 		ResourceBundle bundle = ResourceBundle.getBundle("localization.worker");
 
-		try {
+//		try {
 			logger.debug("Installing data file " + file.getAbsolutePath());
-			SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyyMMdd");
+			// unzip file
 
-			ReadsyDataFile dataFile = new ReadsyDataFile(file);
-			String contentDirectory = dataFile.getReadsyRootElement().getShortDescription();
-			if (DataAccess.directoryExists(contentDirectory)) {
-				throw new Exception("It appears that the data file has already been installed.");
-			}
-			DataAccess.createDirectory(contentDirectory);
+      // load metadata into Properties object
 
-			int year = dataFile.getReadsyRootElement().getYear();
-			BitHelper bitHelper = new BitHelper();
-			String calYear;
-			int count = 0;
-			if (year == 0) {
-				// set to a non-leap year; the file will have 365 entries
-				calYear = "2013";
-			} else {
-				// set to the specified year
-				calYear = Integer.toString(year);
-			}
-			for (ReadsyEntryElement entry : dataFile.getEntryList()) {
-				setProgress((int)(count/366.0*100));
-				bitHelper.setRead(yyyyMMdd.parse(calYear + entry.getDate()), entry.isRead());
-				StringBuilder sb = new StringBuilder(entry.getHeading());
-				sb.append('\n');
-				sb.append(entry.getText());
-				String path = contentDirectory + "/" + entry.getDate();
+      // check Dropbox to see if remote directory exists
+        // error if exists
 
-				firePropertyChange(WorkerDialog.EVENT_DIALOG_MESSAGE, "", bundle.getString("ifw.messageCopying") + " " + path);
+      // make remote dropbox directory
 
-				DataAccess.saveFile(path, sb.toString().getBytes("UTF-8"));
-				count++;
-			}
+      // copy files to dropbox
 
-			Properties metadata = new Properties();
-			metadata.setProperty("year", Integer.toString(year));
-			metadata.setProperty("description", dataFile.getReadsyRootElement().getDescription());
-			metadata.setProperty("shortDescription", dataFile.getReadsyRootElement().getShortDescription());
-			metadata.setProperty("version", Integer.toString(dataFile.getReadsyRootElement().getVersion()));
-			metadata.setProperty("read", bitHelper.toString());
-			firePropertyChange(WorkerDialog.EVENT_DIALOG_MESSAGE, "", bundle.getString("ifw.messageCopyingMetadata"));
-			DataAccess.saveMetadata(contentDirectory, metadata);
-		} catch (Exception e) {
-			logger.error("Error installing file " + file.getAbsolutePath(), e);
-			this.error = e;
-		}
+//			SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyyMMdd");
+//
+//			ReadsyDataFile dataFile = new ReadsyDataFile(file);
+//			String contentDirectory = dataFile.getReadsyRootElement().getShortDescription();
+//			if (DataAccess.directoryExists(contentDirectory)) {
+//				throw new Exception("It appears that the data file has already been installed.");
+//			}
+//			DataAccess.createDirectory(contentDirectory);
+//
+//			int year = dataFile.getReadsyRootElement().getYear();
+//			BitHelper bitHelper = new BitHelper();
+//			String calYear;
+//			int count = 0;
+//			if (year == 0) {
+//				 set to a non-leap year; the file will have 365 entries
+//				calYear = "2013";
+//			} else {
+//				 set to the specified year
+//				calYear = Integer.toString(year);
+//			}
+//			for (ReadsyEntryElement entry : dataFile.getEntryList()) {
+//				setProgress((int)(count/366.0*100));
+//				bitHelper.setRead(yyyyMMdd.parse(calYear + entry.getDate()), entry.isRead());
+//				StringBuilder sb = new StringBuilder(entry.getHeading());
+//				sb.append('\n');
+//				sb.append(entry.getText());
+//				String path = contentDirectory + "/" + entry.getDate();
+//
+//				firePropertyChange(WorkerDialog.EVENT_DIALOG_MESSAGE, "", bundle.getString("ifw.messageCopying") + " " + path);
+//
+//				DataAccess.saveFile(path, sb.toString().getBytes("UTF-8"));
+//				count++;
+//			}
+//
+//			Properties metadata = new Properties();
+//			metadata.setProperty("year", Integer.toString(year));
+//			metadata.setProperty("description", dataFile.getReadsyRootElement().getDescription());
+//			metadata.setProperty("shortDescription", dataFile.getReadsyRootElement().getShortDescription());
+//			metadata.setProperty("version", Integer.toString(dataFile.getReadsyRootElement().getVersion()));
+//			metadata.setProperty("read", bitHelper.toString());
+//			firePropertyChange(WorkerDialog.EVENT_DIALOG_MESSAGE, "", bundle.getString("ifw.messageCopyingMetadata"));
+//			DataAccess.saveMetadata(contentDirectory, metadata);
+//		} catch (Exception e) {
+//			logger.error("Error installing file " + file.getAbsolutePath(), e);
+//			this.error = e;
+//		}
 		return null;
 	}
 

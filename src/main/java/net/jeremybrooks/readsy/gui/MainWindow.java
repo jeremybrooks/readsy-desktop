@@ -677,7 +677,6 @@ public class MainWindow extends javax.swing.JFrame {
 		} else {
 			for (File source : files) {
 				if (source.getName().endsWith(".xml")) {
-					System.out.println(source.getName());
 					InstallFileWorker worker = new InstallFileWorker(source);
 					WorkerDialog wd = new WorkerDialog(this, worker, bundle.getString("worker.installingFile"), "");
 					wd.executeAndShowDialog();

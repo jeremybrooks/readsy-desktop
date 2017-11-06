@@ -24,7 +24,6 @@ package net.jeremybrooks.readsy;
 import net.jeremybrooks.common.util.MacUtil;
 import net.jeremybrooks.readsy.gui.MainWindow;
 import net.jeremybrooks.readsy.gui.WelcomeDialog;
-import net.jeremybrooks.readsy.parser.XMLParser;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -133,9 +132,6 @@ public class Readsy {
 			logger = Logger.getLogger(Readsy.class);
 			logger.debug("Logging configured.");
 
-			if (XMLParser.getInstance() == null) {
-				throw new Exception("Could not initialize XML Parser.");
-			}
 			logger.debug("XML Parser initialized successfully.");
 
 

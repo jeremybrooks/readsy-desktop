@@ -21,6 +21,19 @@ public class BitHelperTest {
 	private static final String testNothingRead = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 
 	@Test
+  public void test() throws Exception {
+	  SimpleDateFormat sdf = new SimpleDateFormat("MMdd");
+    Calendar cal = new GregorianCalendar();
+    cal.set(Calendar.MONTH, 0);
+    cal.set(Calendar.DAY_OF_MONTH, 1);
+    cal.set(Calendar.YEAR, 2016);
+    while (cal.get(Calendar.YEAR) == 2016) {
+      System.out.println(sdf.format(cal.getTime()));
+      cal.add(Calendar.DAY_OF_MONTH, 1);
+    }
+
+  }
+	@Test
 	public void testWhichByte() throws Exception {
 		// expected is an array with 8 0's, 8 1's, etc.
 		int[] expected = new int[368];

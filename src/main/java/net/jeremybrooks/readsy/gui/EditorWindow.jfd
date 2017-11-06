@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "5.2.0.0.54" Java: "1.6.0_65" encoding: "UTF-8"
+JFDML JFormDesigner: "6.0.2.0.116" Java: "1.8.0_152-release" encoding: "UTF-8"
 
 new FormModel {
 	"i18n.bundlePackage": "localization"
@@ -45,7 +45,7 @@ new FormModel {
 				"columns": 40
 				"toolTipText": new FormMessage( null, "EditorWindow.txtDescription.toolTipText" )
 				auxiliary() {
-					"JavaCodeGenerator.postInitCode": "this.txtDescription.setText(this.dataFile.getReadsyRootElement().getDescription());"
+					"JavaCodeGenerator.postInitCode": "this.txtDescription.setText(this.metadata.getProperty(\"description\"));"
 				}
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 				"gridx": 2
@@ -58,7 +58,7 @@ new FormModel {
 				"columns": 40
 				"toolTipText": new FormMessage( null, "EditorWindow.txtShortDescription.toolTipText" )
 				auxiliary() {
-					"JavaCodeGenerator.postInitCode": "this.txtShortDescription.setText(this.dataFile.getReadsyRootElement().getShortDescription());"
+					"JavaCodeGenerator.postInitCode": "this.txtShortDescription.setText(this.metadata.getProperty(\"shortDescription\"));"
 				}
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 				"gridx": 2
