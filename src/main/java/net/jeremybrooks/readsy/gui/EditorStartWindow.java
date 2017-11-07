@@ -65,7 +65,6 @@ import java.util.ResourceBundle;
  * or open an existing one.  Once the user has done one of those things,
  * the resulting ReadsyDataFile object is passed to an instance of
  * EditorWindow, where the user can actually edit the file.
- * <p/>
  * If the editor closes this window, we go back to the main window.
  *
  * @author Jeremy Brooks
@@ -264,10 +263,8 @@ public class EditorStartWindow extends JFrame {
    * Allow the user to open an existing readsy file.
    * The file will be turned into an instance of ReadsyDataFile,
    * and passed to an EditorWindow.
-   * <p/>
    * If the file cannot be parsed, an error is displayed, and the user
    * goes back to this window (EditorStartWindow) to try again.
-   * <p/>
    * The file chooser defaults to the user home, and filters all files
    * that end with ".xml".  Only one file may be selected.
    */
@@ -317,7 +314,6 @@ public class EditorStartWindow extends JFrame {
   /**
    * If the user has entered valid data, create a new ReadsyDataFile
    * object with empty entries and pass it to a new EditorWindow.
-   * <p/>
    * If any errors occur while creating the new file, display an error message
    * and let the user try again.
    */
@@ -326,10 +322,6 @@ public class EditorStartWindow extends JFrame {
       int year = Integer.parseInt(this.txtYear.getText());
       String shortDescription = this.txtShortDescription.getText().trim();
       String description = this.txtDescription.getText().trim();
-//			String filename = this.txtFilename.getText();
-//			if (!filename.endsWith(".xml")) {
-//				filename += ".xml";
-//			}
       File file = new File(System.getProperty("user.home"), shortDescription);
       if (file.exists()) {
         JOptionPane.showMessageDialog(this,
@@ -342,8 +334,9 @@ public class EditorStartWindow extends JFrame {
         Calendar cal = new GregorianCalendar();
         cal.set(Calendar.MONTH, 0);
         cal.set(Calendar.DAY_OF_MONTH, 1);
+        // for zero year (any), set to a non-leap year
         if (year == 0) {
-          cal.set(Calendar.YEAR, 2016);
+          cal.set(Calendar.YEAR, 2013);
         } else {
           cal.set(Calendar.YEAR, year);
         }

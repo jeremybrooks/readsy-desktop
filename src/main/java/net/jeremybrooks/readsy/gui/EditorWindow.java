@@ -92,7 +92,7 @@ public class EditorWindow extends javax.swing.JFrame {
     this.calendar.set(Calendar.MONTH, Calendar.JANUARY);
     this.calendar.set(Calendar.DAY_OF_MONTH, 1);
     if (this.metadata.getProperty("year").equals("0")) {
-      this.calendar.set(Calendar.YEAR, 2016); // use a leap year so we are sure to cover all days
+      this.calendar.set(Calendar.YEAR, 2013);
     } else {
       this.calendar.set(Calendar.YEAR, Integer.parseInt(metadata.getProperty("year")));
     }
