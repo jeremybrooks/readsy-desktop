@@ -62,10 +62,9 @@ import java.util.ResourceBundle;
 
 /**
  * This window allows a user to edit the data XML file.
- * Changes are saved whenever the user naviagtes to another day, or when the
- * user closes this window.
- * <p/>
- * When this window is closed, the user is taken back to the main window.
+ * <p>Changes are saved whenever the user naviagtes to another day, or when the
+ * user closes this window.</p>
+ * <p>When this window is closed, the user is taken back to the main window.</p>
  *
  * @author Jeremy Brooks
  */
@@ -394,11 +393,10 @@ public class EditorWindow extends javax.swing.JFrame {
 
   /**
    * Save changes.
-   * The current value of heading, text, description, short description, and
-   * ignore year are passed to the object model.
-   * <p/>
-   * Display an error message if there is any error during the save process.
-   * The actual work is delegated to the object model.
+   * <p>The current value of heading, text, description, short description, and
+   * ignore year are passed to the object model.</p>
+   * <p>Display an error message if there is any error during the save process.
+   * The actual work is delegated to the object model.</p>
    */
   private boolean saveEntry() {
     boolean saved = false;

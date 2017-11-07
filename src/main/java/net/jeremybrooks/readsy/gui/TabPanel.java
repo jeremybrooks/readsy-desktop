@@ -174,7 +174,8 @@ public class TabPanel extends javax.swing.JPanel {
 	public Date getFirstUnreadItemDate() {
 		Date date = null;
 		Calendar calendar = new GregorianCalendar();
-
+    calendar.set(Calendar.MONTH, Calendar.DECEMBER);
+    calendar.set(Calendar.DAY_OF_MONTH, 31);
 		do {
 			calendar.add(Calendar.DAY_OF_YEAR, -1);
 			if (!bitHelper.isRead(calendar.getTime())) {
@@ -197,7 +198,7 @@ public class TabPanel extends javax.swing.JPanel {
 	/**
 	 * Set the index.
 	 *
-	 * @param index
+	 * @param index the index.
 	 */
 	public void setIndex(int index) {
 		this.index = index;
@@ -400,7 +401,6 @@ public class TabPanel extends javax.swing.JPanel {
 
 	/**
 	 * Handle when a user clicks the "I've read it" checkbox.
-	 * <p/>
 	 * <p>This action creates a new instance of UpdateReadFlag, executing that
 	 * in a SwingWorker.</p>
 	 */
@@ -447,7 +447,6 @@ public class TabPanel extends javax.swing.JPanel {
 
 	/**
 	 * Get the selected word.
-	 * <p/>
 	 * <p>The user must have only one word selected. If there are spaces in the
 	 * selection, it is considered more than one word and will return null.
 	 * Punctuation and numbers are ignored and will not be returned as part of
