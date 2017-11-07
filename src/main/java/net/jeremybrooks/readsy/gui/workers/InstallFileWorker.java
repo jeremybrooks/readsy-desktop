@@ -62,11 +62,9 @@ public class InstallFileWorker extends SwingWorker<Void, Void> {
         total++;
         ZipEntry entry = entries.nextElement();
         if (!entry.isDirectory() && entry.getName().endsWith("metadata")) {
-          try (InputStream in = zipFile.getInputStream(entry);
-               ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+          try (InputStream in = zipFile.getInputStream(entry)) {
             metadata = new Properties();
             metadata.load(in);
-            System.out.println(metadata);
           }
         }
       }
