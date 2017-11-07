@@ -21,92 +21,89 @@
 
 package net.jeremybrooks.readsy.gui.workers;
 
+import net.jeremybrooks.common.gui.WorkerDialog;
+import net.jeremybrooks.readsy.DataAccess;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import javax.swing.SwingWorker;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * @author Jeremy Brooks
  */
 public class InstallFileWorker extends SwingWorker<Void, Void> {
-	private Logger logger = Logger.getLogger(InstallFileWorker.class);
-	private File file;
-	private Exception error;
+  private Logger logger = Logger.getLogger(InstallFileWorker.class);
+  private File file;
+  private Exception error;
 
-	public InstallFileWorker(File file) {
-		this.file = file;
-	}
+  public InstallFileWorker(File file) {
+    this.file = file;
+  }
 
 
-	@Override
-	protected Void doInBackground() throws Exception {
-		ResourceBundle bundle = ResourceBundle.getBundle("localization.worker");
+  @Override
+  protected Void doInBackground() throws Exception {
+    logger.debug("Installing data file " + file.getAbsolutePath());
+    ResourceBundle bundle = ResourceBundle.getBundle("localization.worker");
+    // first, find metadata and count entries
+    double total = 0.0;
+    try (ZipFile zipFile = new ZipFile(file)) {
+      Properties metadata = null;
+      Enumeration<? extends ZipEntry> entries = zipFile.entries();
+      while (entries.hasMoreElements()) {
+        total++;
+        ZipEntry entry = entries.nextElement();
+        if (!entry.isDirectory() && entry.getName().endsWith("metadata")) {
+          try (InputStream in = zipFile.getInputStream(entry);
+               ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            metadata = new Properties();
+            metadata.load(in);
+            System.out.println(metadata);
+          }
+        }
+      }
+      if (metadata == null) {
+        throw new Exception("Invalid file format: no metadata file found.");
+      }
+      String directory = metadata.getProperty("shortDescription");
+      if (DataAccess.directoryExists(directory)) {
+        throw new Exception("The directory '" + directory + "' already exists.");
+      }
 
-//		try {
-			logger.debug("Installing data file " + file.getAbsolutePath());
-			// unzip file
+      // now create folder and upload all the entries
+      DataAccess.createDirectory(directory);
+      entries = zipFile.entries();
+      int count = 0;
+      while (entries.hasMoreElements()) {
+        ZipEntry entry = entries.nextElement();
+        if (!entry.isDirectory()) {
+          count++;
+          try (InputStream in = zipFile.getInputStream(entry);
+               ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            IOUtils.copy(in, out);
+            firePropertyChange(WorkerDialog.EVENT_DIALOG_MESSAGE, "",
+                bundle.getString("ifw.messageUploadingFile") + " " + entry.getName());
+            DataAccess.uploadFile(entry.getName(), out.toByteArray());
+            double percent = count/total*100;
+            firePropertyChange("progress", "", (int) percent);
+          }
+        }
+      }
+    } catch (Exception e) {
+      this.error = e;
+    }
+    return null;
+  }
 
-      // load metadata into Properties object
-
-      // check Dropbox to see if remote directory exists
-        // error if exists
-
-      // make remote dropbox directory
-
-      // copy files to dropbox
-
-//			SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyyMMdd");
-//
-//			ReadsyDataFile dataFile = new ReadsyDataFile(file);
-//			String contentDirectory = dataFile.getReadsyRootElement().getShortDescription();
-//			if (DataAccess.directoryExists(contentDirectory)) {
-//				throw new Exception("It appears that the data file has already been installed.");
-//			}
-//			DataAccess.createDirectory(contentDirectory);
-//
-//			int year = dataFile.getReadsyRootElement().getYear();
-//			BitHelper bitHelper = new BitHelper();
-//			String calYear;
-//			int count = 0;
-//			if (year == 0) {
-//				 set to a non-leap year; the file will have 365 entries
-//				calYear = "2013";
-//			} else {
-//				 set to the specified year
-//				calYear = Integer.toString(year);
-//			}
-//			for (ReadsyEntryElement entry : dataFile.getEntryList()) {
-//				setProgress((int)(count/366.0*100));
-//				bitHelper.setRead(yyyyMMdd.parse(calYear + entry.getDate()), entry.isRead());
-//				StringBuilder sb = new StringBuilder(entry.getHeading());
-//				sb.append('\n');
-//				sb.append(entry.getText());
-//				String path = contentDirectory + "/" + entry.getDate();
-//
-//				firePropertyChange(WorkerDialog.EVENT_DIALOG_MESSAGE, "", bundle.getString("ifw.messageCopying") + " " + path);
-//
-//				DataAccess.saveFile(path, sb.toString().getBytes("UTF-8"));
-//				count++;
-//			}
-//
-//			Properties metadata = new Properties();
-//			metadata.setProperty("year", Integer.toString(year));
-//			metadata.setProperty("description", dataFile.getReadsyRootElement().getDescription());
-//			metadata.setProperty("shortDescription", dataFile.getReadsyRootElement().getShortDescription());
-//			metadata.setProperty("version", Integer.toString(dataFile.getReadsyRootElement().getVersion()));
-//			metadata.setProperty("read", bitHelper.toString());
-//			firePropertyChange(WorkerDialog.EVENT_DIALOG_MESSAGE, "", bundle.getString("ifw.messageCopyingMetadata"));
-//			DataAccess.saveMetadata(contentDirectory, metadata);
-//		} catch (Exception e) {
-//			logger.error("Error installing file " + file.getAbsolutePath(), e);
-//			this.error = e;
-//		}
-		return null;
-	}
-
-	public Exception getError() {
-		return this.error;
-	}
+  public Exception getError() {
+    return this.error;
+  }
 }

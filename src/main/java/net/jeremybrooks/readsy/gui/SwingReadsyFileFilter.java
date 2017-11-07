@@ -29,17 +29,17 @@ import javax.swing.filechooser.FileFilter;
  *
  * @author Jeremy Brooks
  */
-public class SwingXMLFileFilter extends FileFilter {
+public class SwingReadsyFileFilter extends FileFilter {
 
 	/**
 	 * The extension to allow.
 	 */
-	private final String extension = ".xml";
+	private final String extension = ".readsy";
 
 	/**
-	 * Creates a new instance of SwingXMLFileFilter
+	 * Creates a new instance of SwingReadsyFileFilter
 	 */
-	public SwingXMLFileFilter() {
+	public SwingReadsyFileFilter() {
 	}
 
 
@@ -69,6 +69,6 @@ public class SwingXMLFileFilter extends FileFilter {
 	 * @return description.
 	 */
 	public String getDescription() {
-		return "readsy files (*.xml)";
+		return "readsy files (*.readsy)";
 	}
 }

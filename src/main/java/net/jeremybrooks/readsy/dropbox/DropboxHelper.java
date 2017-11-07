@@ -28,6 +28,7 @@ import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.DbxWebAuth;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.FolderMetadata;
+import com.dropbox.core.v2.files.ListFolderErrorException;
 import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
 import com.dropbox.core.v2.files.WriteMode;
@@ -177,8 +178,13 @@ public class DropboxHelper {
 	 */
 	public boolean pathExists(String remotePath) throws DbxException {
 		remotePath = normalizePath(remotePath);
-
-		return (client.files().getMetadata(remotePath) != null);
+		boolean exists = true;
+		try {
+      client.files().listFolder(remotePath);
+    } catch (ListFolderErrorException lfee) {
+		  exists = false;
+    }
+    return exists;
 	}
 
 
