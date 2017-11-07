@@ -46,11 +46,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Properties;
@@ -69,14 +72,11 @@ import java.util.ResourceBundle;
 public class EditorWindow extends javax.swing.JFrame {
 
   private Logger logger = Logger.getLogger(EditorWindow.class);
-  private DateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
   private DateFormat prettyDateFormat = new SimpleDateFormat("MMMM dd");
   private DateFormat monthDateFormat = new SimpleDateFormat("MMdd");
   private Calendar calendar;
   private File directory;
   private Properties metadata;
-//	private ReadsyDataFile dataFile = null;
-
 
   /**
    * Creates new form EditorWindow.
@@ -97,7 +97,7 @@ public class EditorWindow extends javax.swing.JFrame {
     } else {
       this.calendar.set(Calendar.YEAR, Integer.parseInt(metadata.getProperty("year")));
     }
-//		this.dataFile = dataFile;
+    setCalendarToFirstEmptyEntry();
     initComponents();
     setIconImage(Readsy.WINDOW_IMAGE);
     this.lblFilename.setText(directory.getAbsolutePath());
@@ -108,6 +108,34 @@ public class EditorWindow extends javax.swing.JFrame {
     updateDisplay();
   }
 
+  private void setCalendarToFirstEmptyEntry() {
+    // find the first empty date and start there
+    try {
+      File[] files = directory.listFiles();
+      if (files != null) {
+        Arrays.sort(files, Comparator.comparing(File::getName));
+        for (File f : files) {
+          try (BufferedReader in = new BufferedReader(new FileReader(f))) {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = in.readLine()) != null) {
+              sb.append(line.trim());
+            }
+            if (sb.length() == 0) {
+              // parse filename to determine month/day
+              // month is zero-based, so subtract one
+              this.calendar.set(Calendar.MONTH, Integer.parseInt(f.getName().substring(0, 2)) - 1);
+              this.calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(f.getName().substring(2)));
+              break;
+            }
+          }
+        }
+      }
+    } catch (Exception e) {
+      this.calendar.set(Calendar.MONTH, Calendar.JANUARY);
+      this.calendar.set(Calendar.DAY_OF_MONTH, 1);
+    }
+  }
 
   /**
    * This method is called from within the constructor to
@@ -152,42 +180,42 @@ public class EditorWindow extends javax.swing.JFrame {
     //---- label1 ----
     label1.setIcon(new ImageIcon(getClass().getResource("/images/icon64.png")));
     contentPane.add(label1, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-      GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-      new Insets(0, 0, 0, 0), 0, 0));
+        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        new Insets(0, 0, 0, 0), 0, 0));
 
     //---- jLabel1 ----
     jLabel1.setText(bundle.getString("EditorWindow.jLabel1.text"));
     contentPane.add(jLabel1, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
-      GridBagConstraints.EAST, GridBagConstraints.NONE,
-      new Insets(5, 5, 5, 5), 0, 0));
+        GridBagConstraints.EAST, GridBagConstraints.NONE,
+        new Insets(5, 5, 5, 5), 0, 0));
 
     //---- jLabel2 ----
     jLabel2.setText(bundle.getString("EditorWindow.jLabel2.text"));
     contentPane.add(jLabel2, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
-      GridBagConstraints.EAST, GridBagConstraints.NONE,
-      new Insets(5, 5, 5, 5), 0, 0));
+        GridBagConstraints.EAST, GridBagConstraints.NONE,
+        new Insets(5, 5, 5, 5), 0, 0));
 
     //---- txtDescription ----
     txtDescription.setColumns(40);
     txtDescription.setToolTipText(bundle.getString("EditorWindow.txtDescription.toolTipText"));
     this.txtDescription.setText(this.metadata.getProperty("description"));
     contentPane.add(txtDescription, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
-      GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-      new Insets(5, 5, 5, 5), 0, 0));
+        GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+        new Insets(5, 5, 5, 5), 0, 0));
 
     //---- txtShortDescription ----
     txtShortDescription.setColumns(40);
     txtShortDescription.setToolTipText(bundle.getString("EditorWindow.txtShortDescription.toolTipText"));
     this.txtShortDescription.setText(this.metadata.getProperty("shortDescription"));
     contentPane.add(txtShortDescription, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
-      GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-      new Insets(5, 5, 5, 5), 0, 0));
+        GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+        new Insets(5, 5, 5, 5), 0, 0));
 
     //---- lblDate ----
     lblDate.setText(bundle.getString("EditorWindow.lblDate.text"));
     contentPane.add(lblDate, new GridBagConstraints(2, 5, 1, 1, 1.0, 0.0,
-      GridBagConstraints.CENTER, GridBagConstraints.NONE,
-      new Insets(5, 5, 5, 5), 0, 0));
+        GridBagConstraints.CENTER, GridBagConstraints.NONE,
+        new Insets(5, 5, 5, 5), 0, 0));
 
     //---- buttonPrevious ----
     buttonPrevious.setIcon(new ImageIcon(getClass().getResource("/images/765-arrow-left_16.png")));
@@ -199,8 +227,8 @@ public class EditorWindow extends javax.swing.JFrame {
       }
     });
     contentPane.add(buttonPrevious, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0,
-      GridBagConstraints.EAST, GridBagConstraints.NONE,
-      new Insets(5, 5, 5, 5), 0, 0));
+        GridBagConstraints.EAST, GridBagConstraints.NONE,
+        new Insets(5, 5, 5, 5), 0, 0));
 
     //---- buttonNext ----
     buttonNext.setIcon(new ImageIcon(getClass().getResource("/images/766-arrow-right_16.png")));
@@ -212,26 +240,26 @@ public class EditorWindow extends javax.swing.JFrame {
       }
     });
     contentPane.add(buttonNext, new GridBagConstraints(3, 5, 1, 1, 0.0, 0.0,
-      GridBagConstraints.WEST, GridBagConstraints.NONE,
-      new Insets(5, 5, 5, 5), 0, 0));
+        GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(5, 5, 5, 5), 0, 0));
 
     //---- jLabel5 ----
     jLabel5.setText(bundle.getString("EditorWindow.jLabel5.text"));
     contentPane.add(jLabel5, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0,
-      GridBagConstraints.EAST, GridBagConstraints.NONE,
-      new Insets(5, 5, 5, 5), 0, 0));
+        GridBagConstraints.EAST, GridBagConstraints.NONE,
+        new Insets(5, 5, 5, 5), 0, 0));
 
     //---- txtHeading ----
     txtHeading.setColumns(40);
     contentPane.add(txtHeading, new GridBagConstraints(2, 6, 2, 1, 0.0, 0.0,
-      GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-      new Insets(5, 5, 5, 5), 0, 0));
+        GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+        new Insets(5, 5, 5, 5), 0, 0));
 
     //---- jLabel6 ----
     jLabel6.setText(bundle.getString("EditorWindow.jLabel6.text"));
     contentPane.add(jLabel6, new GridBagConstraints(1, 7, 1, 1, 0.0, 0.0,
-      GridBagConstraints.NORTHEAST, GridBagConstraints.NONE,
-      new Insets(5, 5, 5, 5), 0, 0));
+        GridBagConstraints.NORTHEAST, GridBagConstraints.NONE,
+        new Insets(5, 5, 5, 5), 0, 0));
 
     //======== jScrollPane1 ========
     {
@@ -242,33 +270,33 @@ public class EditorWindow extends javax.swing.JFrame {
       jScrollPane1.setViewportView(txtText);
     }
     contentPane.add(jScrollPane1, new GridBagConstraints(2, 7, 2, 1, 1.0, 1.0,
-      GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-      new Insets(5, 5, 5, 5), 0, 0));
+        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        new Insets(5, 5, 5, 5), 0, 0));
 
     //---- jLabel3 ----
     jLabel3.setText(bundle.getString("EditorWindow.jLabel3.text"));
     contentPane.add(jLabel3, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-      GridBagConstraints.EAST, GridBagConstraints.NONE,
-      new Insets(5, 5, 5, 5), 0, 0));
+        GridBagConstraints.EAST, GridBagConstraints.NONE,
+        new Insets(5, 5, 5, 5), 0, 0));
 
     //---- lblFilename ----
     lblFilename.setText("filename");
     contentPane.add(lblFilename, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-      GridBagConstraints.WEST, GridBagConstraints.NONE,
-      new Insets(5, 5, 5, 5), 0, 0));
+        GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(5, 5, 5, 5), 0, 0));
 
     //---- lblYear ----
     lblYear.setText(bundle.getString("EditorWindow.lblYear.text"));
     lblYear.setHorizontalAlignment(SwingConstants.RIGHT);
     contentPane.add(lblYear, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
-      GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-      new Insets(5, 5, 5, 5), 0, 0));
+        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        new Insets(5, 5, 5, 5), 0, 0));
 
     //---- lblYearValue ----
     lblYearValue.setText(bundle.getString("EditorWindow.lblYearValue.text"));
     contentPane.add(lblYearValue, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0,
-      GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-      new Insets(0, 7, 0, 0), 0, 0));
+        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        new Insets(0, 7, 0, 0), 0, 0));
 
     //---- doneButton ----
     doneButton.setText(bundle.getString("EditorWindow.doneButton.text"));
@@ -279,8 +307,8 @@ public class EditorWindow extends javax.swing.JFrame {
       }
     });
     contentPane.add(doneButton, new GridBagConstraints(3, 8, 1, 1, 0.0, 0.0,
-      GridBagConstraints.CENTER, GridBagConstraints.NONE,
-      new Insets(0, 0, 0, 0), 0, 0));
+        GridBagConstraints.CENTER, GridBagConstraints.NONE,
+        new Insets(0, 0, 0, 0), 0, 0));
     setSize(600, 500);
     setLocationRelativeTo(getOwner());
   }// </editor-fold>//GEN-END:initComponents
@@ -387,8 +415,8 @@ public class EditorWindow extends javax.swing.JFrame {
 
         if (!this.metadata.getProperty("description").equals(this.txtDescription.getText().trim()) ||
             !this.metadata.getProperty("shortDescription").equals(this.txtShortDescription.getText().trim())) {
-            try (OutputStreamWriter metadataWriter = new OutputStreamWriter(new FileOutputStream(
-                new File(this.directory, "metadata")), "UTF-8")) {
+          try (OutputStreamWriter metadataWriter = new OutputStreamWriter(new FileOutputStream(
+              new File(this.directory, "metadata")), "UTF-8")) {
             this.metadata.setProperty("description", this.txtDescription.getText().trim());
             this.metadata.setProperty("shortDescription", this.txtShortDescription.getText().trim());
             this.metadata.store(metadataWriter, "readsy Desktop " + System.getProperty("os.name"));
@@ -399,9 +427,9 @@ public class EditorWindow extends javax.swing.JFrame {
       } catch (Exception e) {
         JOptionPane.showMessageDialog(this,
             "There was an error while writing the entry for file " +
-            this.directory + "/" + this.monthDateFormat.format(this.calendar.getTime()),
-        "File Error",
-        JOptionPane.ERROR_MESSAGE);
+                this.directory + "/" + this.monthDateFormat.format(this.calendar.getTime()),
+            "File Error",
+            JOptionPane.ERROR_MESSAGE);
       } finally {
         setCursor(Cursor.getDefaultCursor());
       }

@@ -147,21 +147,6 @@ public class DataAccess {
     return entry;
   }
 
-  public static boolean directoryExists(String contentDirectory) throws Exception {
-    logger.debug("Checking for directory " + contentDirectory);
-    return DropboxHelper.getInstance().pathExists(contentDirectory);
-  }
-
-  public static void createDirectory(String contentDirectory) throws Exception {
-    logger.debug("Creating directory " + contentDirectory);
-    DropboxHelper.getInstance().createFolder(contentDirectory);
-  }
-
-  public static void saveFile(String path, byte[] data) throws Exception {
-    logger.debug("Saving file " + path + "," + data.length + " bytes");
-    DropboxHelper.getInstance().uploadFile(path, data);
-  }
-
 
   public static void deletePath(String path) throws Exception {
     logger.debug("Deleting path " + path);

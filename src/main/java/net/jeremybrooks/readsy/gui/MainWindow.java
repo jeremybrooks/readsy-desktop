@@ -1048,7 +1048,7 @@ public class MainWindow extends javax.swing.JFrame {
 		 * When the Tools menu is clicked, check for a selection in the
 		 * tab panel and set the "Define" menu item accordingly.
 		 *
-		 * @param e
+		 * @param e menu event.
 		 */
 		@Override
 		public void menuSelected(MenuEvent e) {
