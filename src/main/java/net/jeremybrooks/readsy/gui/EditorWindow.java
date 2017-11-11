@@ -401,7 +401,7 @@ public class EditorWindow extends javax.swing.JFrame {
 
         entry.write(this.txtHeading.getText().trim().getBytes("UTF-8"));
         entry.write("\n".getBytes("UTF-8"));
-        entry.write(this.txtText.getText().getBytes("UTF-8"));
+        entry.write(this.txtText.getText().trim().getBytes("UTF-8"));
         entry.flush();
 
         // write metadata if the description or shortDescription have changed
