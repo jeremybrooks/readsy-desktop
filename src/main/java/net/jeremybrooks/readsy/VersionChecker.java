@@ -1,22 +1,22 @@
 /*
- * readsy - read something new every day
+ * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- *     Copyright (C) 2013  Jeremy Brooks
+ * Copyright (c) 2013-2017  Jeremy Brooks
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * This file is part of readsy.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *     You may contact the programs author at jeremyb@whirljack.net
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package net.jeremybrooks.readsy;
@@ -67,7 +67,6 @@ public class VersionChecker implements Runnable {
 
 	/**
 	 * Run loop for the Runnable.
-	 * <p/>
 	 * <p>This method will check to see if there is a new version available.
 	 * It runs as a separate Thread so that it will not block the GUI if the
 	 * network connection is slow or missing.</p>
@@ -109,7 +108,7 @@ public class VersionChecker implements Runnable {
 	 * <p>If the parameters are null or empty, this method will return false. Each part of the version
 	 * must be an Integer value. So "1.0.0" is a valid version; "1.0.0a" is not.</p>
 	 *
-	 * <p>The versions are compared by splitting on the "." and then comparing each unit</p>.
+	 * <p>The versions are compared by splitting on the "." and then comparing each unit.
 	 * If the "old" unit is greater than the "new" unit, comparison stops and returns false.
 	 * If the "new" unit is greater than the "old" unit, comparison stops and returns true.</p>
 	 *

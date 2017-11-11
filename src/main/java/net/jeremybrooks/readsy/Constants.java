@@ -21,36 +21,11 @@
 
 package net.jeremybrooks.readsy;
 
-import net.jeremybrooks.readsy.gui.MainWindow;
-import org.apache.log4j.Logger;
+public class Constants {
+  private Constants() {}
 
-/**
- * This class will run when the JVM is shutting down.
- *
- * This is used to save the window position at shutdown.
- *
- * @author Jeremy Brooks
- */
-public class ShutdownHook implements Runnable {
-
-	private MainWindow mainWindow;
-	private Logger logger = Logger.getLogger(ShutdownHook.class);
-
-	/**
-	 * Constructor.
-	 *
-	 * @param mainWindow reference to the main window.
-	 */
-	public ShutdownHook(MainWindow mainWindow) {
-		this.mainWindow = mainWindow;
-	}
-
-
-	/**
-	 * Tasks to execute at shutdown.
-	 */
-	public void run() {
-		logger.info("Exiting");
-		this.mainWindow.savePositionAndSize();
-	}
+  public static final String KEY_METADATA_DESCRIPTION = "description";
+  public static final String KEY_METADATA_SHORT_DESCRIPTION = "shortDescription";
+  public static final String KEY_METADATA_YEAR = "year";
+  public static final String KEY_METADATA_READ = "read";
 }

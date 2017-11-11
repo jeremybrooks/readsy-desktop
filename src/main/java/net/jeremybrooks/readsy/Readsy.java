@@ -1,22 +1,22 @@
 /*
- * readsy - read something new every day
+ * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- *     Copyright (C) 2013  Jeremy Brooks
+ * Copyright (c) 2013-2017  Jeremy Brooks
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * This file is part of readsy.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *     You may contact the programs author at jeremyb@whirljack.net
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package net.jeremybrooks.readsy;
@@ -44,126 +44,122 @@ import java.io.File;
  */
 public class Readsy {
 
-	/**
-	 * Version.
-	 */
-	public static String VERSION = "";
+  /**
+   * Version.
+   */
+  public static String VERSION = "";
 
-	public static final String HOME_PAGE = "http://jeremybrooks.net/readsy";
+  public static final String HOME_PAGE = "http://jeremybrooks.net/readsy";
 
-	private static Logger logger;
-	private static MainWindow mainWindow;
+  private static Logger logger;
+  private static MainWindow mainWindow;
 
-	private static File dataDir = new File(System.getProperty("user.home"), ".readsy");
-	private static File contentDir = new File(dataDir, "content");
+  private static File dataDir = new File(System.getProperty("user.home"), ".readsy");
+  private static File contentDir = new File(dataDir, "content");
 
-	public static Image WINDOW_IMAGE = (new ImageIcon(Readsy.class.getResource("/images/icon16.png")).getImage());
+  public static Image WINDOW_IMAGE = (new ImageIcon(Readsy.class.getResource("/images/icon16.png")).getImage());
 
-	/* Default constructor is private. */
-	private Readsy() {
-	}
-
-
-	/**
-	 * Application entry point.
-	 * No command line arguments are supported.
-	 *
-	 * @param args the command line arguments
-	 */
-	public static void main(String[] args) {
-		if (MacUtil.isRunningOnMac()) {
-			MacUtil.setMacMenuBar();
-			new OSXSetup();
-		}
-
-		System.setProperty("WORDNIK_API_KEY", "5458ce49330219f23e0020790810f29b3818096f5fbbf8560");
-
-		try {
-			Readsy.VERSION = Readsy.class.getPackage().getImplementationVersion();
-			if (VERSION == null) {
-				VERSION = "unknown";
-			}
-		} catch (Exception e) {
-			Readsy.VERSION = "unknown";
-		}
-
-		new Readsy().startup();
-	}
+  /* Default constructor is private. */
+  private Readsy() {
+  }
 
 
-	/**
-	 * Get a reference to the main window.
-	 *
-	 * @return reference to the main window.
-	 */
-	public static MainWindow getMainWindow() {
-		return mainWindow;
-	}
+  /**
+   * Application entry point.
+   * No command line arguments are supported.
+   *
+   * @param args the command line arguments
+   */
+  public static void main(String[] args) {
+    if (MacUtil.isRunningOnMac()) {
+      MacUtil.setMacMenuBar();
+      new OSXSetup();
+    }
+
+    System.setProperty("WORDNIK_API_KEY", "5458ce49330219f23e0020790810f29b3818096f5fbbf8560");
+
+    try {
+      Readsy.VERSION = Readsy.class.getPackage().getImplementationVersion();
+      if (VERSION == null) {
+        VERSION = "unknown";
+      }
+    } catch (Exception e) {
+      Readsy.VERSION = "unknown";
+    }
+
+    new Readsy().startup();
+  }
 
 
-	/**
-	 * Get a reference to the data directory.
-	 *
-	 * @return data directory.
-	 */
-	public static File getDataDir() {
-		return dataDir;
-	}
-
-	public static File getContentDir() {
-		return contentDir;
-	}
+  /**
+   * Get a reference to the main window.
+   *
+   * @return reference to the main window.
+   */
+  public static MainWindow getMainWindow() {
+    return mainWindow;
+  }
 
 
-	/**
-	 * Do some startup stuff, then create the main window and show it.
-	 */
-	private void startup() {
-		boolean firstRun = false;
-		try {
-			if (!contentDir.exists()) {
-				if (!contentDir.mkdirs()) {
-					throw new Exception("Unable to create content directory " + contentDir.getAbsolutePath());
-				}
-				firstRun = true;
-			}
-			PropertyManager.getInstance().init();
-			PropertyConfigurator.configure(PropertyManager.getInstance().getProperties());
-			logger = Logger.getLogger(Readsy.class);
-			logger.debug("Logging configured.");
+  /**
+   * Get a reference to the data directory.
+   *
+   * @return data directory.
+   */
+  public static File getDataDir() {
+    return dataDir;
+  }
 
-			logger.debug("XML Parser initialized successfully.");
+  public static File getContentDir() {
+    return contentDir;
+  }
 
 
-		} catch (Exception e) {
-			if (logger != null) {
-				logger.fatal("Error during application startup.", e);
-			}
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(
-					null,
-					"An error occured during application startup.\n" +
-							e.getMessage() + "\n" +
-							"Program will abort.",
-					"Fatal Error",
-					JOptionPane.ERROR_MESSAGE);
-			System.exit(1);
-		}
-		mainWindow = new MainWindow();
-		if (PropertyManager.getInstance().getProperty(PropertyManager.DROPBOX_ACCESS_TOKEN) == null) {
+  /**
+   * Do some startup stuff, then create the main window and show it.
+   */
+  private void startup() {
+    try {
+      if (!contentDir.exists() && !contentDir.mkdirs()) {
+        throw new Exception("Unable to create content directory " + contentDir.getAbsolutePath());
+      }
+      PropertyManager.getInstance().init();
+      PropertyConfigurator.configure(PropertyManager.getInstance().getProperties());
+      logger = Logger.getLogger(Readsy.class);
+      logger.debug("Logging configured.");
+
+      logger.debug("XML Parser initialized successfully.");
+
+
+    } catch (Exception e) {
+      if (logger != null) {
+        logger.fatal("Error during application startup.", e);
+      }
+      e.printStackTrace();
+      JOptionPane.showMessageDialog(
+          null,
+          "An error occured during application startup.\n" +
+              e.getMessage() + "\n" +
+              "Program will abort.",
+          "Fatal Error",
+          JOptionPane.ERROR_MESSAGE);
+      System.exit(1);
+    }
+    mainWindow = new MainWindow();
+    if (PropertyManager.getInstance().getProperty(PropertyManager.DROPBOX_ACCESS_TOKEN) == null) {
       new WelcomeDialog().setVisible(true);
     } else {
       mainWindow.setVisible(true, true);
       logger.debug("No Dropbox token, showing welcome dialog.");
     }
 
-		Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(mainWindow)));
+    Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(mainWindow)));
 
-		if (PropertyManager.getInstance().getPropertyAsBoolean(PropertyManager.PROPERTY_CHECK_FOR_UPDATES)
-				&& (!VERSION.equals("unknown"))) {
-			Thread t = new Thread(new VersionChecker(mainWindow));
-			t.setDaemon(true);
-			t.start();
-		}
-	}
+    if (PropertyManager.getInstance().getPropertyAsBoolean(PropertyManager.PROPERTY_CHECK_FOR_UPDATES)
+        && (!VERSION.equals("unknown"))) {
+      Thread t = new Thread(new VersionChecker(mainWindow));
+      t.setDaemon(true);
+      t.start();
+    }
+  }
 }

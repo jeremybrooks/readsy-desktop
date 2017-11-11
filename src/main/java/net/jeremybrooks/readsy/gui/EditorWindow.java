@@ -1,26 +1,27 @@
 /*
- * readsy - read something new every day
+ * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- *     Copyright (C) 2013  Jeremy Brooks
+ * Copyright (c) 2013-2017  Jeremy Brooks
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * This file is part of readsy.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *     You may contact the programs author at jeremyb@whirljack.net
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package net.jeremybrooks.readsy.gui;
 
+import net.jeremybrooks.readsy.Constants;
 import net.jeremybrooks.readsy.Readsy;
 import org.apache.log4j.Logger;
 
@@ -38,17 +39,20 @@ import java.awt.Cursor;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -58,6 +62,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 /**
@@ -114,7 +120,8 @@ public class EditorWindow extends javax.swing.JFrame {
       if (files != null) {
         Arrays.sort(files, Comparator.comparing(File::getName));
         for (File f : files) {
-          try (BufferedReader in = new BufferedReader(new FileReader(f))) {
+          try (BufferedReader in = new BufferedReader(
+              new InputStreamReader(new FileInputStream(f), "UTF-8"))) {
             StringBuilder sb = new StringBuilder();
             String line;
             while ((line = in.readLine()) != null) {
@@ -219,12 +226,7 @@ public class EditorWindow extends javax.swing.JFrame {
     //---- buttonPrevious ----
     buttonPrevious.setIcon(new ImageIcon(getClass().getResource("/images/765-arrow-left_16.png")));
     buttonPrevious.setToolTipText(bundle.getString("EditorWindow.buttonPrevious.toolTipText"));
-    buttonPrevious.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        buttonPreviousActionPerformed();
-      }
-    });
+    buttonPrevious.addActionListener(e -> buttonPreviousActionPerformed());
     contentPane.add(buttonPrevious, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0,
         GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(5, 5, 5, 5), 0, 0));
@@ -232,12 +234,7 @@ public class EditorWindow extends javax.swing.JFrame {
     //---- buttonNext ----
     buttonNext.setIcon(new ImageIcon(getClass().getResource("/images/766-arrow-right_16.png")));
     buttonNext.setToolTipText(bundle.getString("EditorWindow.buttonNext.toolTipText"));
-    buttonNext.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        buttonNextActionPerformed();
-      }
-    });
+    buttonNext.addActionListener(e -> buttonNextActionPerformed());
     contentPane.add(buttonNext, new GridBagConstraints(3, 5, 1, 1, 0.0, 0.0,
         GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(5, 5, 5, 5), 0, 0));
@@ -299,12 +296,7 @@ public class EditorWindow extends javax.swing.JFrame {
 
     //---- doneButton ----
     doneButton.setText(bundle.getString("EditorWindow.doneButton.text"));
-    doneButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        doneButtonActionPerformed();
-      }
-    });
+    doneButton.addActionListener(e -> doneButtonActionPerformed());
     contentPane.add(doneButton, new GridBagConstraints(3, 8, 1, 1, 0.0, 0.0,
         GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(0, 0, 0, 0), 0, 0));
@@ -326,6 +318,7 @@ public class EditorWindow extends javax.swing.JFrame {
    */
   private void doClose() {
     this.saveEntry();
+    this.makeZipFiles();
     Readsy.getMainWindow().setVisible(true, false);
     this.setVisible(false);
     this.dispose();
@@ -411,6 +404,7 @@ public class EditorWindow extends javax.swing.JFrame {
         entry.write(this.txtText.getText().getBytes("UTF-8"));
         entry.flush();
 
+        // write metadata if the description or shortDescription have changed
         if (!this.metadata.getProperty("description").equals(this.txtDescription.getText().trim()) ||
             !this.metadata.getProperty("shortDescription").equals(this.txtShortDescription.getText().trim())) {
           try (OutputStreamWriter metadataWriter = new OutputStreamWriter(new FileOutputStream(
@@ -420,7 +414,6 @@ public class EditorWindow extends javax.swing.JFrame {
             this.metadata.store(metadataWriter, "readsy Desktop " + System.getProperty("os.name"));
           }
         }
-
         saved = true;
       } catch (Exception e) {
         JOptionPane.showMessageDialog(this,
@@ -434,6 +427,49 @@ public class EditorWindow extends javax.swing.JFrame {
     }
     return saved;
   }
+
+  private void makeZipFiles() {
+    Path sourceDir = Paths.get(directory.getAbsolutePath());
+    String zipFileName = directory.getParent() + "/" +
+        metadata.getProperty(Constants.KEY_METADATA_SHORT_DESCRIPTION) + ".zip";
+    String readsyFileName = directory.getParent() + "/" +
+        metadata.getProperty(Constants.KEY_METADATA_SHORT_DESCRIPTION) + ".readsy";
+    try (ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(zipFileName));
+         ZipOutputStream readsyStream = new ZipOutputStream(new FileOutputStream(readsyFileName))) {
+      // walk the source directory, adding files to the zip files
+      Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attributes) {
+          FileVisitResult result = FileVisitResult.CONTINUE;
+          try {
+            Path targetFile = sourceDir.relativize(file);
+            zipStream.putNextEntry(new ZipEntry(
+                metadata.getProperty(Constants.KEY_METADATA_SHORT_DESCRIPTION) +
+                    "/" + targetFile.toString()));
+            readsyStream.putNextEntry(new ZipEntry(
+                metadata.getProperty(Constants.KEY_METADATA_SHORT_DESCRIPTION) +
+                    "/" + targetFile.toString()));
+            byte[] bytes = Files.readAllBytes(file);
+            zipStream.write(bytes, 0, bytes.length);
+            zipStream.closeEntry();
+            readsyStream.write(bytes, 0, bytes.length);
+            readsyStream.closeEntry();
+          } catch (Exception e) {
+            logger.error("Error writing zip file.", e);
+            result = null;
+          }
+          return result;
+        }
+      });
+    } catch (Exception e) {
+      logger.error("Error creating zip files.", e);
+      JOptionPane.showMessageDialog(this,
+          "There was an error while creating the zip/readsy archives.\nCheck the log for details.",
+          "File Error",
+          JOptionPane.ERROR_MESSAGE);
+    }
+  }
+
 
   private boolean validateEntry() {
     boolean valid = true;
