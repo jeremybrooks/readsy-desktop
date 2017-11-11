@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "5.2.0.0.54" Java: "1.6.0_65" encoding: "UTF-8"
+JFDML JFormDesigner: "6.0.2.0.116" Java: "1.8.0_152-release" encoding: "UTF-8"
 
 new FormModel {
 	"i18n.bundleName": "about_dialog"
@@ -16,9 +16,11 @@ new FormModel {
 			"modal": true
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "panel1"
+				"background": new java.awt.Color( 255, 255, 255, 255 )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "iconLabel"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/icon500x300.png" )
+					"horizontalAlignment": 0
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
 				} )
@@ -53,6 +55,55 @@ new FormModel {
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": new FormMessage( null, "jScrollPane2.tab.title" )
+				} )
+				add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+					name: "tabbedPane1"
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane1"
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "apacheLicenseTextArea"
+							"editable": false
+							"wrapStyleWord": true
+							"text": new FormMessage( null, "apacheLicenseTextArea.text" )
+						} )
+					}, new FormLayoutConstraints( null ) {
+						"title": "Apache 2.0 License"
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane2"
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "bsdLicenseTextArea"
+							"wrapStyleWord": true
+							"editable": false
+							"text": new FormMessage( null, "bsdLicenseTextArea.text" )
+						} )
+					}, new FormLayoutConstraints( null ) {
+						"title": "BSD Licenses"
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane4"
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "gplLicenseTextArea"
+							"wrapStyleWord": true
+							"editable": false
+							"text": new FormMessage( null, "gplLicenseTextArea.text" )
+						} )
+					}, new FormLayoutConstraints( null ) {
+						"title": "GPLv3 License"
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane3"
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "mitLicenseTextArea"
+							"editable": false
+							"wrapStyleWord": true
+							"text": new FormMessage( null, "mitLicenseTextArea.text" )
+						} )
+					}, new FormLayoutConstraints( null ) {
+						"title": "MIT License"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Library Licenses"
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"
