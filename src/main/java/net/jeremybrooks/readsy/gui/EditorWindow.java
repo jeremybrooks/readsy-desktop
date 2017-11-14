@@ -23,7 +23,8 @@ package net.jeremybrooks.readsy.gui;
 
 import net.jeremybrooks.readsy.Constants;
 import net.jeremybrooks.readsy.Readsy;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -76,7 +77,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class EditorWindow extends javax.swing.JFrame {
 
-  private Logger logger = Logger.getLogger(EditorWindow.class);
+  private Logger logger = LogManager.getLogger(EditorWindow.class);
   private DateFormat prettyDateFormat = new SimpleDateFormat("MMMM dd");
   private DateFormat monthDateFormat = new SimpleDateFormat("MMdd");
   private Calendar calendar;

@@ -29,7 +29,8 @@ import net.jeremybrooks.readsy.PropertyManager;
 import net.jeremybrooks.readsy.Readsy;
 import net.jeremybrooks.readsy.gui.workers.DeleteFileWorker;
 import net.jeremybrooks.readsy.gui.workers.InstallFileWorker;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -80,7 +81,7 @@ import java.util.ResourceBundle;
 public class MainWindow extends javax.swing.JFrame {
 
   private static final long serialVersionUID = 5051044422765434977L;
-  private Logger logger = Logger.getLogger(MainWindow.class);
+  private Logger logger = LogManager.getLogger(MainWindow.class);
   private SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE, MMMM dd, yyyy");
   private Calendar currentDate = new GregorianCalendar();
   private List<TabPanel> tabList;

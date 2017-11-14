@@ -50,7 +50,6 @@ public class BitHelperTest {
     cal.set(Calendar.DAY_OF_MONTH, 1);
     cal.set(Calendar.YEAR, 2016);
     while (cal.get(Calendar.YEAR) == 2016) {
-      System.out.println(sdf.format(cal.getTime()));
       cal.add(Calendar.DAY_OF_MONTH, 1);
     }
 
@@ -136,7 +135,6 @@ public class BitHelperTest {
 			cal.set(Calendar.DAY_OF_YEAR, i);
 			bitHelper.setRead(cal.getTime(), true);
 		}
-		System.out.println(bitHelper.toString());
 	}
 
 	@Test

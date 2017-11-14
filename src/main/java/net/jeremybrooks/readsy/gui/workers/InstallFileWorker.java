@@ -24,7 +24,8 @@ package net.jeremybrooks.readsy.gui.workers;
 import net.jeremybrooks.common.gui.WorkerDialog;
 import net.jeremybrooks.readsy.DataAccess;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.SwingWorker;
 import java.io.ByteArrayOutputStream;
@@ -40,7 +41,7 @@ import java.util.zip.ZipFile;
  * @author Jeremy Brooks
  */
 public class InstallFileWorker extends SwingWorker<Void, Void> {
-  private Logger logger = Logger.getLogger(InstallFileWorker.class);
+  private Logger logger = LogManager.getLogger(InstallFileWorker.class);
   private File file;
   private Exception error;
 

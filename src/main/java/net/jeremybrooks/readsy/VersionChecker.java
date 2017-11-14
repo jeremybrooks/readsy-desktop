@@ -24,7 +24,8 @@ package net.jeremybrooks.readsy;
 import net.jeremybrooks.common.util.IOUtil;
 import net.jeremybrooks.common.util.StringUtil;
 import net.jeremybrooks.readsy.gui.MainWindow;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -39,19 +40,8 @@ import java.util.StringTokenizer;
  */
 public class VersionChecker implements Runnable {
 
-	/**
-	 * Logging.
-	 */
-	private Logger logger = Logger.getLogger(VersionChecker.class);
-
-	/**
-	 * The URL where version info is found.
-	 */
+	private Logger logger = LogManager.getLogger(VersionChecker.class);
 	private static final String VERSION_URL = Readsy.HOME_PAGE + "/VERSION";
-
-	/**
-	 * Reference to the main window.
-	 */
 	private MainWindow mainWindow = null;
 
 

@@ -22,7 +22,8 @@
 package net.jeremybrooks.readsy;
 
 import net.jeremybrooks.readsy.gui.MainWindow;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class will run when the JVM is shutting down.
@@ -34,7 +35,7 @@ import org.apache.log4j.Logger;
 public class ShutdownHook implements Runnable {
 
 	private MainWindow mainWindow;
-	private Logger logger = Logger.getLogger(ShutdownHook.class);
+	private Logger logger = LogManager.getLogger(ShutdownHook.class);
 
 	/**
 	 * Constructor.

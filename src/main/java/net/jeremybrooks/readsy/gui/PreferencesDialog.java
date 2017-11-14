@@ -23,7 +23,8 @@ package net.jeremybrooks.readsy.gui;
 
 import net.jeremybrooks.readsy.PropertyManager;
 import net.jeremybrooks.readsy.Readsy;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -58,7 +59,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
 	private static final long serialVersionUID = 2431764287936009269L;
 	private ResourceBundle bundle = ResourceBundle.getBundle("localization.preferences");
-	private Logger logger = Logger.getLogger(PreferencesDialog.class);
+	private Logger logger = LogManager.getLogger(PreferencesDialog.class);
 
 	/**
 	 * The initial font size shown in the dialog.

@@ -24,8 +24,8 @@ package net.jeremybrooks.readsy;
 import net.jeremybrooks.common.util.MacUtil;
 import net.jeremybrooks.readsy.gui.MainWindow;
 import net.jeremybrooks.readsy.gui.WelcomeDialog;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -124,13 +124,7 @@ public class Readsy {
         throw new Exception("Unable to create content directory " + contentDir.getAbsolutePath());
       }
       PropertyManager.getInstance().init();
-      PropertyConfigurator.configure(PropertyManager.getInstance().getProperties());
-      logger = Logger.getLogger(Readsy.class);
-      logger.debug("Logging configured.");
-
-      logger.debug("XML Parser initialized successfully.");
-
-
+      logger = LogManager.getLogger(Readsy.class);
     } catch (Exception e) {
       if (logger != null) {
         logger.fatal("Error during application startup.", e);

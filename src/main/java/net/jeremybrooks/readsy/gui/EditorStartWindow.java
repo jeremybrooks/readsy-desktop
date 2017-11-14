@@ -23,7 +23,8 @@ package net.jeremybrooks.readsy.gui;
 
 import net.jeremybrooks.readsy.BitHelper;
 import net.jeremybrooks.readsy.Readsy;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -72,7 +73,7 @@ import java.util.ResourceBundle;
 public class EditorStartWindow extends JFrame {
 
   private static final long serialVersionUID = 6602945962112905201L;
-  private Logger logger = Logger.getLogger(EditorStartWindow.class);
+  private Logger logger = LogManager.getLogger(EditorStartWindow.class);
 
   /**
    * Creates new form EditorStartWindow.

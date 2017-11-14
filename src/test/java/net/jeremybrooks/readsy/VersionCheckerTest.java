@@ -21,8 +21,6 @@
 
 package net.jeremybrooks.readsy;
 
-import org.apache.log4j.BasicConfigurator;
-import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertFalse;
@@ -32,10 +30,6 @@ import static junit.framework.TestCase.assertTrue;
  * @author Jeremy Brooks
  */
 public class VersionCheckerTest {
-	@Before
-	public void before() throws Exception {
-		BasicConfigurator.configure();
-	}
 
 	@Test
 	public void testUpdated() throws Exception {

@@ -25,7 +25,8 @@ import net.jeremybrooks.common.comparator.StringComparator;
 import net.jeremybrooks.common.util.IOUtil;
 import net.jeremybrooks.readsy.bo.Entry;
 import net.jeremybrooks.readsy.dropbox.DropboxHelper;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.Reader;
@@ -43,7 +44,7 @@ import java.util.Properties;
  * @author Jeremy Brooks
  */
 public class DataAccess {
-  private static Logger logger = Logger.getLogger(DataAccess.class);
+  private static Logger logger = LogManager.getLogger(DataAccess.class);
 
   private static SimpleDateFormat yyyy = new SimpleDateFormat("yyyy");
   private static SimpleDateFormat MMdd = new SimpleDateFormat("MMdd");

@@ -33,7 +33,8 @@ import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
 import com.dropbox.core.v2.files.WriteMode;
 import net.jeremybrooks.readsy.PropertyManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -48,7 +49,7 @@ import java.util.Properties;
  * @author Jeremy Brooks
  */
 public class DropboxHelper {
-	private Logger logger = Logger.getLogger(DropboxHelper.class);
+	private Logger logger = LogManager.getLogger(DropboxHelper.class);
 	private DbxClientV2 client;
 	private static DropboxHelper instance;
 	private static DbxWebAuth webAuth;

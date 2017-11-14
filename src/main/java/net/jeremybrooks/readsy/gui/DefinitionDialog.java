@@ -25,7 +25,8 @@ import net.jeremybrooks.knicker.Knicker.SourceDictionary;
 import net.jeremybrooks.knicker.WordApi;
 import net.jeremybrooks.knicker.dto.Definition;
 import net.jeremybrooks.readsy.Readsy;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.GroupLayout;
 import javax.swing.JScrollPane;
@@ -43,11 +44,7 @@ import java.util.ResourceBundle;
  */
 public class DefinitionDialog extends javax.swing.JDialog {
 
-	/**
-	 * Logging.
-	 */
-	private Logger logger = Logger.getLogger(DefinitionDialog.class);
-
+	private Logger logger = LogManager.getLogger(DefinitionDialog.class);
 	private ResourceBundle bundle = ResourceBundle.getBundle("localization.definition_dialog");
 
 

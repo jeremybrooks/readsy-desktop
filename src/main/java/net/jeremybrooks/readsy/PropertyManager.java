@@ -23,7 +23,8 @@
 package net.jeremybrooks.readsy;
 
 import net.jeremybrooks.common.util.IOUtil;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,7 +43,7 @@ import java.util.Properties;
  */
 public class PropertyManager {
 
-	private Logger logger = Logger.getLogger(PropertyManager.class);
+	private Logger logger = LogManager.getLogger(PropertyManager.class);
 	private static PropertyManager instance = null;
 	private Properties props = new Properties();
 	private Properties secretProps = new Properties();

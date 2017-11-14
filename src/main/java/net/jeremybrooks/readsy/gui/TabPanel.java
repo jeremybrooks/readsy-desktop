@@ -27,7 +27,8 @@ import net.jeremybrooks.readsy.DataAccess;
 import net.jeremybrooks.readsy.PropertyManager;
 import net.jeremybrooks.readsy.Readsy;
 import net.jeremybrooks.readsy.bo.Entry;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
@@ -68,7 +69,7 @@ import static net.jeremybrooks.readsy.Constants.KEY_METADATA_YEAR;
 public class TabPanel extends javax.swing.JPanel {
 
   private static final long serialVersionUID = -1711827901008647020L;
-  private Logger logger = Logger.getLogger(TabPanel.class);
+  private Logger logger = LogManager.getLogger(TabPanel.class);
   /* The current date displayed by this panel. */
   private Date currentDate = null;
   /* The index of this tab in the tab pane. */

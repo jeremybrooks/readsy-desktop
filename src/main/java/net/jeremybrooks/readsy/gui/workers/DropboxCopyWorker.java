@@ -26,7 +26,8 @@ import net.jeremybrooks.common.gui.WorkerDialog;
 import net.jeremybrooks.common.util.FileUtil;
 import net.jeremybrooks.readsy.Readsy;
 import net.jeremybrooks.readsy.dropbox.DropboxHelper;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.SwingWorker;
 import java.io.File;
@@ -39,7 +40,7 @@ import java.util.ResourceBundle;
  */
 public class DropboxCopyWorker extends SwingWorker<Void, Void> {
 
-	private Logger logger = Logger.getLogger(DropboxCopyWorker.class);
+	private Logger logger = LogManager.getLogger(DropboxCopyWorker.class);
 
 	private Exception exception;
 
