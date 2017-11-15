@@ -36,7 +36,7 @@ import java.io.File;
 /**
  * Readsy entry point.
  * This is the entry point for the Readsy application.  This class takes
- * care of initializing logging, initializing the XML parser class, and creating
+ * care of initializing logging, and creating
  * the main window.  A reference to the main window is kept here as a static
  * reference, so other classes can get it by calling Readsy.getMainWindow().
  *
@@ -55,7 +55,6 @@ public class Readsy {
   private static MainWindow mainWindow;
 
   private static File dataDir = new File(System.getProperty("user.home"), ".readsy");
-  private static File contentDir = new File(dataDir, "content");
 
   public static Image WINDOW_IMAGE = (new ImageIcon(Readsy.class.getResource("/images/icon16.png")).getImage());
 
@@ -110,19 +109,12 @@ public class Readsy {
     return dataDir;
   }
 
-  public static File getContentDir() {
-    return contentDir;
-  }
-
 
   /**
    * Do some startup stuff, then create the main window and show it.
    */
   private void startup() {
     try {
-      if (!contentDir.exists() && !contentDir.mkdirs()) {
-        throw new Exception("Unable to create content directory " + contentDir.getAbsolutePath());
-      }
       PropertyManager.getInstance().init();
       logger = LogManager.getLogger(Readsy.class);
     } catch (Exception e) {

@@ -119,20 +119,9 @@ public class PropertyManager {
 		try {
 			if (!configFile.exists()) {
 				configFile.createNewFile();
-				String logfile = (new File(Readsy.getDataDir(), "readsy.log")).getAbsolutePath();
 				props = new Properties();
 				// SET THE DEFAULT CHECK FOR UPDATES PROPERTY
 				props.setProperty(PROPERTY_CHECK_FOR_UPDATES, "true");
-
-				// SET LOGGING PROPERTIES
-				props.setProperty("log4j.rootLogger", "DEBUG, FILE");
-				props.setProperty("log4j.appender.FILE", "org.apache.log4j.RollingFileAppender");
-				props.setProperty("log4j.appender.FILE.Threshold", "DEBUG");
-				props.setProperty("log4j.appender.FILE.file", logfile);
-				props.setProperty("log4j.appender.FILE.layout", "org.apache.log4j.PatternLayout");
-				props.setProperty("log4j.appender.FILE.layout.ConversionPattern", "%5p %c [%t] %d{ISO8601} - %m%n");
-				props.setProperty("log4j.appender.FILE.MaxFileSize", "2000KB");
-				props.setProperty("log4j.appender.FILE.MaxBackupIndex", "5");
 
 				// SAVE THE NEW CONFIGURATION FILE
 				this.saveProperties();
