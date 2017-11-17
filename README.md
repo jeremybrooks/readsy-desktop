@@ -7,5 +7,5 @@ readsy is a program that helps you read something new every day.
 
 REQUIREMENTS
 ------------
-readsy requires Java 1.7 or higher.
+readsy requires Java 1.8 or higher.
 
