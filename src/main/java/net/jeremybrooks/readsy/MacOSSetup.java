@@ -21,37 +21,21 @@
 
 package net.jeremybrooks.readsy;
 
+import net.jeremybrooks.readsy.gui.AboutDialog;
 import net.jeremybrooks.readsy.gui.MainWindow;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.jeremybrooks.readsy.gui.PreferencesDialog;
 
-/**
- * This class will run when the JVM is shutting down.
- *
- * This is used to save the window position at shutdown.
- *
- * @author Jeremy Brooks
- */
-public class ShutdownHook implements Runnable {
+import java.awt.Desktop;
 
-	private MainWindow mainWindow;
-	private Logger logger = LogManager.getLogger(ShutdownHook.class);
+public class MacOSSetup {
 
-	/**
-	 * Constructor.
-	 *
-	 * @param mainWindow reference to the main window.
-	 */
-	public ShutdownHook(MainWindow mainWindow) {
-		this.mainWindow = mainWindow;
-	}
+  public MacOSSetup() {
 
+    Desktop.getDesktop().setAboutHandler(ae -> new AboutDialog(null, true).setVisible(true));
 
-	/**
-	 * Tasks to execute at shutdown.
-	 */
-	public void run() {
-		logger.info("Exiting");
-		this.mainWindow.savePositionAndSize();
-	}
+    Desktop.getDesktop().setQuitHandler((qe, qr) -> qr.performQuit());
+
+    Desktop.getDesktop().setPreferencesHandler(pe ->
+        new PreferencesDialog(MainWindow.instance, true).setVisible(true));
+  }
 }

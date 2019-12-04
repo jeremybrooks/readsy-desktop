@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2017  Jeremy Brooks
+ * Copyright (c) 2013-2019  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -31,9 +31,9 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +66,7 @@ public class DataAccess {
     } catch (Exception e) {
       logger.error("Error getting data directory names.", e);
     }
-    Collections.sort(names, new StringComparator());
+    names.sort(new StringComparator());
     return names;
   }
 
@@ -85,7 +85,7 @@ public class DataAccess {
     for (String name : metadata.stringPropertyNames()) {
       sb.append(name).append('=').append(metadata.getProperty(name)).append('\n');
     }
-    byte[] propertiesData = sb.toString().getBytes("UTF-8");
+    byte[] propertiesData = sb.toString().getBytes(StandardCharsets.UTF_8);
     DropboxHelper.getInstance().uploadPropertiesData(contentDirectory + "/metadata", propertiesData);
   }
 
@@ -116,7 +116,7 @@ public class DataAccess {
           logger.debug("Content not in cache, loading from Dropbox.");
           byte[] data = DropboxHelper.getInstance().getFile(path);
           if (data != null) {
-            content = new String(data, "UTF-8");
+            content = new String(data, StandardCharsets.UTF_8);
           }
           fileCache.put(path, content);
         }
