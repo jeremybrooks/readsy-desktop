@@ -48,15 +48,12 @@ import javax.swing.WindowConstants;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -157,7 +154,6 @@ public class MainWindow extends javax.swing.JFrame {
     toolsMenu.addMenuListener(new ToolsMenuHandler());
     editorMenu = new JMenuItem();
     preferencesMenu = new JMenuItem();
-    defineMenu = new JMenuItem();
     markReadMenu = new JMenuItem();
     markUnreadMenu = new JMenuItem();
     markPreviousMenu = new JMenuItem();
@@ -181,13 +177,14 @@ public class MainWindow extends javax.swing.JFrame {
         formWindowClosing();
       }
     });
-    Container contentPane = getContentPane();
+    var contentPane = getContentPane();
     contentPane.setLayout(new GridBagLayout());
-    new FileDrop(this, new FileDrop.Listener() {
-      public void filesDropped(List<File> files) {
-        handleFileDrop(files);
-      }   // end filesDropped
-    }); // end FileDrop.Listener
+    new FileDrop( this, new FileDrop.Listener()
+          {   public void filesDropped( List<File> files )
+               {
+                   handleFileDrop(files);
+               }   // end filesDropped
+           }); // end FileDrop.Listener
 
     //======== jMenuBar1 ========
     {
@@ -201,35 +198,20 @@ public class MainWindow extends javax.swing.JFrame {
         installMenu.setIcon(new ImageIcon(getClass().getResource("/images/709-plus_16.png")));
         installMenu.setMnemonic(bundle.getString("MainWindow.installMenu.mnemonic").charAt(0));
         installMenu.setText(bundle.getString("MainWindow.installMenu.text"));
-        installMenu.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            installMenuActionPerformed();
-          }
-        });
+        installMenu.addActionListener(e -> installMenuActionPerformed());
         fileMenu.add(installMenu);
 
         //---- deleteMenu ----
         deleteMenu.setIcon(new ImageIcon(getClass().getResource("/images/711-trash_16.png")));
         deleteMenu.setMnemonic(bundle.getString("MainWindow.deleteMenu.mnemonic").charAt(0));
         deleteMenu.setText(bundle.getString("MainWindow.deleteMenu.text"));
-        deleteMenu.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            deleteMenuActionPerformed();
-          }
-        });
+        deleteMenu.addActionListener(e -> deleteMenuActionPerformed());
         fileMenu.add(deleteMenu);
 
         //---- menuItemExit ----
         menuItemExit.setMnemonic(bundle.getString("MainWindow.menuItemExit.mnemonic").charAt(0));
         menuItemExit.setText(bundle.getString("MainWindow.menuItemExit.text"));
-        menuItemExit.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            menuItemExitActionPerformed();
-          }
-        });
+        menuItemExit.addActionListener(e -> menuItemExitActionPerformed());
         fileMenu.add(menuItemExit);
       }
       jMenuBar1.add(fileMenu);
@@ -244,12 +226,7 @@ public class MainWindow extends javax.swing.JFrame {
         menuPreviousDay.setIcon(new ImageIcon(getClass().getResource("/images/765-arrow-left_16.png")));
         menuPreviousDay.setMnemonic(bundle.getString("MainWindow.menuPreviousDay.mnemonic").charAt(0));
         menuPreviousDay.setText(bundle.getString("MainWindow.menuPreviousDay.text"));
-        menuPreviousDay.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            menuPreviousDayActionPerformed();
-          }
-        });
+        menuPreviousDay.addActionListener(e -> menuPreviousDayActionPerformed());
         goMenu.add(menuPreviousDay);
 
         //---- menuToday ----
@@ -257,12 +234,7 @@ public class MainWindow extends javax.swing.JFrame {
         menuToday.setIcon(new ImageIcon(getClass().getResource("/images/750-home_16.png")));
         menuToday.setMnemonic(bundle.getString("MainWindow.menuToday.mnemonic").charAt(0));
         menuToday.setText(bundle.getString("MainWindow.menuToday.text"));
-        menuToday.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            menuTodayActionPerformed();
-          }
-        });
+        menuToday.addActionListener(e -> menuTodayActionPerformed());
         goMenu.add(menuToday);
 
         //---- menuNextDay ----
@@ -270,66 +242,36 @@ public class MainWindow extends javax.swing.JFrame {
         menuNextDay.setIcon(new ImageIcon(getClass().getResource("/images/766-arrow-right_16.png")));
         menuNextDay.setMnemonic(bundle.getString("MainWindow.menuNextDay.mnemonic").charAt(0));
         menuNextDay.setText(bundle.getString("MainWindow.menuNextDay.text"));
-        menuNextDay.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            menuNextDayActionPerformed();
-          }
-        });
+        menuNextDay.addActionListener(e -> menuNextDayActionPerformed());
         goMenu.add(menuNextDay);
         goMenu.add(jSeparator1);
 
         //---- menuPreviousWeek ----
         menuPreviousWeek.setText(bundle.getString("MainWindow.menuPreviousWeek.text"));
-        menuPreviousWeek.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            menuPreviousWeekActionPerformed();
-          }
-        });
+        menuPreviousWeek.addActionListener(e -> menuPreviousWeekActionPerformed());
         goMenu.add(menuPreviousWeek);
 
         //---- menuNextWeek ----
         menuNextWeek.setText(bundle.getString("MainWindow.menuNextWeek.text"));
-        menuNextWeek.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            menuNextWeekActionPerformed();
-          }
-        });
+        menuNextWeek.addActionListener(e -> menuNextWeekActionPerformed());
         goMenu.add(menuNextWeek);
         goMenu.add(jSeparator2);
 
         //---- menuPreviousMonth ----
         menuPreviousMonth.setText(bundle.getString("MainWindow.menuPreviousMonth.text"));
-        menuPreviousMonth.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            menuPreviousMonthActionPerformed();
-          }
-        });
+        menuPreviousMonth.addActionListener(e -> menuPreviousMonthActionPerformed());
         goMenu.add(menuPreviousMonth);
 
         //---- menuNextMonth ----
         menuNextMonth.setText(bundle.getString("MainWindow.menuNextMonth.text"));
-        menuNextMonth.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            menuNextMonthActionPerformed();
-          }
-        });
+        menuNextMonth.addActionListener(e -> menuNextMonthActionPerformed());
         goMenu.add(menuNextMonth);
         goMenu.add(jSeparator3);
 
         //---- menuFirstUnread ----
         menuFirstUnread.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.ALT_MASK));
         menuFirstUnread.setText(bundle.getString("MainWindow.menuFirstUnread.text"));
-        menuFirstUnread.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            menuFirstUnreadActionPerformed();
-          }
-        });
+        menuFirstUnread.addActionListener(e -> menuFirstUnreadActionPerformed());
         goMenu.add(menuFirstUnread);
       }
       jMenuBar1.add(goMenu);
@@ -342,66 +284,29 @@ public class MainWindow extends javax.swing.JFrame {
         //---- editorMenu ----
         editorMenu.setIcon(new ImageIcon(getClass().getResource("/images/704-compose_16.png")));
         editorMenu.setText(bundle.getString("MainWindow.editorMenu.text"));
-        editorMenu.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            editorMenuActionPerformed();
-          }
-        });
+        editorMenu.addActionListener(e -> editorMenuActionPerformed());
         toolsMenu.add(editorMenu);
 
         //---- preferencesMenu ----
         preferencesMenu.setIcon(new ImageIcon(getClass().getResource("/images/740-gear_16.png")));
         preferencesMenu.setText(bundle.getString("MainWindow.preferencesMenu.text"));
-        preferencesMenu.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            preferencesMenuActionPerformed();
-          }
-        });
+        preferencesMenu.addActionListener(e -> preferencesMenuActionPerformed());
         toolsMenu.add(preferencesMenu);
-
-        //---- defineMenu ----
-        defineMenu.setIcon(new ImageIcon(getClass().getResource("/images/721-bookmarks_16.png")));
-        defineMenu.setText(bundle.getString("MainWindow.defineMenu.text"));
-        defineMenu.setName(bundle.getString("MainWindow.defineMenu.name"));
-        defineMenu.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            defineMenuActionPerformed();
-          }
-        });
-        toolsMenu.add(defineMenu);
         toolsMenu.addSeparator();
 
         //---- markReadMenu ----
         markReadMenu.setText(bundle.getString("MainWindow.markReadMenu.text"));
-        markReadMenu.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            markReadMenuActionPerformed();
-          }
-        });
+        markReadMenu.addActionListener(e -> markReadMenuActionPerformed());
         toolsMenu.add(markReadMenu);
 
         //---- markUnreadMenu ----
         markUnreadMenu.setText(bundle.getString("MainWindow.markUnreadMenu.text"));
-        markUnreadMenu.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            markUnreadMenuActionPerformed();
-          }
-        });
+        markUnreadMenu.addActionListener(e -> markUnreadMenuActionPerformed());
         toolsMenu.add(markUnreadMenu);
 
         //---- markPreviousMenu ----
         markPreviousMenu.setText("Mark All Days Up To Displayed Day \"Read\"");
-        markPreviousMenu.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            markPreviousMenuActionPerformed();
-          }
-        });
+        markPreviousMenu.addActionListener(e -> markPreviousMenuActionPerformed());
         toolsMenu.add(markPreviousMenu);
       }
       jMenuBar1.add(toolsMenu);
@@ -415,22 +320,12 @@ public class MainWindow extends javax.swing.JFrame {
         aboutMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
         aboutMenu.setIcon(new ImageIcon(getClass().getResource("/images/739-question_16.png")));
         aboutMenu.setText(bundle.getString("MainWindow.aboutMenu.text"));
-        aboutMenu.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            aboutMenuActionPerformed();
-          }
-        });
+        aboutMenu.addActionListener(e -> aboutMenuActionPerformed());
         helpMenu.add(aboutMenu);
 
         //---- homePageMenu ----
         homePageMenu.setText(bundle.getString("MainWindow.homePageMenu.text"));
-        homePageMenu.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            homePageMenuActionPerformed();
-          }
-        });
+        homePageMenu.addActionListener(e -> homePageMenuActionPerformed());
         helpMenu.add(homePageMenu);
       }
       jMenuBar1.add(helpMenu);
@@ -444,61 +339,41 @@ public class MainWindow extends javax.swing.JFrame {
       //---- backButton ----
       backButton.setIcon(new ImageIcon(getClass().getResource("/images/765-arrow-left_16.png")));
       backButton.setToolTipText(bundle.getString("MainWindow.backButton.toolTipText"));
-      backButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          backButtonActionPerformed();
-        }
-      });
+      backButton.addActionListener(e -> backButtonActionPerformed());
       panel1.add(backButton);
 
       //---- homeButton ----
       homeButton.setIcon(new ImageIcon(getClass().getResource("/images/750-home_16.png")));
       homeButton.setToolTipText(bundle.getString("MainWindow.homeButton.toolTipText"));
-      homeButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          homeButtonActionPerformed();
-        }
-      });
+      homeButton.addActionListener(e -> homeButtonActionPerformed());
       panel1.add(homeButton);
 
       //---- nextButton ----
       nextButton.setIcon(new ImageIcon(getClass().getResource("/images/766-arrow-right_16.png")));
       nextButton.setToolTipText(bundle.getString("MainWindow.nextButton.toolTipText"));
-      nextButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          nextButtonActionPerformed();
-        }
-      });
+      nextButton.addActionListener(e -> nextButtonActionPerformed());
       panel1.add(nextButton);
 
       //---- updateButton ----
       updateButton.setIcon(new ImageIcon(getClass().getResource("/images/726-star_16.png")));
       updateButton.setText(bundle.getString("MainWindow.updateButton.text"));
       updateButton.setToolTipText(bundle.getString("MainWindow.updateButton.toolTipText"));
-      updateButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          updateButtonActionPerformed();
-        }
-      });
+      updateButton.addActionListener(e -> updateButtonActionPerformed());
       panel1.add(updateButton);
     }
     contentPane.add(panel1, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-        new Insets(0, 0, 0, 0), 0, 0));
+      GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+      new Insets(0, 0, 0, 0), 0, 0));
     contentPane.add(tabPane, new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0,
-        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-        new Insets(5, 5, 5, 5), 0, 0));
+      GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+      new Insets(5, 5, 5, 5), 0, 0));
 
     //---- lblDate ----
     lblDate.setText(bundle.getString("MainWindow.lblDate.text"));
     lblDate.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 13));
     contentPane.add(lblDate, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
-        GridBagConstraints.CENTER, GridBagConstraints.NONE,
-        new Insets(5, 5, 5, 5), 0, 0));
+      GridBagConstraints.CENTER, GridBagConstraints.NONE,
+      new Insets(5, 5, 5, 5), 0, 0));
     setLocationRelativeTo(getOwner());
   }// </editor-fold>//GEN-END:initComponents
 
@@ -838,16 +713,6 @@ public class MainWindow extends javax.swing.JFrame {
   }//GEN-LAST:event_menuItemExitActionPerformed
 
 
-  /*
-   * Display definition for the selected word.
-   */
-  private void defineMenuActionPerformed() {//GEN-FIRST:event_defineMenuActionPerformed
-    TabPanel tp = (TabPanel) this.tabPane.getSelectedComponent();
-    DefinitionDialog def = new DefinitionDialog(Readsy.getMainWindow(), false);
-    def.setVisible(true);
-    def.define(tp.getWordToDefine());
-  }//GEN-LAST:event_defineMenuActionPerformed
-
 
   /**
    * Update the display when the user navigates to a new day.
@@ -1022,7 +887,6 @@ public class MainWindow extends javax.swing.JFrame {
   private JMenu toolsMenu;
   private JMenuItem editorMenu;
   private JMenuItem preferencesMenu;
-  private JMenuItem defineMenu;
   private JMenuItem markReadMenu;
   private JMenuItem markUnreadMenu;
   private JMenuItem markPreviousMenu;

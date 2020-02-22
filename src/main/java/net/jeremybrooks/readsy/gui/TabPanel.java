@@ -46,8 +46,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Calendar;
@@ -261,27 +259,25 @@ public class TabPanel extends javax.swing.JPanel {
     mnuNext = new JMenuItem();
     jSeparator1 = new JPopupMenu.Separator();
     mnuRead = new JMenuItem();
-    jSeparator2 = new JPopupMenu.Separator();
-    mnuDefine = new JMenuItem();
 
     //======== this ========
     setLayout(new GridBagLayout());
 
     //---- lblDescription ----
-    lblDescription.setFont(new Font("SansSerif", Font.BOLD | Font.ITALIC, 12));
+    lblDescription.setFont(new Font(Font.SANS_SERIF, Font.BOLD | Font.ITALIC, 12));
     add(lblDescription, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-        GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(5, 5, 5, 5), 0, 0));
+      GridBagConstraints.WEST, GridBagConstraints.NONE,
+      new Insets(5, 5, 5, 5), 0, 0));
 
     //---- txtHeading ----
     txtHeading.setEditable(false);
     txtHeading.setLineWrap(true);
     txtHeading.setWrapStyleWord(true);
     txtHeading.setMargin(new Insets(3, 3, 3, 3));
-    txtHeading.setFont(new Font("SansSerif", txtHeading.getFont().getStyle(), txtHeading.getFont().getSize()));
+    txtHeading.setFont(new Font(Font.SANS_SERIF, txtHeading.getFont().getStyle(), txtHeading.getFont().getSize()));
     add(txtHeading, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0,
-        GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-        new Insets(5, 5, 5, 5), 0, 0));
+      GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+      new Insets(5, 5, 5, 5), 0, 0));
 
     //======== jScrollPane1 ========
     {
@@ -292,13 +288,12 @@ public class TabPanel extends javax.swing.JPanel {
       txtText.setLineWrap(true);
       txtText.setWrapStyleWord(true);
       txtText.setMargin(new Insets(3, 3, 3, 3));
-      txtText.setFont(new Font("SansSerif", txtText.getFont().getStyle(), txtText.getFont().getSize()));
+      txtText.setFont(new Font(Font.SANS_SERIF, txtText.getFont().getStyle(), txtText.getFont().getSize()));
       txtText.addMouseListener(new MouseAdapter() {
         @Override
         public void mousePressed(MouseEvent e) {
           txtTextMousePressed(e);
         }
-
         @Override
         public void mouseReleased(MouseEvent e) {
           txtTextMouseReleased(e);
@@ -307,20 +302,15 @@ public class TabPanel extends javax.swing.JPanel {
       jScrollPane1.setViewportView(txtText);
     }
     add(jScrollPane1, new GridBagConstraints(0, 2, 2, 1, 1.0, 1.0,
-        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-        new Insets(5, 5, 5, 5), 0, 0));
+      GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+      new Insets(5, 5, 5, 5), 0, 0));
 
     //---- cbxRead ----
     cbxRead.setText(bundle.getString("TabPanel.cbxRead.text"));
-    cbxRead.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cbxReadActionPerformed();
-      }
-    });
+    cbxRead.addActionListener(e -> cbxReadActionPerformed());
     add(cbxRead, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-        GridBagConstraints.EAST, GridBagConstraints.NONE,
-        new Insets(5, 5, 5, 5), 0, 0));
+      GridBagConstraints.EAST, GridBagConstraints.NONE,
+      new Insets(5, 5, 5, 5), 0, 0));
 
     //======== mnuPopup ========
     {
@@ -330,36 +320,21 @@ public class TabPanel extends javax.swing.JPanel {
       mnuPrevious.setIcon(new ImageIcon(getClass().getResource("/images/765-arrow-left_16.png")));
       mnuPrevious.setText(bundle.getString("TabPanel.mnuPrevious.text"));
       mnuPrevious.setToolTipText(bundle.getString("TabPanel.mnuPrevious.toolTipText"));
-      mnuPrevious.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          mnuPreviousActionPerformed();
-        }
-      });
+      mnuPrevious.addActionListener(e -> mnuPreviousActionPerformed());
       mnuPopup.add(mnuPrevious);
 
       //---- mnuToday ----
       mnuToday.setIcon(new ImageIcon(getClass().getResource("/images/750-home_16.png")));
       mnuToday.setText(bundle.getString("TabPanel.mnuToday.text"));
       mnuToday.setToolTipText(bundle.getString("TabPanel.mnuToday.toolTipText"));
-      mnuToday.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          mnuTodayActionPerformed();
-        }
-      });
+      mnuToday.addActionListener(e -> mnuTodayActionPerformed());
       mnuPopup.add(mnuToday);
 
       //---- mnuNext ----
       mnuNext.setIcon(new ImageIcon(getClass().getResource("/images/766-arrow-right_16.png")));
       mnuNext.setText(bundle.getString("TabPanel.mnuNext.text"));
       mnuNext.setToolTipText(bundle.getString("TabPanel.mnuNext.toolTipText"));
-      mnuNext.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          mnuNextActionPerformed();
-        }
-      });
+      mnuNext.addActionListener(e -> mnuNextActionPerformed());
       mnuPopup.add(mnuNext);
       mnuPopup.add(jSeparator1);
 
@@ -367,27 +342,8 @@ public class TabPanel extends javax.swing.JPanel {
       mnuRead.setSelected(true);
       mnuRead.setText(bundle.getString("TabPanel.mnuRead.text"));
       mnuRead.setIcon(new ImageIcon(getClass().getResource("/images/888-checkmark_16.png")));
-      mnuRead.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          mnuReadActionPerformed();
-        }
-      });
+      mnuRead.addActionListener(e -> mnuReadActionPerformed());
       mnuPopup.add(mnuRead);
-      mnuPopup.add(jSeparator2);
-
-      //---- mnuDefine ----
-      mnuDefine.setIcon(new ImageIcon(getClass().getResource("/images/721-bookmarks_16.png")));
-      mnuDefine.setText(bundle.getString("TabPanel.mnuDefine.text"));
-      mnuDefine.setToolTipText(bundle.getString("TabPanel.mnuDefine.toolTipText"));
-      mnuDefine.setName("define");
-      mnuDefine.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          mnuDefineActionPerformed();
-        }
-      });
-      mnuPopup.add(mnuDefine);
     }
   }// </editor-fold>//GEN-END:initComponents
 
@@ -494,12 +450,6 @@ public class TabPanel extends javax.swing.JPanel {
     this.cbxReadActionPerformed();
   }//GEN-LAST:event_mnuReadActionPerformed
 
-  private void mnuDefineActionPerformed() {//GEN-FIRST:event_mnuDefineActionPerformed
-    DefinitionDialog def = new DefinitionDialog(Readsy.getMainWindow(), false);
-    def.setVisible(true);
-    def.define(this.getWordToDefine());
-  }//GEN-LAST:event_mnuDefineActionPerformed
-
   private void txtTextMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtTextMouseReleased
     if (evt.isPopupTrigger()) {
       this.showPopup(evt);
@@ -583,8 +533,6 @@ public class TabPanel extends javax.swing.JPanel {
   private JMenuItem mnuNext;
   private JPopupMenu.Separator jSeparator1;
   private JMenuItem mnuRead;
-  private JPopupMenu.Separator jSeparator2;
-  private JMenuItem mnuDefine;
   // End of variables declaration//GEN-END:variables
 
 

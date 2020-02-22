@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "5.1.1.0.120" Java: "1.6.0_29" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.1.0.272" Java: "11.0.5" encoding: "UTF-8"
 
 new FormModel {
 	"i18n.bundlePackage": "localization"
@@ -178,13 +178,6 @@ new FormModel {
 						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/740-gear_16.png" )
 						"text": new FormMessage( null, "MainWindow.preferencesMenu.text" )
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "preferencesMenuActionPerformed", false ) )
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "defineMenu"
-						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/721-bookmarks_16.png" )
-						"text": new FormMessage( null, "MainWindow.defineMenu.text" )
-						"name": new FormMessage( null, "MainWindow.defineMenu.name" )
-						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "defineMenuActionPerformed", false ) )
 					} )
 					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
 						name: "separator1"

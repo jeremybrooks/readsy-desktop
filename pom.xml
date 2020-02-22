@@ -50,7 +50,6 @@
         <maven.compiler.source>13</maven.compiler.source>
         <maven.compiler.target>13</maven.compiler.target>
         <log4j-core.version>2.9.1</log4j-core.version>
-        <knicker.version>2.4.1</knicker.version>
         <dropbox-core-sdk.version>3.0.5</dropbox-core-sdk.version>
         <commons-io.version>2.6</commons-io.version>
         <common.version>2.0.1</common.version>
@@ -63,11 +62,6 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>${log4j-core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.jeremybrooks</groupId>
-            <artifactId>knicker</artifactId>
-            <version>${knicker.version}</version>
         </dependency>
         <dependency>
             <groupId>com.dropbox.core</groupId>
