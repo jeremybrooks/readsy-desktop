@@ -1,7 +1,7 @@
 <!--
   ~ readsy - read something new every day <http://jeremybrooks.net/readsy>
   ~
-  ~ Copyright (c) 2013-2017  Jeremy Brooks
+  ~ Copyright (c) 2013-2020  Jeremy Brooks
   ~
   ~ This file is part of readsy.
   ~
@@ -24,7 +24,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.jeremybrooks</groupId>
     <artifactId>readsy</artifactId>
-    <version>2.0.2-SNAPSHOT</version>
+    <version>2.1.0</version>
     <name>readsy</name>
     <description>Read something every day.</description>
     <url>http://jeremybrooks.net/readsy</url>
@@ -46,54 +46,50 @@
             <url>http://jeremybrooks.net</url>
         </developer>
     </developers>
+    <properties>
+        <maven.compiler.source>13</maven.compiler.source>
+        <maven.compiler.target>13</maven.compiler.target>
+        <log4j-core.version>2.9.1</log4j-core.version>
+        <dropbox-core-sdk.version>3.0.5</dropbox-core-sdk.version>
+        <commons-io.version>2.6</commons-io.version>
+        <common.version>2.0.1</common.version>
+        <junit.version>4.11</junit.version>
+        <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+        <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+        <gitflow-maven-plugin.version>1.14.0</gitflow-maven-plugin.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.9.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.9.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.jeremybrooks</groupId>
-            <artifactId>knicker</artifactId>
-            <version>2.4.1</version>
+            <version>${log4j-core.version}</version>
         </dependency>
         <dependency>
             <groupId>com.dropbox.core</groupId>
             <artifactId>dropbox-core-sdk</artifactId>
-            <version>3.0.5</version>
+            <version>${dropbox-core-sdk.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.6</version>
+            <version>${commons-io.version}</version>
         </dependency>
         <dependency>
             <groupId>net.jeremybrooks</groupId>
             <artifactId>common</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.yuvimasory</groupId>
-            <artifactId>orange-extensions</artifactId>
-            <version>1.3.0</version>
+            <version>${common.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>${junit.version}</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
     <build>
         <plugins>
             <plugin>
@@ -114,7 +110,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
+                <version>${maven-jar-plugin.version}</version>
                 <inherited>true</inherited>
                 <configuration>
                     <archive>
@@ -123,19 +119,22 @@
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                     </archive>
+                    <excludes>
+                        <exclude>${project.artifactId}.install4j</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
+                <version>${maven-compiler-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>com.amashchenko.maven.plugin</groupId>
+                <artifactId>gitflow-maven-plugin</artifactId>
+                <version>${gitflow-maven-plugin.version}</version>
             </plugin>
         </plugins>
-
     </build>
 </project>
 

@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "5.2.0.0.54" Java: "1.6.0_65" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.1.0.272" Java: "11.0.5" encoding: "UTF-8"
 
 new FormModel {
 	"i18n.bundlePackage": "localization"
@@ -104,17 +104,6 @@ new FormModel {
 				"text": new FormMessage( null, "TabPanel.mnuRead.text" )
 				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/888-checkmark_16.png" )
 				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "mnuReadActionPerformed", false ) )
-			} )
-			add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
-				name: "jSeparator2"
-			} )
-			add( new FormComponent( "javax.swing.JMenuItem" ) {
-				name: "mnuDefine"
-				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/721-bookmarks_16.png" )
-				"text": new FormMessage( null, "TabPanel.mnuDefine.text" )
-				"toolTipText": new FormMessage( null, "TabPanel.mnuDefine.toolTipText" )
-				"name": "define"
-				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "mnuDefineActionPerformed", false ) )
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 310 )

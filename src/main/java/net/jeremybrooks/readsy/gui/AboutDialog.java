@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2017  Jeremy Brooks
+ * Copyright (c) 2013-2020  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -21,6 +21,7 @@
 
 package net.jeremybrooks.readsy.gui;
 
+import javax.swing.*;
 import net.jeremybrooks.readsy.Readsy;
 
 import javax.swing.ImageIcon;
@@ -125,7 +126,7 @@ public class AboutDialog extends javax.swing.JDialog {
     setTitle(bundle.getString("this.title"));
     setAlwaysOnTop(true);
     setModal(true);
-    Container contentPane = getContentPane();
+    var contentPane = getContentPane();
     contentPane.setLayout(new BorderLayout());
 
     //======== panel1 ========

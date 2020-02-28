@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2017  Jeremy Brooks
+ * Copyright (c) 2013-2020  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -42,7 +42,7 @@ public class VersionChecker implements Runnable {
 
 	private Logger logger = LogManager.getLogger(VersionChecker.class);
 	private static final String VERSION_URL = Readsy.HOME_PAGE + "/VERSION";
-	private MainWindow mainWindow = null;
+	private MainWindow mainWindow;
 
 
 	/**

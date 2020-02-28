@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2017  Jeremy Brooks
+ * Copyright (c) 2013-2020  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -146,8 +146,8 @@ public class BitHelper {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < this.bytes.length; i++) {
-      sb.append(String.format("%02x", this.bytes[i]));
+    for (byte aByte : this.bytes) {
+      sb.append(String.format("%02x", aByte));
     }
     return sb.toString();
   }
