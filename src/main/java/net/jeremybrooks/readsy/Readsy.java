@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2019  Jeremy Brooks
+ * Copyright (c) 2013-2020  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -129,8 +129,6 @@ public class Readsy {
   private void startup() {
     try {
       PropertyManager.getInstance().init();
-      System.setProperty("WORDNIK_API_KEY",
-          PropertyManager.getInstance().getProperty(PropertyManager.WORKNIK_API_KEY));
     } catch (Exception e) {
       if (logger != null) {
         logger.fatal("Error during application startup.", e);
