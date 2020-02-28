@@ -56,7 +56,7 @@
         <junit.version>4.11</junit.version>
         <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
         <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
-        <install4j-plugin.version>1.1.1</install4j-plugin.version>
+        <gitflow-maven-plugin.version>1.14.0</gitflow-maven-plugin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -126,6 +126,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>com.amashchenko.maven.plugin</groupId>
+                <artifactId>gitflow-maven-plugin</artifactId>
+                <version>${gitflow-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
