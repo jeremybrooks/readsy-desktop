@@ -57,6 +57,8 @@
         <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
         <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
         <gitflow-maven-plugin.version>1.14.0</gitflow-maven-plugin.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
     <dependencies>
         <dependency>
