@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="8.0.4" transformSequenceNumber="8">
-  <directoryPresets config="./target/readsy-2.1.0.jar" />
-  <application name="readsy" applicationId="9497-6695-9405-8312" mediaDir="target" shortName="readsy" publisher="Jeremy Brooks" publisherWeb="http://jeremybrooks.net/readsy" version="2.1.1-SNAPSHOT" allPathsRelative="true" autoSave="true" macVolumeId="235f856d5daf4e7a" javaMinVersion="13" javaMaxVersion="13">
+  <directoryPresets config="./target/readsy-2.1.1-SNAPSHOT.jar" />
+  <application name="readsy" applicationId="9497-6695-9405-8312" mediaDir="target" shortName="readsy" publisher="Jeremy Brooks" publisherWeb="http://jeremybrooks.net/readsy" version="2.1.2" allPathsRelative="true" autoSave="true" macVolumeId="235f856d5daf4e7a" javaMinVersion="13" javaMaxVersion="13">
     <codeSigning macEnabled="true" macPkcs12File="../DeveloperIDApplication.p12" macNotarize="true" appleId="jeremyb@whirljack.net" />
     <jreBundles jdkProviderId="AdoptOpenJDK" release="openjdk13/jdk-13.0.2+8" />
   </application>
@@ -11,7 +11,7 @@
       <mountPoint id="55" />
     </mountPoints>
     <entries>
-      <fileEntry mountPoint="56" file="./target/readsy-2.1.1-SNAPSHOT.jar" />
+      <fileEntry mountPoint="56" file="./target/readsy-2.1.2.jar" />
       <dirEntry mountPoint="55" file="./target/lib" entryMode="subdir" subDirectory="lib" />
     </entries>
   </files>
