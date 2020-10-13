@@ -53,7 +53,7 @@
         <dropbox-core-sdk.version>3.0.5</dropbox-core-sdk.version>
         <commons-io.version>2.6</commons-io.version>
         <common.version>2.0.1</common.version>
-        <junit.version>4.11</junit.version>
+        <junit.version>4.13.1</junit.version>
         <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
         <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
         <gitflow-maven-plugin.version>1.14.0</gitflow-maven-plugin.version>
