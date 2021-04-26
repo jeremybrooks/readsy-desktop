@@ -51,7 +51,7 @@
         <maven.compiler.target>13</maven.compiler.target>
         <log4j-core.version>2.13.2</log4j-core.version>
         <dropbox-core-sdk.version>3.0.5</dropbox-core-sdk.version>
-        <commons-io.version>2.6</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <common.version>2.0.1</common.version>
         <junit.version>4.13.1</junit.version>
         <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
