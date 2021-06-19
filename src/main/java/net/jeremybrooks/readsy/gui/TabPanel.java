@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -25,8 +25,7 @@ import net.jeremybrooks.common.gui.WorkerDialog;
 import net.jeremybrooks.readsy.BitHelper;
 import net.jeremybrooks.readsy.DataAccess;
 import net.jeremybrooks.readsy.PropertyManager;
-import net.jeremybrooks.readsy.Readsy;
-import net.jeremybrooks.readsy.bo.Entry;
+import net.jeremybrooks.readsy.model.Entry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,7 +66,7 @@ import static net.jeremybrooks.readsy.Constants.KEY_METADATA_YEAR;
 public class TabPanel extends javax.swing.JPanel {
 
   private static final long serialVersionUID = -1711827901008647020L;
-  private Logger logger = LogManager.getLogger(TabPanel.class);
+  private static final Logger logger = LogManager.getLogger();
   /* The current date displayed by this panel. */
   private Date currentDate = null;
   /* The index of this tab in the tab pane. */
@@ -79,7 +78,7 @@ public class TabPanel extends javax.swing.JPanel {
   /* The metadata about this content */
   private Properties metadata;
   private BitHelper bitHelper;
-  private ResourceBundle bundle = ResourceBundle.getBundle("localization.tab_panel");
+  private final ResourceBundle bundle = ResourceBundle.getBundle("localization.tab_panel");
 
 
   /* Default constructor is private to force use of other constructors. */
@@ -217,7 +216,7 @@ public class TabPanel extends javax.swing.JPanel {
    * @param date the date to display data for.
    */
   public void displayDataForDate(Date date) {
-    this.logger.debug("Trying to find entry for date " + date.toString());
+    logger.debug("Trying to find entry for date {}", date.toString());
     this.currentDate = date;
 
     Entry entry = DataAccess.getEntryForDateFromDirectory(date, this.metadata, this.contentDirectory);
@@ -234,8 +233,7 @@ public class TabPanel extends javax.swing.JPanel {
     }
 
     // THIS FORCES THE VIEWPORT TO SCROLL TO THE TOP OF THE NEWLY ADDED TEXT
-    // setCaretPosition() DID NOT SEEM TO WORK, THIS DOES.
-    this.txtText.setSelectionStart(1);
+    this.txtText.setCaretPosition(1);
   }
 
 
@@ -354,7 +352,9 @@ public class TabPanel extends javax.swing.JPanel {
    * in a SwingWorker.</p>
    */
   private void cbxReadActionPerformed() {//GEN-FIRST:event_cbxReadActionPerformed
-    WorkerDialog wd = new WorkerDialog(Readsy.getMainWindow(), new UpdateReadFlag(), bundle.getString("worker.saving"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
+    WorkerDialog wd = new WorkerDialog(MainWindow.instance,
+        new UpdateReadFlag(),
+        bundle.getString("worker.saving"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
     wd.executeAndShowDialog();
   }//GEN-LAST:event_cbxReadActionPerformed
 
@@ -431,15 +431,15 @@ public class TabPanel extends javax.swing.JPanel {
 
 
   private void mnuNextActionPerformed() {//GEN-FIRST:event_mnuNextActionPerformed
-    Readsy.getMainWindow().next(MainWindow.DateChangeMode.DAY);
+    MainWindow.instance.next(MainWindow.DateChangeMode.DAY);
   }//GEN-LAST:event_mnuNextActionPerformed
 
   private void mnuTodayActionPerformed() {//GEN-FIRST:event_mnuTodayActionPerformed
-    Readsy.getMainWindow().today();
+    MainWindow.instance.today();
   }//GEN-LAST:event_mnuTodayActionPerformed
 
   private void mnuPreviousActionPerformed() {//GEN-FIRST:event_mnuPreviousActionPerformed
-    Readsy.getMainWindow().previous(MainWindow.DateChangeMode.DAY);
+    MainWindow.instance.previous(MainWindow.DateChangeMode.DAY);
   }//GEN-LAST:event_mnuPreviousActionPerformed
 
   private void mnuReadActionPerformed() {//GEN-FIRST:event_mnuReadActionPerformed
@@ -481,7 +481,7 @@ public class TabPanel extends javax.swing.JPanel {
       calendar.add(Calendar.DAY_OF_YEAR, 1);
     } while (calendar.get(Calendar.DAY_OF_YEAR) != 1);
     metadata.setProperty(KEY_METADATA_READ, bitHelper.toString());
-    WorkerDialog wd = new WorkerDialog(Readsy.getMainWindow(), new SaveMetadata(), bundle.getString("worker.saving"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
+    WorkerDialog wd = new WorkerDialog(MainWindow.instance, new SaveMetadata(), bundle.getString("worker.saving"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
     wd.executeAndShowDialog();
     this.displayDataForDate(this.currentDate);
   }
@@ -499,7 +499,7 @@ public class TabPanel extends javax.swing.JPanel {
       calendar.add(Calendar.DAY_OF_YEAR, 1);
     } while (calendar.get(Calendar.DAY_OF_YEAR) != 1);
     metadata.setProperty(KEY_METADATA_READ, bitHelper.toString());
-    WorkerDialog wd = new WorkerDialog(Readsy.getMainWindow(), new SaveMetadata(), bundle.getString("worker.saving"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
+    WorkerDialog wd = new WorkerDialog(MainWindow.instance, new SaveMetadata(), bundle.getString("worker.saving"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
     wd.executeAndShowDialog();
     this.displayDataForDate(this.currentDate);
   }
@@ -515,7 +515,7 @@ public class TabPanel extends javax.swing.JPanel {
       calendar.add(Calendar.DAY_OF_YEAR, 1);
     } while (calendar.before(stopAfter) || calendar.equals(stopAfter));
     metadata.setProperty(KEY_METADATA_READ, bitHelper.toString());
-    WorkerDialog wd = new WorkerDialog(Readsy.getMainWindow(), new SaveMetadata(), bundle.getString("worker.saving"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
+    WorkerDialog wd = new WorkerDialog(MainWindow.instance, new SaveMetadata(), bundle.getString("worker.saving"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
     wd.executeAndShowDialog();
     this.displayDataForDate(this.currentDate);
   }
@@ -549,7 +549,7 @@ public class TabPanel extends javax.swing.JPanel {
         DataAccess.saveMetadata(contentDirectory, metadata);
         updateTabTitle();
       } catch (Exception e) {
-        JOptionPane.showMessageDialog(Readsy.getMainWindow(),
+        JOptionPane.showMessageDialog(MainWindow.instance,
             bundle.getString("TabPanel.joption.saveError.message"),
             bundle.getString("TabPanel.joption.saveError.title"),
             JOptionPane.INFORMATION_MESSAGE);
@@ -568,7 +568,7 @@ public class TabPanel extends javax.swing.JPanel {
         DataAccess.saveMetadata(contentDirectory, metadata);
         updateTabTitle();
       } catch (Exception e) {
-        JOptionPane.showMessageDialog(Readsy.getMainWindow(),
+        JOptionPane.showMessageDialog(MainWindow.instance,
             bundle.getString("TabPanel.joption.saveError.message"),
             bundle.getString("TabPanel.joption.saveError.title"),
             JOptionPane.INFORMATION_MESSAGE);

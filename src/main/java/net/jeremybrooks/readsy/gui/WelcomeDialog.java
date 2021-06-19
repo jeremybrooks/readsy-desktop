@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -25,27 +25,26 @@
 
 package net.jeremybrooks.readsy.gui;
 
-import net.jeremybrooks.common.gui.WorkerDialog;
-import net.jeremybrooks.readsy.Readsy;
-import net.jeremybrooks.readsy.gui.workers.DropboxAuthWorker;
+import net.jeremybrooks.readsy.PropertyManager;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
+
+import static net.jeremybrooks.readsy.Constants.WINDOW_IMAGE;
 
 /**
  * @author Jeremy Brooks
@@ -55,24 +54,29 @@ public class WelcomeDialog extends JDialog {
 	public WelcomeDialog() {
 		super();
 		initComponents();
-		setIconImage(Readsy.WINDOW_IMAGE);
+		setIconImage(WINDOW_IMAGE);
 		this.getRootPane().setDefaultButton(this.buttonYes);
 	}
 
 	private void buttonYesActionPerformed() {
-		DropboxAuthWorker daw = new DropboxAuthWorker();
-		WorkerDialog wd = new WorkerDialog(null, daw, "Authorizing Dropbox", "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
-		wd.executeAndShowDialog();
-		this.setVisible(false);
-		this.dispose();
-		Readsy.getMainWindow().setVisible(true, true);
+    JFileChooser jfc = new JFileChooser();
+    jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    jfc.setMultiSelectionEnabled(false);
+
+    int selection = jfc.showOpenDialog(this);
+    if (selection == JFileChooser.APPROVE_OPTION) {
+      PropertyManager propertyManager = PropertyManager.getInstance();
+      propertyManager.setProperty(PropertyManager.READSY_FILE_DIRECTORY,
+          jfc.getSelectedFile().getAbsolutePath());
+      this.setVisible(false);
+      this.dispose();
+      SwingUtilities.invokeLater(() -> MainWindow.instance.setVisible(true, true));
+    }
 	}
 
-	private void buttonNoActionPerformed() {
-		this.setVisible(false);
-		this.dispose();
-		System.exit(0);
-	}
+  private void buttonCancelActionPerformed() {
+	  System.exit(0);
+  }
 
 	private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -83,11 +87,11 @@ public class WelcomeDialog extends JDialog {
     scrollPane1 = new JScrollPane();
     textPane1 = new JTextPane();
     buttonBar = new JPanel();
-    buttonNo = new JButton();
+    buttonCancel = new JButton();
     buttonYes = new JButton();
 
     //======== this ========
-    Container contentPane = getContentPane();
+    var contentPane = getContentPane();
     contentPane.setLayout(new BorderLayout());
 
     //======== dialogPane ========
@@ -132,26 +136,16 @@ public class WelcomeDialog extends JDialog {
         ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
         ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
 
-        //---- buttonNo ----
-        buttonNo.setText(bundle.getString("WelcomeDialog.buttonNo.text"));
-        buttonNo.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            buttonNoActionPerformed();
-          }
-        });
-        buttonBar.add(buttonNo, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+        //---- buttonCancel ----
+        buttonCancel.setText(bundle.getString("WelcomeDialog.buttonCancel.text"));
+        buttonCancel.addActionListener(e -> buttonCancelActionPerformed());
+        buttonBar.add(buttonCancel, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
           GridBagConstraints.CENTER, GridBagConstraints.BOTH,
           new Insets(0, 0, 0, 5), 0, 0));
 
         //---- buttonYes ----
         buttonYes.setText(bundle.getString("WelcomeDialog.buttonYes.text"));
-        buttonYes.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            buttonYesActionPerformed();
-          }
-        });
+        buttonYes.addActionListener(e -> buttonYesActionPerformed());
         buttonBar.add(buttonYes, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
           GridBagConstraints.CENTER, GridBagConstraints.BOTH,
           new Insets(0, 0, 0, 0), 0, 0));
@@ -172,7 +166,7 @@ public class WelcomeDialog extends JDialog {
   private JScrollPane scrollPane1;
   private JTextPane textPane1;
   private JPanel buttonBar;
-  private JButton buttonNo;
+  private JButton buttonCancel;
   private JButton buttonYes;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }

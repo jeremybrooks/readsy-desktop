@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -30,8 +30,8 @@ import java.util.GregorianCalendar;
  */
 public class BitHelper {
 
-  private byte[] bytes;
-  private GregorianCalendar calendar;
+  private final byte[] bytes;
+  private final GregorianCalendar calendar;
   private static final String EMPTY_BITSET = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 
   /**

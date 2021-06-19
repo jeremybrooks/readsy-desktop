@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -21,9 +21,8 @@
 
 package net.jeremybrooks.readsy;
 
-import net.jeremybrooks.common.util.IOUtil;
-import net.jeremybrooks.common.util.StringUtil;
 import net.jeremybrooks.readsy.gui.MainWindow;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,6 +32,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.StringTokenizer;
 
+import static net.jeremybrooks.readsy.Constants.VERSION_URL;
+
 /**
  * Check for a new version of the program.
  *
@@ -40,19 +41,7 @@ import java.util.StringTokenizer;
  */
 public class VersionChecker implements Runnable {
 
-	private Logger logger = LogManager.getLogger(VersionChecker.class);
-	private static final String VERSION_URL = Readsy.HOME_PAGE + "/VERSION";
-	private MainWindow mainWindow;
-
-
-	/**
-	 * Creates a new instance of VersionChecker.
-	 *
-	 * @param mainWindow reference to the applications main window.
-	 */
-	public VersionChecker(MainWindow mainWindow) {
-		this.mainWindow = mainWindow;
-	}
+	private static final Logger logger = LogManager.getLogger();
 
 
 	/**
@@ -63,29 +52,22 @@ public class VersionChecker implements Runnable {
 	 */
 	public void run() {
 		HttpURLConnection conn = null;
-		BufferedReader in = null;
 		String latestVersion;
-
-
 		try {
-			// WAIT A LITTLE BIT TO MAKE SURE THE MAIN WINDOW HAS BEEN CREATED
-			Thread.sleep(2000);
-
-			// GET THE VERSION WEB PAGE
-			conn = (HttpURLConnection) new URL(VERSION_URL).openConnection();
-			in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			latestVersion = in.readLine();
-
-			logger.debug(String.format("Got version %s from %s", latestVersion, VERSION_URL));
+      // WAIT A LITTLE BIT TO MAKE SURE THE MAIN WINDOW HAS BEEN CREATED
+      Thread.sleep(2000);
+      conn = (HttpURLConnection) new URL(VERSION_URL).openConnection();
+		  try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+        latestVersion = in.readLine();
+      }
+		  logger.debug("Got version {} from {}", latestVersion, VERSION_URL);
 			if (this.updated(Readsy.VERSION, latestVersion)) {
 				logger.debug("New version is available.");
-				mainWindow.newVersionAvailable();
+				MainWindow.instance.newVersionAvailable();
 			}
-
 		} catch (Exception e) {
 			logger.warn("ERROR WHILE CHECKING FOR A NEW VERSION.", e);
 		} finally {
-			IOUtil.close(in);
 			if (conn != null) {
 				conn.disconnect();
 			}
@@ -107,10 +89,10 @@ public class VersionChecker implements Runnable {
 	 * @return true if newVersion is greater than oldVersion.
 	 */
 	public boolean updated(String oldVersion, String newVersion) {
-		if (StringUtil.isNullOrEmpty(oldVersion)) {
+		if (StringUtils.isEmpty(oldVersion)) {
 			return false;
 		}
-		if (StringUtil.isNullOrEmpty(newVersion)) {
+		if (StringUtils.isEmpty(newVersion)) {
 			return false;
 		}
 		if (oldVersion.equals(newVersion)) {
@@ -137,7 +119,7 @@ public class VersionChecker implements Runnable {
 			}
 		} catch (Exception e) {
 			updated = false;
-			logger.warn(String.format("Error trying to determine version [oldVersion=%s] [newVersion=%s]. Returning false.", oldVersion, newVersion));
+			logger.warn("Error trying to determine version [oldVersion={}] [newVersion={}]. Returning false.", oldVersion, newVersion);
 		}
 
 		return updated;

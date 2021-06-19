@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -22,7 +22,6 @@
 package net.jeremybrooks.readsy.gui;
 
 import net.jeremybrooks.readsy.Constants;
-import net.jeremybrooks.readsy.Readsy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,6 +47,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,6 +66,8 @@ import java.util.ResourceBundle;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static net.jeremybrooks.readsy.Constants.WINDOW_IMAGE;
+
 
 /**
  * This window allows a user to edit the data XML file.
@@ -77,12 +79,12 @@ import java.util.zip.ZipOutputStream;
  */
 public class EditorWindow extends javax.swing.JFrame {
 
-  private Logger logger = LogManager.getLogger(EditorWindow.class);
-  private DateFormat prettyDateFormat = new SimpleDateFormat("MMMM dd");
-  private DateFormat monthDateFormat = new SimpleDateFormat("MMdd");
-  private Calendar calendar;
-  private File directory;
-  private Properties metadata;
+  private static final Logger logger = LogManager.getLogger();
+  private final DateFormat prettyDateFormat = new SimpleDateFormat("MMMM dd");
+  private final DateFormat monthDateFormat = new SimpleDateFormat("MMdd");
+  private final Calendar calendar;
+  private final File directory;
+  private final Properties metadata;
 
   /**
    * Creates new form EditorWindow.
@@ -90,7 +92,8 @@ public class EditorWindow extends javax.swing.JFrame {
    * display is updated.  This should result in the first element of the
    * data file being shown, ready for editing.
    *
-   * //	 * @param dataFile the object model to work with.
+   * @param directory the directory
+   * @param metadata metadata
    */
   public EditorWindow(File directory, Properties metadata) {
     this.directory = directory;
@@ -105,12 +108,12 @@ public class EditorWindow extends javax.swing.JFrame {
     }
     setCalendarToFirstEmptyEntry();
     initComponents();
-    setIconImage(Readsy.WINDOW_IMAGE);
+    setIconImage(WINDOW_IMAGE);
     this.lblFilename.setText(directory.getAbsolutePath());
     if (!metadata.getProperty("year").equals("0")) {
       this.lblYearValue.setText(metadata.getProperty("year"));
     }
-    this.setLocation(Readsy.getMainWindow().getX(), Readsy.getMainWindow().getY());
+    this.setLocation(MainWindow.instance.getX(), MainWindow.instance.getY());
     updateDisplay();
   }
 
@@ -122,7 +125,7 @@ public class EditorWindow extends javax.swing.JFrame {
         Arrays.sort(files, Comparator.comparing(File::getName));
         for (File f : files) {
           try (BufferedReader in = new BufferedReader(
-              new InputStreamReader(new FileInputStream(f), "UTF-8"))) {
+              new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8))) {
             StringBuilder sb = new StringBuilder();
             String line;
             while ((line = in.readLine()) != null) {
@@ -320,7 +323,7 @@ public class EditorWindow extends javax.swing.JFrame {
   private void doClose() {
     this.saveEntry();
     this.makeZipFiles();
-    Readsy.getMainWindow().setVisible(true, false);
+    MainWindow.instance.setVisible(true, false);
     this.setVisible(false);
     this.dispose();
   }
@@ -368,7 +371,7 @@ public class EditorWindow extends javax.swing.JFrame {
 
     this.lblDate.setText(buf.toString());
     try (BufferedReader in = new BufferedReader(new InputStreamReader(
-        new FileInputStream(new File(this.directory, mmdd)), "UTF-8"))) {
+        new FileInputStream(new File(this.directory, mmdd)), StandardCharsets.UTF_8))) {
       this.txtHeading.setText(in.readLine());
       this.txtHeading.setCaretPosition(0);
       this.txtText.setText("");
@@ -379,7 +382,7 @@ public class EditorWindow extends javax.swing.JFrame {
       }
       this.txtText.setCaretPosition(0);
     } catch (Exception e) {
-      logger.error("Error reading content from file " + directory + "/" + mmdd, e);
+      logger.error("Error reading content from file {}/{}", directory, mmdd, e);
     }
     this.txtHeading.requestFocus();
   }
@@ -400,16 +403,16 @@ public class EditorWindow extends javax.swing.JFrame {
       try (FileOutputStream entry = new FileOutputStream(
           new File(this.directory, this.monthDateFormat.format(this.calendar.getTime())))) {
 
-        entry.write(this.txtHeading.getText().trim().getBytes("UTF-8"));
-        entry.write("\n".getBytes("UTF-8"));
-        entry.write(this.txtText.getText().trim().getBytes("UTF-8"));
+        entry.write(this.txtHeading.getText().trim().getBytes(StandardCharsets.UTF_8));
+        entry.write("\n".getBytes(StandardCharsets.UTF_8));
+        entry.write(this.txtText.getText().trim().getBytes(StandardCharsets.UTF_8));
         entry.flush();
 
         // write metadata if the description or shortDescription have changed
         if (!this.metadata.getProperty("description").equals(this.txtDescription.getText().trim()) ||
             !this.metadata.getProperty("shortDescription").equals(this.txtShortDescription.getText().trim())) {
           try (OutputStreamWriter metadataWriter = new OutputStreamWriter(new FileOutputStream(
-              new File(this.directory, "metadata")), "UTF-8")) {
+              new File(this.directory, "metadata")), StandardCharsets.UTF_8)) {
             this.metadata.setProperty("description", this.txtDescription.getText().trim());
             this.metadata.setProperty("shortDescription", this.txtShortDescription.getText().trim());
             this.metadata.store(metadataWriter, "readsy Desktop " + System.getProperty("os.name"));
@@ -438,7 +441,7 @@ public class EditorWindow extends javax.swing.JFrame {
     try (ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(zipFileName));
          ZipOutputStream readsyStream = new ZipOutputStream(new FileOutputStream(readsyFileName))) {
       // walk the source directory, adding files to the zip files
-      Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
+      Files.walkFileTree(sourceDir, new SimpleFileVisitor<>() {
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attributes) {
           FileVisitResult result = FileVisitResult.CONTINUE;
@@ -446,10 +449,10 @@ public class EditorWindow extends javax.swing.JFrame {
             Path targetFile = sourceDir.relativize(file);
             zipStream.putNextEntry(new ZipEntry(
                 metadata.getProperty(Constants.KEY_METADATA_SHORT_DESCRIPTION) +
-                    "/" + targetFile.toString()));
+                    "/" + targetFile));
             readsyStream.putNextEntry(new ZipEntry(
                 metadata.getProperty(Constants.KEY_METADATA_SHORT_DESCRIPTION) +
-                    "/" + targetFile.toString()));
+                    "/" + targetFile));
             byte[] bytes = Files.readAllBytes(file);
             zipStream.write(bytes, 0, bytes.length);
             zipStream.closeEntry();

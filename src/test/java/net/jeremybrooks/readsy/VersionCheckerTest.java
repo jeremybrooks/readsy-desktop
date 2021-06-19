@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -33,7 +33,7 @@ public class VersionCheckerTest {
 
 	@Test
 	public void testUpdated() throws Exception {
-		VersionChecker vc = new VersionChecker(null);
+		VersionChecker vc = new VersionChecker();
 
 		assertFalse(vc.updated(null, null));
 		assertFalse(vc.updated(null, ""));

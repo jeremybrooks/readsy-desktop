@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "6.0.2.0.116" Java: "1.8.0_152-release" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.3.0.337" Java: "11.0.10" encoding: "UTF-8"
 
 new FormModel {
 	"i18n.bundlePackage": "localization"
@@ -74,25 +74,38 @@ new FormModel {
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 					"gridy": 1
 				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0, 0:1.0"
+					"$rowSpecs": "0, 0"
+					"$alignTop": true
+					"$alignLeft": true
+				} ) {
 					name: "panel4"
 					"border": new javax.swing.border.TitledBorder( "i18nKey=PreferencesDialog.panel4.border" )
-					add( new FormComponent( "javax.swing.JTextArea" ) {
-						name: "textArea1"
-						"editable": false
-						"wrapStyleWord": true
-						"lineWrap": true
-						"text": new FormMessage( null, "PreferencesDialog.textArea1.text" )
-						"background": new com.jformdesigner.model.SwingColor( "Label.background" )
-					}, new FormLayoutConstraints( class java.lang.String ) {
-						"value": "Center"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label1"
+						"text": "File Directory"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"insets": new java.awt.Insets( 3, 3, 3, 3 )
 					} )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "button1"
-						"text": new FormMessage( null, "PreferencesDialog.button1.text" )
-						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "button1ActionPerformed", false ) )
-					}, new FormLayoutConstraints( class java.lang.String ) {
-						"value": "South"
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txtFileDir"
+						"editable": false
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+						"alignment": 2
+					} ) {
+						name: "panel5"
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "btnChangeDir"
+							"text": "Change Directory"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnChangeDirActionPerformed", false ) )
+						} )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+						"gridy": 1
 					} )
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 					"gridy": 2
@@ -109,16 +122,11 @@ new FormModel {
 					"text": new FormMessage( null, "PreferencesDialog.btnOk.text" )
 					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnOkActionPerformed", false ) )
 				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "btnCancel"
-					"text": new FormMessage( null, "PreferencesDialog.btnCancel.text" )
-					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnCancelActionPerformed", false ) )
-				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "South"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 440, 370 )
+			"size": new java.awt.Dimension( 490, 370 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 	}

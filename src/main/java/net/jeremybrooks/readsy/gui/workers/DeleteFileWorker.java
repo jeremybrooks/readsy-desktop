@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -38,8 +38,8 @@ import java.util.ResourceBundle;
  * @author Jeremy Brooks
  */
 public class DeleteFileWorker extends SwingWorker<Void, Void> {
-	private Logger logger = LogManager.getLogger(DeleteFileWorker.class);
-	private Component c;
+	private static final Logger logger = LogManager.getLogger();
+	private final Component c;
 	private Exception error;
 	private boolean userCancelled = false;
 
@@ -60,7 +60,7 @@ public class DeleteFileWorker extends SwingWorker<Void, Void> {
 				String description = p.getProperty("description");
 				list.add(dir + " - " + description);
 			} catch (Exception e) {
-				logger.warn("Error getting metadata for dir " + dir, e);
+				logger.warn("Error getting metadata for dir {}", dir, e);
 				list.add(dir + " - " + bundle.getString("dfw.noDescription"));
 			}
 		}

@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -26,7 +26,6 @@ import net.jeremybrooks.common.gui.WorkerDialog;
 import net.jeremybrooks.common.util.MacUtil;
 import net.jeremybrooks.readsy.DataAccess;
 import net.jeremybrooks.readsy.PropertyManager;
-import net.jeremybrooks.readsy.Readsy;
 import net.jeremybrooks.readsy.gui.workers.DeleteFileWorker;
 import net.jeremybrooks.readsy.gui.workers.InstallFileWorker;
 import org.apache.logging.log4j.LogManager;
@@ -69,6 +68,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import static net.jeremybrooks.readsy.Constants.HOME_PAGE;
+import static net.jeremybrooks.readsy.Constants.WINDOW_IMAGE;
+
 /**
  * The main window.
  * This window allows the user to view data files, and navigate to different days.
@@ -78,11 +80,11 @@ import java.util.ResourceBundle;
 public class MainWindow extends javax.swing.JFrame {
 
   private static final long serialVersionUID = 5051044422765434977L;
-  private Logger logger = LogManager.getLogger(MainWindow.class);
-  private SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE, MMMM dd, yyyy");
-  private Calendar currentDate = new GregorianCalendar();
+  private static final Logger logger = LogManager.getLogger();
+  private final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE, MMMM dd, yyyy");
+  private final Calendar currentDate = new GregorianCalendar();
   private List<TabPanel> tabList;
-  private ResourceBundle bundle;
+  private final ResourceBundle bundle;
 
   /**
    * Change the date for day, week, or month.
@@ -104,7 +106,7 @@ public class MainWindow extends javax.swing.JFrame {
     this.bundle = ResourceBundle.getBundle("localization.main_window");
     this.currentDate.setTime(new Date());
     initComponents();
-    setIconImage(Readsy.WINDOW_IMAGE);
+    setIconImage(WINDOW_IMAGE);
     this.updateButton.setVisible(false);
 
     // restore last window size and position
@@ -406,7 +408,7 @@ public class MainWindow extends javax.swing.JFrame {
 
   public void openHomePage() {
     try {
-      Desktop.getDesktop().browse(new URI(Readsy.HOME_PAGE));
+      Desktop.getDesktop().browse(new URI(HOME_PAGE));
     } catch (Exception e) {
       JOptionPane.showMessageDialog(this,
           bundle.getString("homepage.error.message"),
@@ -414,10 +416,11 @@ public class MainWindow extends javax.swing.JFrame {
           JOptionPane.ERROR_MESSAGE);
     }
   }
-  /*
-	 * Find the date with the first unread item and go to it.
-	 */
 
+
+  /*
+   * Find the date with the first unread item and go to it.
+   */
   private void menuFirstUnreadActionPerformed() {//GEN-FIRST:event_menuFirstUnreadActionPerformed
     // GET SELECTED TAB
     Component c = this.tabPane.getSelectedComponent();
@@ -447,7 +450,7 @@ public class MainWindow extends javax.swing.JFrame {
    */
   private void updateButtonActionPerformed() {//GEN-FIRST:event_updateButtonActionPerformed
     int response = JOptionPane.showOptionDialog(this,
-        bundle.getString("MainWindow.joption.newVersion.message1") + '\n' + Readsy.HOME_PAGE + "\n\n" + bundle.getString("MainWindow.joption.newVersion.message2"),
+        bundle.getString("MainWindow.joption.newVersion.message1") + '\n' + HOME_PAGE + "\n\n" + bundle.getString("MainWindow.joption.newVersion.message2"),
         bundle.getString("MainWindow.joption.newVersion.title"),
         JOptionPane.YES_NO_OPTION,
         JOptionPane.INFORMATION_MESSAGE,
@@ -513,7 +516,6 @@ public class MainWindow extends javax.swing.JFrame {
           JOptionPane.ERROR_MESSAGE);
     }
     if (!dfw.isUserCancelled()) {
-      this.tabList = null;
       this.createTabs();
     }
   }//GEN-LAST:event_deleteMenuActionPerformed
@@ -569,7 +571,6 @@ public class MainWindow extends javax.swing.JFrame {
       JOptionPane.showMessageDialog(this,
           sb.toString(), bundle.getString("MainWindow.joption.installError.title"), JOptionPane.ERROR_MESSAGE);
     }
-    this.tabList = null;
     this.createTabs();
   }
 
@@ -658,7 +659,7 @@ public class MainWindow extends javax.swing.JFrame {
         break;
 
       default:
-        logger.warn("INVALID CHANGE MODE: " + changeBy);
+        logger.warn("INVALID CHANGE MODE: {}", changeBy);
         break;
     }
     updateDisplay();
@@ -685,7 +686,7 @@ public class MainWindow extends javax.swing.JFrame {
         break;
 
       default:
-        logger.warn("INVALID CHANGE MODE: " + changeBy);
+        logger.warn("INVALID CHANGE MODE: {}", changeBy);
         break;
     }
     updateDisplay();
@@ -713,14 +714,13 @@ public class MainWindow extends javax.swing.JFrame {
   }//GEN-LAST:event_menuItemExitActionPerformed
 
 
-
   /**
    * Update the display when the user navigates to a new day.
    * The work is performed by an instance of RecreateTabs, and the work
    * is executed in a new thread using the SwingWorker.
    */
   private void updateDisplay() {
-    WorkerDialog wd = new WorkerDialog(Readsy.getMainWindow(),
+    WorkerDialog wd = new WorkerDialog(this,
         new UpdateDisplay(), bundle.getString("worker.updating"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
     wd.executeAndShowDialog();
   }
@@ -732,8 +732,9 @@ public class MainWindow extends javax.swing.JFrame {
    * is executed in a new thread using the SwingWorker.
    */
   public void createTabs() {
+    this.tabList = null;
     CreateTabs ct = new CreateTabs();
-    WorkerDialog wd = new WorkerDialog(Readsy.getMainWindow(),
+    WorkerDialog wd = new WorkerDialog(this,
         ct, bundle.getString("worker.loading"), "", new ImageIcon(getClass().getResource("/images/ajax-loader.gif")));
     wd.executeAndShowDialog();
     if (ct.getError() != null) {
@@ -794,7 +795,7 @@ public class MainWindow extends javax.swing.JFrame {
 
       try {
         List<String> dataDirectories = DataAccess.getDataDirectoryNames();
-        logger.debug("Got " + dataDirectories.size() + " directories.");
+        logger.debug("Got {} directories.", dataDirectories.size());
         for (String directory : dataDirectories) {
           firePropertyChange(WorkerDialog.EVENT_DIALOG_MESSAGE, "", directory);
           Properties metadata = DataAccess.getMetadata(directory);
