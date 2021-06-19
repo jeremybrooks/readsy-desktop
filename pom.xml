@@ -48,7 +48,7 @@
     </developers>
     <properties>
         <log4j-core.version>2.14.1</log4j-core.version>
-        <commons-io.version>2.9.0</commons-io.version>
+        <commons-io.version>2.10.0</commons-io.version>
         <commons-lang.version>3.12.0</commons-lang.version>
         <common.version>3.0.2</common.version>
         <junit.version>4.13.2</junit.version>
