@@ -230,10 +230,9 @@ public class TabPanel extends javax.swing.JPanel {
       this.txtText.setText(entry.getText());
       this.cbxRead.setSelected(this.bitHelper.isRead(date));
       this.cbxRead.setEnabled(true);
+      // THIS FORCES THE VIEWPORT TO SCROLL TO THE TOP OF THE NEWLY ADDED TEXT
+      this.txtText.setCaretPosition(1);
     }
-
-    // THIS FORCES THE VIEWPORT TO SCROLL TO THE TOP OF THE NEWLY ADDED TEXT
-    this.txtText.setCaretPosition(1);
   }
 
 
