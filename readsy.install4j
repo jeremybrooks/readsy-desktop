@@ -687,16 +687,12 @@ return console.askYesNo(message, true);
     </styles>
   </installerGui>
   <mediaSets>
-    <unixInstaller name="Unix Installer" id="106" installDir="readsy">
-      <jreBundle jreBundleSource="none" />
+    <unixInstaller name="Unix Installer with JRE" id="106" installDir="readsy">
+      <jreBundle usePack200="false" />
     </unixInstaller>
-    <windows name="Windows 64-bit" id="114" installDir="readsy">
-      <jreBundle jreBundleSource="none" />
+    <windows name="Windows 64-bit With JRE" id="253" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}_with_JRE" installDir="readsy">
+      <jreBundle usePack200="false" />
     </windows>
-    <windows name="Windows 64-bit With JRE" id="253" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}_with_JRE" installDir="readsy" />
-    <macosArchive name="macOS Single Bundle Archive" id="207" architecture="universal" launcherId="57">
-      <jreBundle jreBundleSource="none" />
-    </macosArchive>
     <macosArchive name="macOS Single Bundle Archive With JRE amd64" id="210" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_amd64_${compiler:sys.version}_with_JRE" launcherId="57">
       <jreBundle includedJre="macosx-amd64-1.8.0_152_unpacked" />
     </macosArchive>
