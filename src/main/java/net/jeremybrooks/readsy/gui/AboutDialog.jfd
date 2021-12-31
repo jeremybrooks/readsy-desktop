@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.1.0.272" Java: "11.0.5" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.3.0.337" Java: "11.0.10" encoding: "UTF-8"
 
 new FormModel {
 	"i18n.bundleName": "about_dialog"
@@ -25,39 +25,26 @@ new FormModel {
 					"value": "Center"
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
-				"value": "North"
+				"value": "First"
 			} )
 			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
 				name: "jTabbedPane1"
 				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-					name: "jScrollPane3"
-					add( new FormComponent( "javax.swing.JTextArea" ) {
-						name: "helpTextArea"
-						"columns": 20
+					name: "tabAbout"
+					add( new FormComponent( "javax.swing.JEditorPane" ) {
+						name: "aboutText"
 						"editable": false
-						"lineWrap": true
-						"rows": 5
-						"text": new FormMessage( null, "helpTextArea.text" )
-						"wrapStyleWord": true
+						"contentType": "text/html"
+						"text": "<html>\n  <head>\n\n  </head>\n  <body>\n    <p>\n      will be replaced at runtime\n    </p>\n  </body>\n</html>\n"
+						auxiliary() {
+							"JavaCodeGenerator.postInitCode": "    aboutText.addHyperlinkListener(new HyperlinkListener() {\n      public void hyperlinkUpdate(HyperlinkEvent e) {\n        if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {\n          try {\n            Desktop.getDesktop().browse(e.getURL().toURI());\n          } catch (Exception ex) {\n            logger.error(\"Could not open the browser.\", ex);\n          }\n        }\n      }\n    });"
+						}
 					} )
 				}, new FormLayoutConstraints( null ) {
-					"title": new FormMessage( null, "jScrollPane3.tab.title" )
-				} )
-				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-					name: "jScrollPane2"
-					add( new FormComponent( "javax.swing.JTextArea" ) {
-						name: "licenseTextArea"
-						"editable": false
-						"lineWrap": true
-						"rows": 15
-						"text": new FormMessage( null, "licenseTextArea.text" )
-						"wrapStyleWord": true
-					} )
-				}, new FormLayoutConstraints( null ) {
-					"title": new FormMessage( null, "jScrollPane2.tab.title" )
+					"title": new FormMessage( null, "tabAbout.tab.title" )
 				} )
 				add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
-					name: "tabbedPane1"
+					name: "tabLicenses"
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "scrollPane1"
 						add( new FormComponent( "javax.swing.JTextArea" ) {
@@ -91,19 +78,8 @@ new FormModel {
 					}, new FormLayoutConstraints( null ) {
 						"title": "GPLv3 License"
 					} )
-					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-						name: "scrollPane3"
-						add( new FormComponent( "javax.swing.JTextArea" ) {
-							name: "mitLicenseTextArea"
-							"editable": false
-							"wrapStyleWord": true
-							"text": new FormMessage( null, "mitLicenseTextArea.text" )
-						} )
-					}, new FormLayoutConstraints( null ) {
-						"title": "MIT License"
-					} )
 				}, new FormLayoutConstraints( null ) {
-					"title": "Library Licenses"
+					"title": "Licenses"
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"
@@ -123,7 +99,7 @@ new FormModel {
 					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "jButton1ActionPerformed", false ) )
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
-				"value": "South"
+				"value": "Last"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"size": new java.awt.Dimension( 505, 670 )

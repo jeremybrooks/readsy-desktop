@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="8.0.4" transformSequenceNumber="8">
-  <directoryPresets config="./target/readsy-2.1.1-SNAPSHOT.jar" />
-  <application name="readsy" applicationId="9497-6695-9405-8312" mediaDir="target" shortName="readsy" publisher="Jeremy Brooks" publisherWeb="http://jeremybrooks.net/readsy" version="2.1.2" allPathsRelative="true" autoSave="true" macVolumeId="235f856d5daf4e7a" javaMinVersion="13" javaMaxVersion="13">
-    <codeSigning macEnabled="true" macPkcs12File="../DeveloperIDApplication.p12" macNotarize="true" appleId="jeremyb@whirljack.net" />
-    <jreBundles jdkProviderId="AdoptOpenJDK" release="openjdk13/jdk-13.0.2+8" />
+<install4j version="9.0.5" transformSequenceNumber="9">
+  <directoryPresets config="./target/readsy-2.1.3-SNAPSHOT.jar" />
+  <application name="readsy" applicationId="9497-6695-9405-8312" mediaDir="target" shortName="readsy" publisher="Jeremy Brooks" publisherWeb="http://jeremybrooks.net/readsy" version="3.0.0-SNAPSHOT" allPathsRelative="true" autoSave="true" macVolumeId="235f856d5daf4e7a" javaMinVersion="17" javaMaxVersion="17">
+    <codeSigning macEnabled="true" macPkcs12File="../DeveloperIDApplication.p12" macNotarize="true" appleId="jeremybrooks@me.com" />
+    <jreBundles jdkProviderId="Zulu" release="17/17.0.1" />
   </application>
-  <files>
+  <files preserveSymlinks="false">
     <mountPoints>
       <mountPoint id="56" location="lib" />
       <mountPoint id="55" />
     </mountPoints>
     <entries>
-      <fileEntry mountPoint="56" file="./target/readsy-2.1.2.jar" />
+      <fileEntry mountPoint="56" file="./target/readsy-3.0.0-SNAPSHOT.jar" />
       <dirEntry mountPoint="55" file="./target/lib" entryMode="subdir" subDirectory="lib" />
     </entries>
   </files>
@@ -61,11 +61,19 @@
             <group id="223" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup">
               <serializedBean>
                 <property name="backgroundColor">
-                  <object class="java.awt.Color">
-                    <int>255</int>
-                    <int>255</int>
-                    <int>255</int>
-                    <int>255</int>
+                  <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                    <object class="java.awt.Color">
+                      <int>255</int>
+                      <int>255</int>
+                      <int>255</int>
+                      <int>255</int>
+                    </object>
+                    <object class="java.awt.Color">
+                      <int>49</int>
+                      <int>52</int>
+                      <int>53</int>
+                      <int>255</int>
+                    </object>
                   </object>
                 </property>
                 <property name="imageAnchor" type="enum" class="com.install4j.api.beans.Anchor" value="NORTHEAST" />
@@ -295,11 +303,19 @@ return console.askOkCancel(message, true);
             <group id="223" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup">
               <serializedBean>
                 <property name="backgroundColor">
-                  <object class="java.awt.Color">
-                    <int>255</int>
-                    <int>255</int>
-                    <int>255</int>
-                    <int>255</int>
+                  <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                    <object class="java.awt.Color">
+                      <int>255</int>
+                      <int>255</int>
+                      <int>255</int>
+                      <int>255</int>
+                    </object>
+                    <object class="java.awt.Color">
+                      <int>49</int>
+                      <int>52</int>
+                      <int>53</int>
+                      <int>255</int>
+                    </object>
                   </object>
                 </property>
                 <property name="imageAnchor" type="enum" class="com.install4j.api.beans.Anchor" value="NORTHEAST" />
@@ -469,11 +485,19 @@ return console.askYesNo(message, true);
           <group id="216" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup" useExternalParametrization="true" externalParametrizationName="Customize banner image" externalParametrizationMode="include">
             <serializedBean>
               <property name="backgroundColor">
-                <object class="java.awt.Color">
-                  <int>255</int>
-                  <int>255</int>
-                  <int>255</int>
-                  <int>255</int>
+                <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                  <object class="java.awt.Color">
+                    <int>255</int>
+                    <int>255</int>
+                    <int>255</int>
+                    <int>255</int>
+                  </object>
+                  <object class="java.awt.Color">
+                    <int>49</int>
+                    <int>52</int>
+                    <int>53</int>
+                    <int>255</int>
+                  </object>
                 </object>
               </property>
               <property name="borderSides">
@@ -482,11 +506,19 @@ return console.askYesNo(message, true);
                 </object>
               </property>
               <property name="imageEdgeBackgroundColor">
-                <object class="java.awt.Color">
-                  <int>25</int>
-                  <int>143</int>
-                  <int>220</int>
-                  <int>255</int>
+                <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                  <object class="java.awt.Color">
+                    <int>25</int>
+                    <int>143</int>
+                    <int>220</int>
+                    <int>255</int>
+                  </object>
+                  <object class="java.awt.Color">
+                    <int>0</int>
+                    <int>74</int>
+                    <int>151</int>
+                    <int>255</int>
+                  </object>
                 </object>
               </property>
               <property name="imageEdgeBorder" type="boolean" value="true" />
@@ -540,11 +572,19 @@ return console.askYesNo(message, true);
               <group id="223" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup" useExternalParametrization="true" externalParametrizationName="Customize title bar" externalParametrizationMode="include">
                 <serializedBean>
                   <property name="backgroundColor">
-                    <object class="java.awt.Color">
-                      <int>255</int>
-                      <int>255</int>
-                      <int>255</int>
-                      <int>255</int>
+                    <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                      <object class="java.awt.Color">
+                        <int>255</int>
+                        <int>255</int>
+                        <int>255</int>
+                        <int>255</int>
+                      </object>
+                      <object class="java.awt.Color">
+                        <int>49</int>
+                        <int>52</int>
+                        <int>53</int>
+                        <int>255</int>
+                      </object>
                     </object>
                   </property>
                   <property name="borderSides">
@@ -647,14 +687,18 @@ return console.askYesNo(message, true);
     </styles>
   </installerGui>
   <mediaSets>
-    <unixInstaller name="Unix Installer" id="106" installDir="readsy" />
-    <windows name="Windows 64-bit" id="114" installDir="readsy" />
-    <windows name="Windows with JRE (amd64)" id="120" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}_withJRE_amd64" installDir="readsy">
-      <jreBundle jreBundleSource="generated" includedJre="windows-amd64-1.8.0_152" />
+    <unixInstaller name="Unix Installer with JRE" id="106" installDir="readsy">
+      <jreBundle usePack200="false" />
+    </unixInstaller>
+    <windows name="Windows 64-bit With JRE" id="253" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}_with_JRE" installDir="readsy">
+      <jreBundle usePack200="false" />
     </windows>
-    <macosArchive name="macOS Single Bundle Archive" id="207" launcherId="57" />
-    <macosArchive name="macOS Single Bundle Archive With JRE" id="210" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}_with_JRE" launcherId="57">
-      <jreBundle jreBundleSource="generated" includedJre="macosx-amd64-1.8.0_152_unpacked" />
+    <macosArchive name="macOS Single Bundle Archive With JRE amd64" id="210" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_amd64_${compiler:sys.version}_with_JRE" launcherId="57">
+      <jreBundle includedJre="macosx-amd64-1.8.0_152_unpacked" />
+    </macosArchive>
+    <macosArchive name="macOS Single Bundle Archive With JRE aarch64" id="243" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_aarch64_${compiler:sys.version}_with_JRE" architecture="aarch64" launcherId="57">
+      <jreBundle includedJre="macosx-amd64-1.8.0_152_unpacked" />
     </macosArchive>
   </mediaSets>
+  <buildOptions disableNotarization="true" />
 </install4j>

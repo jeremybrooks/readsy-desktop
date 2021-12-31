@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -22,16 +22,18 @@
 
 package net.jeremybrooks.readsy;
 
-import net.jeremybrooks.common.util.IOUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
+
+import static net.jeremybrooks.readsy.Constants.READSY_CONFIG_FILE;
 
 
 /**
@@ -43,10 +45,10 @@ import java.util.Properties;
  */
 public class PropertyManager {
 
-  private Logger logger = LogManager.getLogger(PropertyManager.class);
+  private static final Logger logger = LogManager.getLogger();
   private static PropertyManager instance = null;
   private Properties props = new Properties();
-  private Properties secretProps = new Properties();
+  private final Properties secretProps = new Properties();
 
 
   /**
@@ -79,13 +81,17 @@ public class PropertyManager {
    */
   public static final String PROPERTY_WINDOW_Y = "readsy.windowY";
 
-  public static final String DROPBOX_ACCESS_TOKEN = "readsy.dropboxAccessToken";
-
-  public static final String WORKNIK_API_KEY = "readsy.wordnikApiKey";
+  /**
+   * API key for Wordnik. Not functional at this time.
+   */
+  public static final String WORDNIK_API_KEY = "readsy.wordnikApiKey";
 
   /**
-   * Creates a new instance of PropertyManager
+   * The directory that stores readsy data files.
    */
+  public static final String READSY_FILE_DIRECTORY = "readsy.fileDirectory";
+
+  /* Creates a new instance of PropertyManager */
   private PropertyManager() {
   }
 
@@ -114,18 +120,19 @@ public class PropertyManager {
    */
   public void init() throws Exception {
     // LOAD CONFIGURATION IF POSSIBLE
-    File configFile = new File(Readsy.getDataDir(), "readsy.properties");
-    if (!configFile.exists()) {
-      configFile.createNewFile();
+    if (!READSY_CONFIG_FILE.exists()) {
+      READSY_CONFIG_FILE.createNewFile();
       props = new Properties();
-      // SET THE DEFAULT CHECK FOR UPDATES PROPERTY
+      // SET SOME DEFAULTS
       props.setProperty(PROPERTY_CHECK_FOR_UPDATES, "true");
-
       // SAVE THE NEW CONFIGURATION FILE
       this.saveProperties();
     }
-    try (InputStream in = new FileInputStream(configFile)) {
+    try (InputStream in = new FileInputStream(READSY_CONFIG_FILE)) {
       props.load(in);
+
+      // DELETE THE OLD DROPBOX PROPERTY IF IT EXISTS
+      props.remove("readsy.dropboxAccessToken");
 
       // SET THE DEFAULT FONT SIZE IF NEEDED
       if (props.getProperty(PropertyManager.PROPERTY_FONT_SIZE) == null) {
@@ -135,7 +142,7 @@ public class PropertyManager {
 
       // SET WINDOW POSITION AND SIZE PROPERTIES
       if (props.getProperty(PROPERTY_WINDOW_HEIGHT) == null) {
-        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         props.setProperty(PROPERTY_WINDOW_X, Integer.toString((screenSize.width - 600) / 2));
         props.setProperty(PROPERTY_WINDOW_Y, Integer.toString((screenSize.height - 426) / 2));
         props.setProperty(PROPERTY_WINDOW_WIDTH, "600");
@@ -164,17 +171,10 @@ public class PropertyManager {
    * Any errors will be logged.
    */
   private void saveProperties() {
-    OutputStream out = null;
-
-    try {
-      File configFile = new File(Readsy.getDataDir(), "readsy.properties");
-      out = new FileOutputStream(configFile);
+    try (OutputStream out = new FileOutputStream(READSY_CONFIG_FILE)) {
       props.store(out, "readsy configuration file	");
-
     } catch (Exception e) {
       logger.error("COULD NOT SAVE PROPERTIES.", e);
-    } finally {
-      IOUtil.close(out);
     }
   }
 
@@ -224,13 +224,11 @@ public class PropertyManager {
    */
   public int getPropertyAsInt(String name) {
     int ret;
-
     try {
       ret = Integer.parseInt(this.props.getProperty(name));
     } catch (Exception e) {
       ret = 0;
     }
-
     return ret;
   }
 

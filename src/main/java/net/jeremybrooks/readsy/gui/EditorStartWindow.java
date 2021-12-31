@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -22,7 +22,6 @@
 package net.jeremybrooks.readsy.gui;
 
 import net.jeremybrooks.readsy.BitHelper;
-import net.jeremybrooks.readsy.Readsy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -60,6 +59,8 @@ import java.util.GregorianCalendar;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import static net.jeremybrooks.readsy.Constants.WINDOW_IMAGE;
+
 /**
  * The window shown when a user starts the editor.
  * This window allows the user to either create a new data file,
@@ -73,7 +74,7 @@ import java.util.ResourceBundle;
 public class EditorStartWindow extends JFrame {
 
   private static final long serialVersionUID = 6602945962112905201L;
-  private Logger logger = LogManager.getLogger(EditorStartWindow.class);
+  private static final Logger logger = LogManager.getLogger();
 
   /**
    * Creates new form EditorStartWindow.
@@ -81,8 +82,8 @@ public class EditorStartWindow extends JFrame {
    */
   public EditorStartWindow() {
     initComponents();
-    setIconImage(Readsy.WINDOW_IMAGE);
-    this.setLocation(Readsy.getMainWindow().getX(), Readsy.getMainWindow().getY());
+    setIconImage(WINDOW_IMAGE);
+    this.setLocation(MainWindow.instance.getX(), MainWindow.instance.getY());
   }
 
   /**
@@ -284,7 +285,7 @@ public class EditorStartWindow extends JFrame {
         metadata.load(in);
         openEditorWindow(jfc.getSelectedFile(), metadata);
       } catch (Exception e) {
-        logger.error("Error reading metadata from file " + f.getAbsolutePath(), e);
+        logger.error("Error reading metadata from file {}", f.getAbsolutePath(), e);
         JOptionPane.showMessageDialog(this,
             "Could not read data from " + f.getAbsolutePath(),
             "File Read Error",
@@ -307,7 +308,7 @@ public class EditorStartWindow extends JFrame {
    * Make the main window visible, and get rid of the editor window.
    */
   private void closeEditorWindow() {
-    Readsy.getMainWindow().setVisible(true, false);
+    MainWindow.instance.setVisible(true, false);
     this.setVisible(false);
     this.dispose();
   }
@@ -364,7 +365,7 @@ public class EditorStartWindow extends JFrame {
 
           openEditorWindow(file, metadata);
         } catch (Exception e) {
-          logger.error("Error creating file " + metadataFile.getAbsolutePath(), e);
+          logger.error("Error creating file {}", metadataFile.getAbsolutePath(), e);
           JOptionPane.showMessageDialog(this,
               "There was an error while trying to create the file\n" + metadataFile.getAbsolutePath(),
               "File Creation Error",

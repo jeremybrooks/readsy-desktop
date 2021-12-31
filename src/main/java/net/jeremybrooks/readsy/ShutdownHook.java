@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -34,17 +34,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ShutdownHook implements Runnable {
 
-	private MainWindow mainWindow;
-	private Logger logger = LogManager.getLogger(ShutdownHook.class);
-
-	/**
-	 * Constructor.
-	 *
-	 * @param mainWindow reference to the main window.
-	 */
-	public ShutdownHook(MainWindow mainWindow) {
-		this.mainWindow = mainWindow;
-	}
+	private static final Logger logger = LogManager.getLogger();
 
 
 	/**
@@ -52,6 +42,6 @@ public class ShutdownHook implements Runnable {
 	 */
 	public void run() {
 		logger.info("Exiting");
-		this.mainWindow.savePositionAndSize();
+		MainWindow.instance.savePositionAndSize();
 	}
 }

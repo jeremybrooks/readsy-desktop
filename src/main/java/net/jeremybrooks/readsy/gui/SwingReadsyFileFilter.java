@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -22,6 +22,7 @@
 package net.jeremybrooks.readsy.gui;
 
 import javax.swing.filechooser.FileFilter;
+import java.io.File;
 
 /**
  * An implementation of FileFilter for use in JFileChoosers.
@@ -31,12 +32,7 @@ import javax.swing.filechooser.FileFilter;
  */
 public class SwingReadsyFileFilter extends FileFilter {
 
-	/**
-	 * The extension to allow.
-	 */
-	private final String extension = ".readsy";
-
-	/**
+  /**
 	 * Creates a new instance of SwingReadsyFileFilter
 	 */
 	public SwingReadsyFileFilter() {
@@ -47,14 +43,14 @@ public class SwingReadsyFileFilter extends FileFilter {
 	 * Implement the accept method.
 	 *
 	 * @param f the file to compare.
-	 * @return
+	 * @return true if the file should be accepted.
 	 */
-	public boolean accept(java.io.File f) {
+	public boolean accept(File f) {
 		boolean ret = false;
 		if (f != null) {
-			if (f.isDirectory()) {
+      if (f.isDirectory()) {
 				ret = true;
-			} else if (f.getName().toLowerCase().endsWith(this.extension)) {
+			} else if (f.getName().toLowerCase().endsWith(".readsy")) {
 				ret = true;
 			}
 		}

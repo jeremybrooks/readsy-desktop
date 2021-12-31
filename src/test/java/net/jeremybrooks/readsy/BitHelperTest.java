@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -19,9 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.whirljack.sdj;
+package net.jeremybrooks.readsy;
 
-import net.jeremybrooks.readsy.BitHelper;
 import org.junit.Test;
 
 import java.security.SecureRandom;

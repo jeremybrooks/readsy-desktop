@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -26,11 +26,9 @@ import net.jeremybrooks.readsy.gui.WelcomeDialog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import java.awt.Desktop;
-import java.awt.Image;
-import java.io.File;
 
 
 /**
@@ -48,19 +46,7 @@ public class Readsy {
    * Version.
    */
   public static String VERSION = "";
-
-  public static final String HOME_PAGE = "http://jeremybrooks.net/readsy";
-
-  private static Logger logger = LogManager.getLogger();
-  private static MainWindow mainWindow;
-
-  private static File dataDir = new File(System.getProperty("user.home"), ".readsy");
-
-  public static Image WINDOW_IMAGE = (new ImageIcon(Readsy.class.getResource("/images/icon16.png")).getImage());
-
-  /* Default constructor is private. */
-  private Readsy() {
-  }
+  private static final Logger logger = LogManager.getLogger();
 
 
   /**
@@ -72,23 +58,14 @@ public class Readsy {
   public static void main(String... args) {
     // test for Desktop API support
     if (!Desktop.isDesktopSupported()) {
-      JOptionPane.showMessageDialog(null,
-          "The Desktop API is not supported on this operating system.\n\nIf you are running a Debian or Ubuntu system,\ntry 'sudo apt-get install libgnome2-0'\n\nIf you are running a RedHat system,\ntry 'sudo yum install libgnome'\n\nFor other operating systems, please visit http://jeremybrooks.net/suprsetr/faq.html\n\nThis program will now exit.",
-          "Desktop API Not Supported",
-          JOptionPane.ERROR_MESSAGE);
-      System.exit(2);
+      errExit(2, null);
     }
 
-    // If running on a Mac, set up the event handler
-    if (System.getProperty("os.name").contains("Mac")) {
-      System.setProperty("apple.laf.useScreenMenuBar", "true");
-      try {
-        Class.forName("net.jeremybrooks.readsy.MacOSSetup").getDeclaredConstructor().newInstance();
-      } catch (Exception e) {
-        logger.error("Could not find class.", e);
-      }
+    try {
+      PropertyManager.getInstance().init();
+    } catch (Exception e) {
+      errExit(1, e);
     }
-
 
     try {
       Readsy.VERSION = Readsy.class.getPackage().getImplementationVersion();
@@ -99,65 +76,61 @@ public class Readsy {
       Readsy.VERSION = "unknown";
     }
 
-    new Readsy().startup();
-  }
+    // create the main window instance now, because the MacOSSetup class will
+    // reference the instance
+    new MainWindow();
 
-
-  /**
-   * Get a reference to the main window.
-   *
-   * @return reference to the main window.
-   */
-  public static MainWindow getMainWindow() {
-    return mainWindow;
-  }
-
-
-  /**
-   * Get a reference to the data directory.
-   *
-   * @return data directory.
-   */
-  public static File getDataDir() {
-    return dataDir;
-  }
-
-
-  /**
-   * Do some startup stuff, then create the main window and show it.
-   */
-  private void startup() {
-    try {
-      PropertyManager.getInstance().init();
-    } catch (Exception e) {
-      if (logger != null) {
-        logger.fatal("Error during application startup.", e);
+    // If running on a Mac, set up the event handler
+    if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+      System.setProperty("apple.laf.useScreenMenuBar", "true");
+      try {
+        Class.forName("net.jeremybrooks.readsy.MacOSSetup").getDeclaredConstructor().newInstance();
+      } catch (Exception e) {
+        logger.error("Could not find class.", e);
       }
-      e.printStackTrace();
-      JOptionPane.showMessageDialog(
-          null,
-          "An error occurred during application startup.\n" +
-              e.getMessage() + "\n" +
-              "Program will abort.",
-          "Fatal Error",
-          JOptionPane.ERROR_MESSAGE);
-      System.exit(1);
-    }
-    mainWindow = new MainWindow();
-    if (PropertyManager.getInstance().getProperty(PropertyManager.DROPBOX_ACCESS_TOKEN) == null) {
-      new WelcomeDialog().setVisible(true);
-    } else {
-      mainWindow.setVisible(true, true);
-      logger.debug("No Dropbox token, showing welcome dialog.");
     }
 
-    Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(mainWindow)));
+    if (PropertyManager.getInstance().getProperty(PropertyManager.READSY_FILE_DIRECTORY) == null) {
+      SwingUtilities.invokeLater(() -> new WelcomeDialog().setVisible(true));
+    } else {
+      SwingUtilities.invokeLater(() ->
+          MainWindow.instance.setVisible(true, true));
+      logger.debug("No file directory selected, showing welcome dialog.");
+    }
+
+    Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook()));
 
     if (PropertyManager.getInstance().getPropertyAsBoolean(PropertyManager.PROPERTY_CHECK_FOR_UPDATES)
         && (!VERSION.equals("unknown"))) {
-      Thread t = new Thread(new VersionChecker(mainWindow));
+      Thread t = new Thread(new VersionChecker());
       t.setDaemon(true);
       t.start();
     }
+  }
+
+  private static void errExit(int exitCode, Exception e) {
+    String message;
+    String title;
+    switch (exitCode) {
+      case 1:
+        message = "There was an error while trying to read the configuration file\n" +
+            Constants.READSY_CONFIG_FILE.getAbsolutePath() +
+            "\n\nCan your user create files at this location?";
+        title = "Configuration Init Failure";
+        break;
+      case 2:
+        message = "The Desktop API is not supported on this operating system.\n\nIf you are running a Debian or Ubuntu system,\ntry 'sudo apt-get install libgnome2-0'\n\nIf you are running a RedHat system,\ntry 'sudo yum install libgnome'\n\nFor other operating systems, please visit https://jeremybrooks.net/suprsetr/faq.html\n\nThis program will now exit.";
+            title = "Desktop API Not Supported";
+        break;
+      default:
+        message = "An unknown error occurred during startup.";
+        title = "Startup Error";
+    }
+    if (logger != null) {
+      logger.fatal(message, e);
+    }
+    JOptionPane.showMessageDialog(null,
+        message, title, JOptionPane.ERROR_MESSAGE);
+    System.exit(exitCode);
   }
 }

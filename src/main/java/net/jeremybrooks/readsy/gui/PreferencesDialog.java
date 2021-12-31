@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -22,32 +22,32 @@
 package net.jeremybrooks.readsy.gui;
 
 import net.jeremybrooks.readsy.PropertyManager;
-import net.jeremybrooks.readsy.Readsy;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import static net.jeremybrooks.readsy.Constants.WINDOW_IMAGE;
 
 /**
  * Allow the user to set various preferences.
@@ -58,40 +58,42 @@ import java.util.ResourceBundle;
 public class PreferencesDialog extends javax.swing.JDialog {
 
 	private static final long serialVersionUID = 2431764287936009269L;
-	private ResourceBundle bundle = ResourceBundle.getBundle("localization.preferences");
-	private Logger logger = LogManager.getLogger(PreferencesDialog.class);
+	private final ResourceBundle bundle = ResourceBundle.getBundle("localization.preferences");
+	private MainWindow mainWindow;
 
-	/**
-	 * The initial font size shown in the dialog.
-	 */
-	private int initialFontSize;
+  private void btnChangeDirActionPerformed() {
+    JFileChooser jfc = new JFileChooser();
+    jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    jfc.setMultiSelectionEnabled(false);
+    if (StringUtils.isNotEmpty(txtFileDir.getText())) {
+      jfc.setCurrentDirectory(new File(txtFileDir.getText()));
+    }
 
-  private void button1ActionPerformed() {
-	  int choice = JOptionPane.showConfirmDialog(this,
-        bundle.getString("PreferencesDialog.disconnect.message"),
-        bundle.getString("PreferencesDialog.disconnect.title"),
-        JOptionPane.YES_NO_OPTION,
-        JOptionPane.QUESTION_MESSAGE);
-	  if (choice == JOptionPane.YES_OPTION) {
-	    PropertyManager.getInstance().deleteProperty(PropertyManager.DROPBOX_ACCESS_TOKEN);
-	    System.exit(0);
+    int selection = jfc.showOpenDialog(this);
+    if (selection == JFileChooser.APPROVE_OPTION) {
+      String newDir = jfc.getSelectedFile().getAbsolutePath();
+      txtFileDir.setText(newDir);
+      PropertyManager propertyManager = PropertyManager.getInstance();
+      propertyManager.setProperty(PropertyManager.READSY_FILE_DIRECTORY, newDir);
+      if (mainWindow != null) {
+        mainWindow.createTabs();
+      }
     }
   }
 
 	public PreferencesDialog(Frame parent, boolean modal) {
 		super(parent, modal);
+    if (parent instanceof MainWindow) {
+      this.mainWindow = (MainWindow)parent;
+    }
 
 		initComponents();
 		this.cbxUpdates.setSelected(PropertyManager.getInstance().getPropertyAsBoolean(PropertyManager.PROPERTY_CHECK_FOR_UPDATES));
-		this.initialFontSize = PropertyManager.getInstance().getPropertyAsInt(PropertyManager.PROPERTY_FONT_SIZE);
-		this.cmbFont.setSelectedItem(Integer.toString(this.initialFontSize));
-		if (PropertyManager.getInstance().getProperty(PropertyManager.DROPBOX_ACCESS_TOKEN) == null) {
-		  panel4.setVisible(false);
-    } else {
-		  panel4.setVisible(true);
-    }
-		setIconImage(Readsy.WINDOW_IMAGE);
-
+    /* The initial font size shown in the dialog. */
+    int initialFontSize = PropertyManager.getInstance().getPropertyAsInt(PropertyManager.PROPERTY_FONT_SIZE);
+		this.cmbFont.setSelectedItem(Integer.toString(initialFontSize));
+		this.txtFileDir.setText(PropertyManager.getInstance().getProperty(PropertyManager.READSY_FILE_DIRECTORY));
+		setIconImage(WINDOW_IMAGE);
 		getRootPane().setDefaultButton(this.btnOk);
 	}
 
@@ -112,17 +114,18 @@ public class PreferencesDialog extends javax.swing.JDialog {
     panel3 = new JPanel();
     cmbFont = new JComboBox<>();
     panel4 = new JPanel();
-    textArea1 = new JTextArea();
-    button1 = new JButton();
+    label1 = new JLabel();
+    txtFileDir = new JTextField();
+    panel5 = new JPanel();
+    btnChangeDir = new JButton();
     panel1 = new JPanel();
     btnOk = new JButton();
-    btnCancel = new JButton();
 
     //======== this ========
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     setTitle(bundle.getString("PreferencesDialog.this.title"));
     setAlwaysOnTop(true);
-    Container contentPane = getContentPane();
+    var contentPane = getContentPane();
     contentPane.setLayout(new BorderLayout());
 
     //======== panel2 ========
@@ -177,12 +180,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
             "30",
             "36"
           }));
-          cmbFont.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              cmbFontActionPerformed();
-            }
-          });
+          cmbFont.addActionListener(e -> cmbFontActionPerformed());
           panel3.add(cmbFont);
         }
         jPanel3.add(panel3, BorderLayout.LINE_START);
@@ -194,25 +192,36 @@ public class PreferencesDialog extends javax.swing.JDialog {
       //======== panel4 ========
       {
         panel4.setBorder(new TitledBorder(bundle.getString("PreferencesDialog.panel4.border")));
-        panel4.setLayout(new BorderLayout());
+        panel4.setLayout(new GridBagLayout());
+        ((GridBagLayout)panel4.getLayout()).columnWidths = new int[] {0, 0, 0};
+        ((GridBagLayout)panel4.getLayout()).rowHeights = new int[] {0, 0, 0};
+        ((GridBagLayout)panel4.getLayout()).columnWeights = new double[] {0.0, 1.0, 1.0E-4};
+        ((GridBagLayout)panel4.getLayout()).rowWeights = new double[] {0.0, 0.0, 1.0E-4};
 
-        //---- textArea1 ----
-        textArea1.setEditable(false);
-        textArea1.setWrapStyleWord(true);
-        textArea1.setLineWrap(true);
-        textArea1.setText(bundle.getString("PreferencesDialog.textArea1.text"));
-        textArea1.setBackground(UIManager.getColor("Label.background"));
-        panel4.add(textArea1, BorderLayout.CENTER);
+        //---- label1 ----
+        label1.setText("File Directory");
+        panel4.add(label1, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+          GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+          new Insets(3, 3, 3, 3), 0, 0));
 
-        //---- button1 ----
-        button1.setText(bundle.getString("PreferencesDialog.button1.text"));
-        button1.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            button1ActionPerformed();
-          }
-        });
-        panel4.add(button1, BorderLayout.SOUTH);
+        //---- txtFileDir ----
+        txtFileDir.setEditable(false);
+        panel4.add(txtFileDir, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+          GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+          new Insets(0, 0, 0, 0), 0, 0));
+
+        //======== panel5 ========
+        {
+          panel5.setLayout(new FlowLayout(FlowLayout.RIGHT));
+
+          //---- btnChangeDir ----
+          btnChangeDir.setText("Change Directory");
+          btnChangeDir.addActionListener(e -> btnChangeDirActionPerformed());
+          panel5.add(btnChangeDir);
+        }
+        panel4.add(panel5, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
+          GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+          new Insets(0, 0, 0, 0), 0, 0));
       }
       panel2.add(panel4, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
         GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -226,26 +235,11 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
       //---- btnOk ----
       btnOk.setText(bundle.getString("PreferencesDialog.btnOk.text"));
-      btnOk.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          btnOkActionPerformed();
-        }
-      });
+      btnOk.addActionListener(e -> btnOkActionPerformed());
       panel1.add(btnOk);
-
-      //---- btnCancel ----
-      btnCancel.setText(bundle.getString("PreferencesDialog.btnCancel.text"));
-      btnCancel.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          btnCancelActionPerformed();
-        }
-      });
-      panel1.add(btnCancel);
     }
     contentPane.add(panel1, BorderLayout.SOUTH);
-    setSize(440, 370);
+    setSize(490, 370);
     setLocationRelativeTo(getOwner());
 	}// </editor-fold>//GEN-END:initComponents
 
@@ -256,30 +250,15 @@ public class PreferencesDialog extends javax.swing.JDialog {
 	 * and the preferences dialog will be closed.
 	 */
 	private void btnOkActionPerformed() {//GEN-FIRST:event_btnOkActionPerformed
-		if (this.cbxUpdates.isSelected()) {
-			PropertyManager.getInstance().setProperty(PropertyManager.PROPERTY_CHECK_FOR_UPDATES, "true");
-		} else {
-			PropertyManager.getInstance().setProperty(PropertyManager.PROPERTY_CHECK_FOR_UPDATES, "false");
-		}
+	  PropertyManager.getInstance().setProperty(PropertyManager.PROPERTY_CHECK_FOR_UPDATES,
+        Boolean.toString(cbxUpdates.isSelected()));
 
-		PropertyManager.getInstance().setProperty(PropertyManager.PROPERTY_FONT_SIZE, this.cmbFont.getSelectedItem().toString());
+		PropertyManager.getInstance().setProperty(PropertyManager.PROPERTY_FONT_SIZE,
+        cmbFont.getSelectedItem().toString());
 
 		this.setVisible(false);
 		this.dispose();
 	}//GEN-LAST:event_btnOkActionPerformed
-
-
-	/*
-	 * Handle clicks on the Cancel button.
-	 * When the user clicks the Cancel button, settings will not be
-	 * saved, and the preferences dialog is closed.
-	 */
-	private void btnCancelActionPerformed() {//GEN-FIRST:event_btnCancelActionPerformed
-		// restore the font size
-		this.cmbFont.setSelectedItem(this.initialFontSize);
-		this.setVisible(false);
-		this.dispose();
-	}//GEN-LAST:event_btnCancelActionPerformed
 
 
 	/*
@@ -312,11 +291,12 @@ public class PreferencesDialog extends javax.swing.JDialog {
   private JPanel panel3;
   private JComboBox<String> cmbFont;
   private JPanel panel4;
-  private JTextArea textArea1;
-  private JButton button1;
+  private JLabel label1;
+  private JTextField txtFileDir;
+  private JPanel panel5;
+  private JButton btnChangeDir;
   private JPanel panel1;
   private JButton btnOk;
-  private JButton btnCancel;
 	// End of variables declaration//GEN-END:variables
 
 }

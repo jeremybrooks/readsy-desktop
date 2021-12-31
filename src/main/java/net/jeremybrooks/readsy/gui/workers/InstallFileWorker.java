@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -28,7 +28,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.SwingWorker;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -41,8 +40,8 @@ import java.util.zip.ZipFile;
  * @author Jeremy Brooks
  */
 public class InstallFileWorker extends SwingWorker<Void, Void> {
-  private Logger logger = LogManager.getLogger(InstallFileWorker.class);
-  private File file;
+  private static final Logger logger = LogManager.getLogger();
+  private final File file;
   private Exception error;
 
   public InstallFileWorker(File file) {
@@ -52,7 +51,7 @@ public class InstallFileWorker extends SwingWorker<Void, Void> {
 
   @Override
   protected Void doInBackground() throws Exception {
-    logger.debug("Installing data file " + file.getAbsolutePath());
+    logger.debug("Installing data file {}", file.getAbsolutePath());
     ResourceBundle bundle = ResourceBundle.getBundle("localization.worker");
     // first, find metadata and count entries
     double total = 0.0;
@@ -85,12 +84,10 @@ public class InstallFileWorker extends SwingWorker<Void, Void> {
         ZipEntry entry = entries.nextElement();
         if (!entry.isDirectory()) {
           count++;
-          try (InputStream in = zipFile.getInputStream(entry);
-               ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            IOUtils.copy(in, out);
+          try (InputStream in = zipFile.getInputStream(entry)) {
             firePropertyChange(WorkerDialog.EVENT_DIALOG_MESSAGE, "",
                 bundle.getString("ifw.messageUploadingFile") + " " + entry.getName());
-            DataAccess.uploadFile(entry.getName(), out.toByteArray());
+            DataAccess.uploadFile(entry.getName(), IOUtils.toByteArray(in));
             double percent = count/total*100;
             firePropertyChange("progress", "", (int) percent);
           }

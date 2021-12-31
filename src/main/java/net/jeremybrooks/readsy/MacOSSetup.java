@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2020  Jeremy Brooks
+ * Copyright (c) 2013-2021  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -27,14 +27,16 @@ import net.jeremybrooks.readsy.gui.PreferencesDialog;
 
 import java.awt.Desktop;
 
+/**
+ * Sets up the macOS specific handlers for About, Preferences, and Quit.
+ * Created dynamically in Readsy.
+ */
 public class MacOSSetup {
 
   public MacOSSetup() {
-
-    Desktop.getDesktop().setAboutHandler(ae -> new AboutDialog(null, true).setVisible(true));
-
+    Desktop.getDesktop().setAboutHandler(ae ->
+        new AboutDialog(MainWindow.instance, true).setVisible(true));
     Desktop.getDesktop().setQuitHandler((qe, qr) -> qr.performQuit());
-
     Desktop.getDesktop().setPreferencesHandler(pe ->
         new PreferencesDialog(MainWindow.instance, true).setVisible(true));
   }
