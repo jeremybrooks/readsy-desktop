@@ -26,7 +26,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -34,7 +33,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.MouseEvent;
 import net.jeremybrooks.readsy.ActiveState;
 import net.jeremybrooks.readsy.BitHelper;
 import net.jeremybrooks.readsy.BookUtils;
@@ -115,23 +113,23 @@ public class BooksController {
         loadPageForSelectedBook();
     }
 
-    @FXML public void previousDay(MouseEvent e) {
+    @FXML public void previousDay() {
         Book book = bookList.getSelectionModel().getSelectedItem();
         book.setPageDate(book.getPageDate().minusDays(1));
         loadPageForSelectedBook();
     }
-    @FXML public void today(MouseEvent e) {
+    @FXML public void today() {
         Book book = bookList.getSelectionModel().getSelectedItem();
         book.setPageDate(LocalDate.now());
         loadPageForSelectedBook();
     }
-    @FXML public void nextDay(MouseEvent e) {
+    @FXML public void nextDay() {
         Book book = bookList.getSelectionModel().getSelectedItem();
         book.setPageDate(book.getPageDate().plusDays(1));
         loadPageForSelectedBook();
     }
 
-    @FXML public void bookListClicked(MouseEvent e) {
+    @FXML public void bookListClicked() {
         loadPageForSelectedBook();
     }
 
@@ -163,9 +161,8 @@ public class BooksController {
 
     /**
      * Mark a page read or unread when the user clicks the checkbox.
-     * @param e event.
      */
-    @FXML public void checkboxToggle(ActionEvent e) {
+    @FXML public void checkboxToggle() {
         Book book = bookList.getSelectionModel().getSelectedItem();
         int dayOfReadingYear = BookUtils.getDayOfReadingYear(book);
         BitHelper bh = new BitHelper(book.getStatusFlags());
@@ -191,7 +188,7 @@ public class BooksController {
     }
 
     @FXML
-    private void menuOpenEditor(ActionEvent event) {
+    private void menuOpenEditor() {
         appModel.setActiveState(ActiveState.NEW_BOOK);
     }
 }

@@ -21,7 +21,6 @@
 
 package net.jeremybrooks.readsy.controllers;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -31,9 +30,9 @@ import javafx.scene.image.ImageView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import net.jeremybrooks.readsy.ActiveState;
-import net.jeremybrooks.readsy.model.AppModel;
 import net.jeremybrooks.readsy.Constants;
 import net.jeremybrooks.readsy.MapperFactory;
+import net.jeremybrooks.readsy.model.AppModel;
 import net.jeremybrooks.readsy.model.Book;
 import net.jeremybrooks.readsy.model.Page;
 import org.apache.logging.log4j.LogManager;
@@ -87,6 +86,7 @@ public class EditStartController {
     @FXML
     public void initialize() {
         try(InputStream in = EditStartController.class.getResourceAsStream("/images/emptycover.png")) {
+            assert in != null;
             coverImageBytes = in.readAllBytes();
             imgCover.setImage(new Image(new ByteArrayInputStream(coverImageBytes)));
         } catch (Exception e) {
@@ -96,7 +96,7 @@ public class EditStartController {
     }
 
     @FXML
-    private void browseCover(ActionEvent event) {
+    private void browseCover() {
         FileChooser fc = new FileChooser();
         fc.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
         fc.setTitle("Choose Cover Image");
@@ -122,7 +122,7 @@ public class EditStartController {
     }
 
     @FXML
-    private void browse(ActionEvent event) {
+    private void browse() {
         DirectoryChooser dc = new DirectoryChooser();
         dc.setTitle("Select Book Directory");
         dc.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
@@ -155,7 +155,7 @@ public class EditStartController {
     }
 
     @FXML
-    private void create(ActionEvent event) {
+    private void create() {
         if (validateEntry()) {
             Book book = new Book();
             book.setValidYear(Integer.parseInt(txtYear.getText()));

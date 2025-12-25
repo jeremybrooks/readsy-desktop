@@ -26,7 +26,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -93,7 +92,7 @@ public class EditController {
         // the user clicks the Done button
         appModel.getStage().setOnCloseRequest(event -> {
             event.consume();
-            done(null);
+            done();
         });
     }
 
@@ -169,7 +168,7 @@ public class EditController {
 
 
     @FXML
-    private void goToPrevious(ActionEvent actionEvent) {
+    private void goToPrevious() {
         saveEntry();
         // if we are at the beginning of the year, go to the end
         if (localDateProperty.get().getDayOfYear() == 1) {
@@ -183,7 +182,7 @@ public class EditController {
     }
 
     @FXML
-    private void goToNext(ActionEvent actionEvent) {
+    private void goToNext() {
         saveEntry();
         // if we are at the end of the year, go to the beginning
         if (localDateProperty.get().getDayOfYear() == localDateProperty.get().lengthOfYear()) {
@@ -223,9 +222,10 @@ public class EditController {
             a.initOwner(appModel.getStage());
             a.setTitle("File Error");
             a.setHeaderText("Error while writing file.");
-            a.setContentText(String.format("There was an error while writing the page to file.\n" +
-                    "The file path was %s\n" +
-                    "Please check the logs for details.", pagePath));
+            a.setContentText(String.format("""
+                    There was an error while writing the page to file.
+                    The file path was %s
+                    Please check the logs for details.""", pagePath));
             a.showAndWait();
         }
 
@@ -288,7 +288,7 @@ public class EditController {
         }
     }
 
-    public void done(ActionEvent actionEvent) {
+    public void done() {
         saveEntry();
         validatePages();
         makeZipFiles();

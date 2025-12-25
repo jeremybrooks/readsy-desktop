@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 import java.util.StringTokenizer;
 
 import static net.jeremybrooks.readsy.Constants.VERSION_URL;
@@ -55,7 +55,7 @@ public class VersionChecker implements Runnable {
 		try {
       // WAIT A LITTLE BIT TO MAKE SURE THE MAIN WINDOW HAS BEEN CREATED
       Thread.sleep(2000);
-      conn = (HttpURLConnection) new URL(VERSION_URL).openConnection();
+      conn = (HttpURLConnection) new URI(VERSION_URL).toURL().openConnection();
 		  try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
         latestVersion = in.readLine();
       }

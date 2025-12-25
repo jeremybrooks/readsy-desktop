@@ -44,7 +44,7 @@ public class BitHelperTest {
 
   @Test
   public void testNew() {
-    BitHelper bitHelper = new BitHelper(testNothingRead);
+    BitHelper bitHelper = new BitHelper();
     assertEquals(1, bitHelper.getUnreadItemCount(
             LocalDate.of(2024, 1, 1),
             LocalDate.of(2024, 1, 1)));

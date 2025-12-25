@@ -22,7 +22,6 @@
 package net.jeremybrooks.readsy;
 
 import java.time.LocalDate;
-import java.util.GregorianCalendar;
 
 /**
  * @author Jeremy Brooks
@@ -30,7 +29,6 @@ import java.util.GregorianCalendar;
 public class BitHelper {
 
   private final byte[] bytes;
-  private final GregorianCalendar calendar;
   private static final String EMPTY_BITSET = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 
   /**
@@ -53,41 +51,13 @@ public class BitHelper {
       bytes[i / 2] = (byte) ((Character.digit(hexBytes.charAt(i), 16) << 4)
           + Character.digit(hexBytes.charAt(i + 1), 16));
     }
-    this.calendar = new GregorianCalendar();
   }
-
-//  /**
-//   * Determine if the flag is true or false for the specified date.
-//   *
-//   * @param date date to look up.
-//   * @return true if the flag is 1, false otherwise.
-//   */
-//  public boolean isRead(Date date) {
-//    int dayOfYear = this.getDayOfYear(date);
-//    int mask = (int) Math.pow(2, (dayOfYear - 1) % 8);            // adjust to zero-based index
-//    return ((this.bytes[whichByte(dayOfYear)]) & mask) == mask;
-//  }
 
   public boolean isRead(int dayOfReadingYear) {
     int mask = (int) Math.pow(2, (dayOfReadingYear - 1) % 8);            // adjust to zero-based index
     return ((this.bytes[whichByte(dayOfReadingYear)]) & mask) == mask;
   }
 
-
-//  /**
-//   * Set the value of the flag for the specified date.
-//   * <p>If the flag is already set to the specified value, nothing happens.</p>
-//   *
-//   * @param date the date to set the flag for.
-//   * @param read what the flag should be set to.
-//   */
-//  public void setRead(Date date, boolean read) {
-//    if (this.isRead(date) != read) {
-//      int dayOfYear = this.getDayOfYear(date);
-//      int result = ((int) this.bytes[whichByte(dayOfYear)]) ^ (int) Math.pow(2, (dayOfYear - 1) % 8);
-//      this.bytes[whichByte(dayOfYear)] = (byte) result;
-//    }
-//  }
 
   public void setRead(int dayOfReadingYear, boolean read) {
     if (this.isRead(dayOfReadingYear) != read) {
@@ -107,47 +77,6 @@ public class BitHelper {
     return this.bytes.length - (((this.bytes.length * 8) - dayOfYear) / 8) - 1;
   }
 
-
-//  /**
-//   * Get the ordinal day of the year for the date.
-//   *
-//   * @param date the date.
-//   * @return ordinal day of the year for the date.
-//   */
-//  public int getDayOfYear(Date date) {
-//    this.calendar.setTime(date);
-//    return calendar.get(Calendar.DAY_OF_YEAR);
-//  }
-
-
-//  /**
-//   * Count how many unread items there are from the beginning of the year until
-//   * stopDate, inclusive.
-//   *
-//   * @param stopDate the date to stop looking for unread items, inclusive.
-//   * @param year     the year that the data file is good for, "0" for all years.
-//   * @return number of unread items from Jan 1 to stopDate.
-//   */
-//  public int getUnreadItemCount(Date stopDate, String year) {
-//    int count = 0;
-//
-//    Calendar cal = new GregorianCalendar();
-//    cal.setTime(stopDate);
-//    int stopDay = cal.get(Calendar.DAY_OF_YEAR);
-//    if (year.equals("0") || year.equals(Integer.toString(cal.get(Calendar.YEAR)))) {
-//      Calendar theDay = new GregorianCalendar();
-//      theDay.set(Calendar.DAY_OF_YEAR, 1);
-//      do {
-//        if (!isRead(theDay.getTime())) {
-//          count++;
-//        }
-//        theDay.add(Calendar.DAY_OF_YEAR, 1);
-//      }
-//      while (theDay.get(Calendar.DAY_OF_YEAR) <= stopDay && theDay.get(Calendar.DAY_OF_YEAR) != 1);
-//      // note: the != 1 ensures that, if stop date is 12/31, we stop after one time through the year
-//    }
-//    return count;
-//  }
 
   /**
    * Count the number of unread items from a beginning date to the current date.

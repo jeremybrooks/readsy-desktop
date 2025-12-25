@@ -35,11 +35,17 @@ public class BookTest {
         String author = "Leo Tolstoy";
         String shortDescription = "WaP";
         String read = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff1f000000";
+        String readingStartDate = "2025-01-01";
+        String readingEndDate = "2025-12-31";
+
         Book book = new Book();
         book.setValidYear(year);
         book.setShortTitle(shortDescription);
         book.setStatusFlags(read);
         book.setTitle(description);
+        book.setAuthor(author);
+        book.setReadingStartDate(readingStartDate);
+        book.setReadingEndDate(readingEndDate);
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(book);
@@ -49,5 +55,8 @@ public class BookTest {
         assertEquals(read, bookFromJson.getStatusFlags());
         assertEquals(description, bookFromJson.getTitle());
         assertEquals(shortDescription, bookFromJson.getShortTitle());
+        assertEquals(author, bookFromJson.getAuthor());
+        assertEquals(readingStartDate, book.getReadingStartDate());
+        assertEquals(readingEndDate, book.getReadingEndDate());
     }
 }
