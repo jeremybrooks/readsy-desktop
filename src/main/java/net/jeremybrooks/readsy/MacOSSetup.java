@@ -21,10 +21,6 @@
 
 package net.jeremybrooks.readsy;
 
-import net.jeremybrooks.readsy.gui.AboutDialog;
-import net.jeremybrooks.readsy.gui.MainWindow;
-import net.jeremybrooks.readsy.gui.PreferencesDialog;
-
 import java.awt.Desktop;
 
 /**
@@ -34,10 +30,10 @@ import java.awt.Desktop;
 public class MacOSSetup {
 
   public MacOSSetup() {
-    Desktop.getDesktop().setAboutHandler(ae ->
-        new AboutDialog(MainWindow.instance, true).setVisible(true));
+//    Desktop.getDesktop().setAboutHandler(ae ->
+//        new AboutDialog(MainWindow.instance, true).setVisible(true));
     Desktop.getDesktop().setQuitHandler((qe, qr) -> qr.performQuit());
-    Desktop.getDesktop().setPreferencesHandler(pe ->
-        new PreferencesDialog(MainWindow.instance, true).setVisible(true));
+//    Desktop.getDesktop().setPreferencesHandler(pe ->
+//        new PreferencesDialog(MainWindow.instance, true).setVisible(true));
   }
 }

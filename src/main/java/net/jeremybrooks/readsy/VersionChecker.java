@@ -21,7 +21,6 @@
 
 package net.jeremybrooks.readsy;
 
-import net.jeremybrooks.readsy.gui.MainWindow;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,10 +60,10 @@ public class VersionChecker implements Runnable {
         latestVersion = in.readLine();
       }
 		  logger.debug("Got version {} from {}", latestVersion, VERSION_URL);
-			if (this.updated(Readsy.VERSION, latestVersion)) {
-				logger.debug("New version is available.");
-				MainWindow.instance.newVersionAvailable();
-			}
+//			if (this.updated(Readsy.VERSION, latestVersion)) {
+//				logger.debug("New version is available.");
+//				MainWindow.instance.newVersionAvailable();
+//			}
 		} catch (Exception e) {
 			logger.warn("ERROR WHILE CHECKING FOR A NEW VERSION.", e);
 		} finally {

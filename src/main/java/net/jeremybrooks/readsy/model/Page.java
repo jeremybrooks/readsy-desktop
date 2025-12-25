@@ -32,11 +32,11 @@ import java.io.StringReader;
  * @author Jeremy Brooks
  */
 @JsonPropertyOrder({"heading", "text"})
-public class Entry {
+public class Page {
   private String heading;
   private String text;
 
-  public Entry() {}
+  public Page() {}
 
   /**
    * Create an entry from data read from file.
@@ -44,7 +44,7 @@ public class Entry {
    * @param content the content read from file.
    * @throws Exception if the data can't be converted into an Entry.
    */
-  public Entry(String content) throws Exception {
+  public Page(String content) throws Exception {
     try (BufferedReader in = new BufferedReader(new StringReader(content))) {
       setHeading(in.readLine());
       StringBuilder sb = new StringBuilder();

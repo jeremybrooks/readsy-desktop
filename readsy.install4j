@@ -1,35 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="9.0.5" transformSequenceNumber="9">
-  <directoryPresets config="./target/readsy-2.1.3-SNAPSHOT.jar" />
-  <application name="readsy" applicationId="9497-6695-9405-8312" mediaDir="target" shortName="readsy" publisher="Jeremy Brooks" publisherWeb="http://jeremybrooks.net/readsy" version="3.0.0-SNAPSHOT" allPathsRelative="true" autoSave="true" macVolumeId="235f856d5daf4e7a" javaMinVersion="17" javaMaxVersion="17">
-    <codeSigning macEnabled="true" macPkcs12File="../DeveloperIDApplication.p12" macNotarize="true" appleId="jeremybrooks@me.com" />
-    <jreBundles jdkProviderId="Zulu" release="17/17.0.1" />
+<install4j version="11.0.5" transformSequenceNumber="11">
+  <directoryPresets config="${project.basedir}/target/${project.artifactId}-${project.version}.jar" />
+  <application name="Readsy" applicationId="9497-6695-9405-8312" mediaDir="${project.basedir}/target/media" shortName="Readsy" publisher="Jeremy Brooks" publisherWeb="http://jeremybrooks.net/readsy" version="${project.version}" allPathsRelative="true" autoSave="true" macVolumeId="235f856d5daf4e7a">
+    <codeSigning macEnabled="true" macPkcs12File="${project.basedir}/../DeveloperIdApplication.p12" macNotarize="true" macApiIssuer="54177b41-c9ff-43ac-9b2a-6d1f96c0aab5" macApiKey="33Y59XF5NL" macApiPrivateKey="${project.basedir}/../AuthKey_33Y59XF5NL.p8" />
+    <jreBundles jdkProviderId="Zulu" release="21/latest" />
   </application>
-  <files preserveSymlinks="false">
+  <files>
     <mountPoints>
       <mountPoint id="56" location="lib" />
-      <mountPoint id="55" />
     </mountPoints>
     <entries>
-      <fileEntry mountPoint="56" file="./target/readsy-3.0.0-SNAPSHOT.jar" />
-      <dirEntry mountPoint="55" file="./target/lib" entryMode="subdir" subDirectory="lib" />
+      <dirEntry mountPoint="56" file="${project.basedir}/target/lib" />
+      <fileEntry mountPoint="56" file="${project.basedir}/target/${project.artifactId}-${project.version}.jar" />
     </entries>
   </files>
   <launchers>
-    <launcher name="readsy" id="57" icnsFile="./images/icons.icns">
-      <executable name="readsy" iconSet="true" iconFile="./images/icons.ico" redirectStdout="true" executableMode="gui" singleInstance="true" dpiAware="false" />
-      <splashScreen show="true" bitmapFile="./images/icon300.png" />
+    <launcher name="Readsy" id="57">
+      <executable name="Readsy" iconSet="true" redirectStdout="true" executableMode="gui" singleInstance="true" dpiAware="false" />
+      <splashScreen bitmapFile="${project.basedir}/src/main/resources/images/icon500x300.png" />
       <java mainClass="net.jeremybrooks.readsy.Readsy">
         <classPath>
           <scanDirectory location="lib" failOnError="false" />
         </classPath>
       </java>
-      <macStaticAssociationActions mode="selected" />
       <iconImageFiles>
-        <file path="./images/icon16.png" />
-        <file path="./images/icon32.png" />
-        <file path="./images/icon48.png" />
-        <file path="./images/icon128.png" />
+        <file path="${project.basedir}/src/main/resources/images/icon-light-16.png" />
+        <file path="${project.basedir}/src/main/resources/images/icon-light-32.png" />
+        <file path="${project.basedir}/src/main/resources/images/icon-light-48.png" />
+        <file path="${project.basedir}/src/main/resources/images/icon-light-128.png" />
       </iconImageFiles>
     </launcher>
   </launchers>
@@ -687,18 +685,10 @@ return console.askYesNo(message, true);
     </styles>
   </installerGui>
   <mediaSets>
-    <unixInstaller name="Unix Installer with JRE" id="106" installDir="readsy">
-      <jreBundle usePack200="false" />
-    </unixInstaller>
-    <windows name="Windows 64-bit With JRE" id="253" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}_with_JRE" installDir="readsy">
-      <jreBundle usePack200="false" />
-    </windows>
-    <macosArchive name="macOS Single Bundle Archive With JRE amd64" id="210" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_amd64_${compiler:sys.version}_with_JRE" launcherId="57">
-      <jreBundle includedJre="macosx-amd64-1.8.0_152_unpacked" />
-    </macosArchive>
-    <macosArchive name="macOS Single Bundle Archive With JRE aarch64" id="243" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_aarch64_${compiler:sys.version}_with_JRE" architecture="aarch64" launcherId="57">
-      <jreBundle includedJre="macosx-amd64-1.8.0_152_unpacked" />
-    </macosArchive>
+    <macosArchive name="macOS Single Bundle Archive With JRE" id="210" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_amd64_${compiler:sys.version}_with_JRE" architecture="universal" launcherId="57" />
   </mediaSets>
+  <buildIds buildAll="false">
+    <mediaSet refId="243" />
+  </buildIds>
   <buildOptions disableNotarization="true" />
 </install4j>

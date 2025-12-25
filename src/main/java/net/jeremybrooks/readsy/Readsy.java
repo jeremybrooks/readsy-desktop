@@ -21,116 +21,111 @@
 
 package net.jeremybrooks.readsy;
 
-import net.jeremybrooks.readsy.gui.MainWindow;
-import net.jeremybrooks.readsy.gui.WelcomeDialog;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.stage.Stage;
+import net.jeremybrooks.readsy.model.AppModel;
+import net.jeremybrooks.readsy.model.Configuration;
+import net.jeremybrooks.readsy.workers.SaveConfigWorker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import java.awt.Desktop;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 /**
  * Readsy entry point.
- * This is the entry point for the Readsy application.  This class takes
- * care of initializing logging, and creating
- * the main window.  A reference to the main window is kept here as a static
- * reference, so other classes can get it by calling Readsy.getMainWindow().
  *
  * @author Jeremy Brooks
  */
-public class Readsy {
+public class Readsy extends Application {
+    private static final Logger logger = LogManager.getLogger();
 
-  /**
-   * Version.
-   */
-  public static String VERSION = "";
-  private static final Logger logger = LogManager.getLogger();
+    @Override
+    public void start(Stage stage) {
+        AppModel appModel = new AppModel();
+        appModel.setStage(stage);
+        try {
+            appModel.setConfiguration(getConfiguration());
+            if (appModel.getConfiguration().getBookDirectory() == null ||
+                    appModel.getConfiguration().getBookDirectory().isEmpty()) {
+                appModel.setActiveState(ActiveState.WELCOME);
+            }
+            appModel.setVersion(Readsy.class.getPackage().getImplementationVersion());
 
-
-  /**
-   * Application entry point.
-   * No command line arguments are supported.
-   *
-   * @param args the command line arguments
-   */
-  public static void main(String... args) {
-    // test for Desktop API support
-    if (!Desktop.isDesktopSupported()) {
-      errExit(2, null);
+            ViewManager viewManager = new ViewManager(appModel);
+            Scene scene = new Scene(viewManager.getCurrentView(), appModel.getConfiguration().getWindowWidth(), appModel.getConfiguration().getWindowHeight());
+            scene.rootProperty().bind(viewManager.currentViewProperty());
+            stage.setScene(scene);
+            stage.setX(appModel.getConfiguration().getWindowX());
+            stage.setY(appModel.getConfiguration().getWindowY());
+            stage.show();
+        } catch (Exception e) {
+            errExit(1, e);
+        }
     }
 
-    try {
-      PropertyManager.getInstance().init();
-    } catch (Exception e) {
-      errExit(1, e);
+    public static void main(String... args) {
+        System.out.println(System.getProperty("os.name"));
+        // If running on a Mac, set up the event handler
+        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+            try {
+                Class.forName("net.jeremybrooks.readsy.MacOSSetup").getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                logger.error("Could not find class.", e);
+            }
+        }
+        launch();
     }
 
-    try {
-      Readsy.VERSION = Readsy.class.getPackage().getImplementationVersion();
-      if (VERSION == null) {
-        VERSION = "unknown";
-      }
-    } catch (Exception e) {
-      Readsy.VERSION = "unknown";
+    private static Configuration getConfiguration() throws IOException {
+        Path configDir = Paths.get(Constants.READSY_CONFIG_DIR);
+        if (!Files.exists(configDir)) {
+            Files.createDirectories(configDir);
+        }
+        ObjectMapper mapper = MapperFactory.getObjectMapper();
+        Configuration configuration;
+        Path configFile = Paths.get(Constants.READSY_CONFIG_FILE);
+        if (Files.exists(configFile)) {
+            configuration = mapper.readValue(configFile.toFile(), Configuration.class);
+        } else {
+            configuration = new Configuration();
+            new SaveConfigWorker(configuration);
+        }
+        return configuration;
     }
 
-    // create the main window instance now, because the MacOSSetup class will
-    // reference the instance
-    new MainWindow();
-
-    // If running on a Mac, set up the event handler
-    if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-      System.setProperty("apple.laf.useScreenMenuBar", "true");
-      try {
-        Class.forName("net.jeremybrooks.readsy.MacOSSetup").getDeclaredConstructor().newInstance();
-      } catch (Exception e) {
-        logger.error("Could not find class.", e);
-      }
+    private static void errExit(int exitCode, Exception e) {
+        String message;
+        String title = switch (exitCode) {
+            case 1 -> {
+                message = "There was an error while trying to read the configuration file\n" +
+                        Constants.READSY_CONFIG_FILE +
+                        "\n\nCan your user create files at this location?";
+                yield "Configuration Init Failure";
+            }
+            case 2 -> {
+                message = "The Desktop API is not supported on this operating system.\n\nIf you are running a Debian or Ubuntu system,\ntry 'sudo apt-get install libgnome2-0'\n\nIf you are running a RedHat system,\ntry 'sudo yum install libgnome'\n\nFor other operating systems, please visit https://jeremybrooks.net/suprsetr/faq.html\n\nThis program will now exit.";
+                yield "Desktop API Not Supported";
+            }
+            default -> {
+                message = "An unknown error occurred during startup.";
+                yield "Startup Error";
+            }
+        };
+        if (logger != null) {
+            logger.fatal(message, e);
+        }
+        Alert a = new Alert(Alert.AlertType.ERROR);
+        a.setTitle(title);
+        a.setHeaderText(message);
+        a.showAndWait();
+        System.exit(exitCode);
     }
-
-    if (PropertyManager.getInstance().getProperty(PropertyManager.READSY_FILE_DIRECTORY) == null) {
-      SwingUtilities.invokeLater(() -> new WelcomeDialog().setVisible(true));
-    } else {
-      SwingUtilities.invokeLater(() ->
-          MainWindow.instance.setVisible(true, true));
-      logger.debug("No file directory selected, showing welcome dialog.");
-    }
-
-    Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook()));
-
-    if (PropertyManager.getInstance().getPropertyAsBoolean(PropertyManager.PROPERTY_CHECK_FOR_UPDATES)
-        && (!VERSION.equals("unknown"))) {
-      Thread t = new Thread(new VersionChecker());
-      t.setDaemon(true);
-      t.start();
-    }
-  }
-
-  private static void errExit(int exitCode, Exception e) {
-    String message;
-    String title;
-    switch (exitCode) {
-      case 1:
-        message = "There was an error while trying to read the configuration file\n" +
-            Constants.READSY_CONFIG_FILE.getAbsolutePath() +
-            "\n\nCan your user create files at this location?";
-        title = "Configuration Init Failure";
-        break;
-      case 2:
-        message = "The Desktop API is not supported on this operating system.\n\nIf you are running a Debian or Ubuntu system,\ntry 'sudo apt-get install libgnome2-0'\n\nIf you are running a RedHat system,\ntry 'sudo yum install libgnome'\n\nFor other operating systems, please visit https://jeremybrooks.net/suprsetr/faq.html\n\nThis program will now exit.";
-            title = "Desktop API Not Supported";
-        break;
-      default:
-        message = "An unknown error occurred during startup.";
-        title = "Startup Error";
-    }
-    if (logger != null) {
-      logger.fatal(message, e);
-    }
-    JOptionPane.showMessageDialog(null,
-        message, title, JOptionPane.ERROR_MESSAGE);
-    System.exit(exitCode);
-  }
 }

@@ -29,13 +29,13 @@ import java.util.Objects;
 public class Constants {
   private Constants() {}
 
-  public static final String KEY_METADATA_DESCRIPTION = "description";
-  public static final String KEY_METADATA_SHORT_DESCRIPTION = "shortDescription";
-  public static final String KEY_METADATA_YEAR = "year";
-  public static final String KEY_METADATA_READ = "read";
+  /** Property that stores the location of books. */
+  public static final String READSY_CONFIG_DIR = System.getProperty("user.home") + File.separator + ".readsy";
+  public static final String READSY_CONFIG_FILE = READSY_CONFIG_DIR + File.separator + "ReadsyConfig.json";
+
+  /* OLD */
   public static final String HOME_PAGE = "https://jeremybrooks.net/readsy";
   public static final String VERSION_URL = HOME_PAGE + "/VERSION";
-  private static final File READSY_CONFIG_DIR = new File(System.getProperty("user.home"), ".readsy");
-  public static final File READSY_CONFIG_FILE = new File(READSY_CONFIG_DIR, "readsy.properties");
-  public static final Image WINDOW_IMAGE = (new ImageIcon(Objects.requireNonNull(Readsy.class.getResource("/images/icon16.png"))).getImage());
+  public static final Image WINDOW_IMAGE = (new ImageIcon(Objects.requireNonNull(Readsy.class.getResource("/images/icon-light-16.png"))).getImage());
+  public static final String NOTHING_READ = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 }
