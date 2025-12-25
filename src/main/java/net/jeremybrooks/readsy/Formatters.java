@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2021  Jeremy Brooks
+ * Copyright (c) 2013-2025  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -21,19 +21,12 @@
 
 package net.jeremybrooks.readsy;
 
-import java.awt.Desktop;
+import java.time.format.DateTimeFormatter;
 
-/**
- * Sets up the macOS specific handlers for About, Preferences, and Quit.
- * Created dynamically in Readsy.
- */
-public class MacOSSetup {
-
-  public MacOSSetup() {
-//    Desktop.getDesktop().setAboutHandler(ae ->
-//        new AboutDialog(MainWindow.instance, true).setVisible(true));
-    Desktop.getDesktop().setQuitHandler((qe, qr) -> qr.performQuit());
-//    Desktop.getDesktop().setPreferencesHandler(pe ->
-//        new PreferencesDialog(MainWindow.instance, true).setVisible(true));
-  }
+public class Formatters {
+    public static final DateTimeFormatter mmddFormatter = DateTimeFormatter.ofPattern("MM-dd");
+    public static final DateTimeFormatter shortISOFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static final DateTimeFormatter longMonthAndDayFormatter = DateTimeFormatter.ofPattern("MMMM d");
+    public static final DateTimeFormatter longMonthAndDayAndYearFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+    public static final DateTimeFormatter fullDateFormatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy");
 }

@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2021  Jeremy Brooks
+ * Copyright (c) 2013-2025  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -21,19 +21,30 @@
 
 package net.jeremybrooks.readsy;
 
-import java.awt.Desktop;
+import org.junit.Test;
 
-/**
- * Sets up the macOS specific handlers for About, Preferences, and Quit.
- * Created dynamically in Readsy.
- */
-public class MacOSSetup {
+import java.time.LocalDate;
 
-  public MacOSSetup() {
-//    Desktop.getDesktop().setAboutHandler(ae ->
-//        new AboutDialog(MainWindow.instance, true).setVisible(true));
-    Desktop.getDesktop().setQuitHandler((qe, qr) -> qr.performQuit());
-//    Desktop.getDesktop().setPreferencesHandler(pe ->
-//        new PreferencesDialog(MainWindow.instance, true).setVisible(true));
-  }
+import static org.junit.Assert.assertEquals;
+
+public class FormattersTest {
+
+    @Test
+    public void testMmddFormatter() {
+        LocalDate jan01 = LocalDate.of(2024, 1, 1);
+        assertEquals("01-01", Formatters.mmddFormatter.format(jan01));
+    }
+
+    @Test
+    public void testISOFormatter() {
+        LocalDate jan01 = LocalDate.of(2024, 1, 1);
+        assertEquals("2024-01-01", Formatters.shortISOFormatter.format(jan01));
+    }
+
+    @Test
+    public void testLongMonthAndDayFormatter() {
+        LocalDate jan01 = LocalDate.of(2024, 1, 1);
+        assertEquals("January 1", Formatters.longMonthAndDayFormatter.format(jan01));
+    }
+
 }

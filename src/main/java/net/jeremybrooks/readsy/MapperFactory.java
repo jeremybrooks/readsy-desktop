@@ -1,7 +1,7 @@
 /*
  * readsy - read something new every day <http://jeremybrooks.net/readsy>
  *
- * Copyright (c) 2013-2021  Jeremy Brooks
+ * Copyright (c) 2013-2025  Jeremy Brooks
  *
  * This file is part of readsy.
  *
@@ -21,19 +21,23 @@
 
 package net.jeremybrooks.readsy;
 
-import java.awt.Desktop;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Sets up the macOS specific handlers for About, Preferences, and Quit.
- * Created dynamically in Readsy.
+ * A factory for ObjectMappers.
+ * The factory ensures that created ObjectMapper objects have the
+ * desired configuration.
  */
-public class MacOSSetup {
+public class MapperFactory {
 
-  public MacOSSetup() {
-//    Desktop.getDesktop().setAboutHandler(ae ->
-//        new AboutDialog(MainWindow.instance, true).setVisible(true));
-    Desktop.getDesktop().setQuitHandler((qe, qr) -> qr.performQuit());
-//    Desktop.getDesktop().setPreferencesHandler(pe ->
-//        new PreferencesDialog(MainWindow.instance, true).setVisible(true));
-  }
+    /**
+     * Get an ObjectMapper object.
+     * @return configured ObjectMapper.
+     */
+    public static ObjectMapper getObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        return mapper;
+    }
 }
