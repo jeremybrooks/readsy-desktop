@@ -32,6 +32,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import net.jeremybrooks.readsy.ActiveState;
 import net.jeremybrooks.readsy.BitHelper;
@@ -61,6 +62,7 @@ public class BooksController {
     private final AppModel appModel;
     @FXML
     private ListView<Book> bookList;
+    @FXML private SplitPane splitPane;
     @FXML private Label lblDate;
     @FXML private Label lblHeading;
     @FXML private TextArea txtText;
@@ -81,9 +83,8 @@ public class BooksController {
             appModel.getConfiguration().setWindowY(appModel.getStage().yProperty().intValue());
             appModel.getConfiguration().setWindowWidth(appModel.getStage().widthProperty().intValue());
             appModel.getConfiguration().setWindowHeight(appModel.getStage().heightProperty().intValue());
+            appModel.getConfiguration().setSplitPanePosition(splitPane.getDividers().getFirst().getPosition());
             new SaveConfigWorker(appModel);
-            // todo confirmation?
-            // Optionally consume the event to prevent closing
         });
     }
 
@@ -110,6 +111,7 @@ public class BooksController {
             }
         });
         bookList.getSelectionModel().selectFirst();
+        splitPane.getDividers().getFirst().setPosition(appModel.getConfiguration().getSplitPanePosition());
         loadPageForSelectedBook();
     }
 

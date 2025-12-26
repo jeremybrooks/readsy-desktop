@@ -27,6 +27,7 @@ public class Configuration {
     private int windowY = 100;
     private int windowWidth = 600;
     private int windowHeight = 400;
+    private double splitPanePosition = 0.50;
 
     public int getWindowX() {
         return windowX;
@@ -60,13 +61,19 @@ public class Configuration {
         this.windowHeight = windowHeight;
     }
 
-
-
     public String getBookDirectory() {
         return bookDirectory;
     }
 
     public void setBookDirectory(String bookDirectory) {
         this.bookDirectory = bookDirectory;
+    }
+
+    public double getSplitPanePosition() {
+        return splitPanePosition;
+    }
+
+    public void setSplitPanePosition(double splitPanePosition) {
+        this.splitPanePosition = splitPanePosition;
     }
 }
