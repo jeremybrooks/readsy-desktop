@@ -33,9 +33,11 @@ public class Constants {
   public static final String READSY_CONFIG_DIR = System.getProperty("user.home") + File.separator + ".readsy";
   public static final String READSY_CONFIG_FILE = READSY_CONFIG_DIR + File.separator + "ReadsyConfig.json";
 
-  /* OLD */
   public static final String HOME_PAGE = "https://jeremybrooks.net/readsy";
   public static final String VERSION_URL = HOME_PAGE + "/VERSION";
+  public static final String READSY_DOWNLOAD_PAGE = HOME_PAGE + "/download.html";
+
+    /* OLD */
   public static final Image WINDOW_IMAGE = (new ImageIcon(Objects.requireNonNull(Readsy.class.getResource("/images/icon-light-16.png"))).getImage());
   public static final String NOTHING_READ = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 }

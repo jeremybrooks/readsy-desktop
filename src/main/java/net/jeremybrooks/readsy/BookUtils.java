@@ -28,10 +28,24 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class BookUtils {
+
+    /**
+     * Return the number of days in the reading year, inclusive of the start and end days.
+     *
+     * @param book the book to calculate the days of the reading year.
+     * @return number of days in the reading year, inclusive of start and end days.
+     */
+    public static int getDaysInReadingYear(Book book) {
+        LocalDate start = LocalDate.parse(book.getReadingStartDate(), Formatters.shortISOFormatter);
+        LocalDate end = LocalDate.parse(book.getReadingEndDate(), Formatters.shortISOFormatter);
+        return Math.toIntExact(ChronoUnit.DAYS.between(start, end)) + 1;
+    }
+
     public static int getDayOfReadingYear(Book book) {
         return getDayOfReadingYear(LocalDate.parse(book.getReadingStartDate(), Formatters.shortISOFormatter),
                 book.getPageDate());

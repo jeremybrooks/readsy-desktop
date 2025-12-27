@@ -40,6 +40,7 @@ import javafx.stage.FileChooser;
 import net.jeremybrooks.readsy.ActiveState;
 import net.jeremybrooks.readsy.BitHelper;
 import net.jeremybrooks.readsy.BookUtils;
+import net.jeremybrooks.readsy.Constants;
 import net.jeremybrooks.readsy.Formatters;
 import net.jeremybrooks.readsy.MapperFactory;
 import net.jeremybrooks.readsy.gui.BookCell;
@@ -52,12 +53,15 @@ import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
@@ -113,22 +117,31 @@ public class BooksController {
         pageObjectProperty.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 lblHeading.setText("");
-                txtText.setText("");
                 lblDate.setText("");
-                cbxRead.setSelected(false);
-                cbxRead.setDisable(true);
+                txtText.setText("");
             } else {
                 lblHeading.setText(newValue.getHeading());
                 txtText.setText(newValue.getText());
                 Book book = bookList.getSelectionModel().getSelectedItem();
-                lblDate.setText(Formatters.fullDateFormatter.format(book.getPageDate()));
-                if (BookUtils.isPageDateInReadingRange(book)) {
-                    cbxRead.setDisable(false);
-                    BitHelper bh = new BitHelper(book.getStatusFlags());
-                    cbxRead.setSelected(bh.isRead(BookUtils.getDayOfReadingYear(book)));
-                } else {
+                if (book == null) {
+                    lblDate.setText("");
                     cbxRead.setSelected(false);
                     cbxRead.setDisable(true);
+                } else {
+                    String date = String.format("%s - Day %s/%s",
+                        Formatters.fullDateFormatter.format(book.getPageDate()),
+                            BookUtils.getDayOfReadingYear(book),
+                            BookUtils.getDaysInReadingYear(book));
+
+                    lblDate.setText(date);
+                    if (BookUtils.isPageDateInReadingRange(book)) {
+                        cbxRead.setDisable(false);
+                        BitHelper bh = new BitHelper(book.getStatusFlags());
+                        cbxRead.setSelected(bh.isRead(BookUtils.getDayOfReadingYear(book)));
+                    } else {
+                        cbxRead.setSelected(false);
+                        cbxRead.setDisable(true);
+                    }
                 }
             }
         });
@@ -164,27 +177,36 @@ public class BooksController {
     }
 
     private void loadPageForSelectedBook() {
-        Book book = bookList.getSelectionModel().getSelectedItem();
         Page page;
-        if (BookUtils.isPageDateInReadingRange(book)) {
-            int day = BookUtils.getDayOfReadingYear(book);
-            Path bookDir = Paths.get(book.getBookPath()).getParent();
-            Path pagePath = Paths.get(bookDir.toString(), String.format("%d.json", day));
-            try {
-                page = MapperFactory.getObjectMapper()
-                        .readValue(Files.newInputStream(pagePath), Page.class);
-            } catch (IOException ioe) {
-                page = new Page();
-                page.setHeading("Error");
-                page.setText(String.format("There was an error reading the page.%n%n%s", ioe.getMessage()));
-            }
-        } else {
+        if (bookList.getItems().isEmpty()) {
             page = new Page();
-            page.setHeading("Outside Reading Year");
-            page.setText(String.format("The requested date of %s is outside the reading year for this book%n%nThis book is scheduled to be read from %s through %s.",
-                    Formatters.longMonthAndDayAndYearFormatter.format(book.getPageDate()),
-                    Formatters.longMonthAndDayAndYearFormatter.format(LocalDate.parse(book.getReadingStartDate(), Formatters.shortISOFormatter)),
-                    Formatters.longMonthAndDayAndYearFormatter.format(LocalDate.parse(book.getReadingEndDate(), Formatters.shortISOFormatter))));
+            page.setHeading("Your library is empty.");
+            page.setText("""
+                    You can find books to read by clicking Help -> Get Books.
+                    
+                    Once you have downloaded a book, add it to your library by clicking File -> Add Book.""");
+        } else {
+            Book book = bookList.getSelectionModel().getSelectedItem();
+            if (BookUtils.isPageDateInReadingRange(book)) {
+                int day = BookUtils.getDayOfReadingYear(book);
+                Path bookDir = Paths.get(book.getBookPath()).getParent();
+                Path pagePath = Paths.get(bookDir.toString(), String.format("%d.json", day));
+                try {
+                    page = MapperFactory.getObjectMapper()
+                            .readValue(Files.newInputStream(pagePath), Page.class);
+                } catch (IOException ioe) {
+                    page = new Page();
+                    page.setHeading("Error");
+                    page.setText(String.format("There was an error reading the page.%n%n%s", ioe.getMessage()));
+                }
+            } else {
+                page = new Page();
+                page.setHeading("Outside Reading Year");
+                page.setText(String.format("The requested date of %s is outside the reading year for this book%n%nThis book is scheduled to be read from %s through %s.",
+                        Formatters.longMonthAndDayAndYearFormatter.format(book.getPageDate()),
+                        Formatters.longMonthAndDayAndYearFormatter.format(LocalDate.parse(book.getReadingStartDate(), Formatters.shortISOFormatter)),
+                        Formatters.longMonthAndDayAndYearFormatter.format(LocalDate.parse(book.getReadingEndDate(), Formatters.shortISOFormatter))));
+            }
         }
         pageObjectProperty.setValue(page);
     }
@@ -270,6 +292,18 @@ public class BooksController {
                     // reload book list
                     books.clear();
                     Platform.runLater(new RefreshBooksWorker(books, appModel));
+
+                    Platform.runLater(() -> {
+                        // select the new book
+                        Optional<Book> newBookInList = bookList.getItems()
+                                .stream()
+                                .filter(book -> book.getTitle().equals(newBook.getTitle()))
+                                .findFirst();
+                        newBookInList.ifPresent(book -> {
+                            bookList.getSelectionModel().select(book);
+                            loadPageForSelectedBook();
+                        });
+                    });
                 }
             } catch (Exception ioe) {
                 logger.error("Error while adding book {}", file, ioe);
@@ -295,9 +329,9 @@ public class BooksController {
         if (a.getResult() == ButtonType.OK) {
             try {
                 FileUtils.deleteDirectory(Paths.get(book.getBookPath()).getParent().toFile());
-                pageObjectProperty.setValue(null);
                 books.clear();
                 Platform.runLater(new RefreshBooksWorker(books, appModel));
+                Platform.runLater(this::loadPageForSelectedBook);
             } catch (Exception e) {
                 logger.error("Error while deleting book from {}", book.getBookPath(), e);
                 Alert errorAlert = new Alert(Alert.AlertType.ERROR);
@@ -316,5 +350,14 @@ public class BooksController {
     @FXML
     private void close() {
         appModel.getStage().close();
+    }
+
+    @FXML
+    private void mnuGetBooksAction() {
+        try {
+            Desktop.getDesktop().browse(new URI(Constants.READSY_DOWNLOAD_PAGE));
+        } catch (Exception e) {
+            logger.error("Error trying to open {}", Constants.READSY_DOWNLOAD_PAGE, e);
+        }
     }
 }
