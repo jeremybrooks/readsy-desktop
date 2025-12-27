@@ -23,7 +23,13 @@ package net.jeremybrooks.readsy;
 
 import net.jeremybrooks.readsy.model.Book;
 
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class BookUtils {
     public static int getDayOfReadingYear(Book book) {
@@ -39,7 +45,7 @@ public class BookUtils {
      * current date is February 3rd, this will return 3.
      *
      * @param currentDate the current date to use.
-     * @param startDate the date reading started.
+     * @param startDate   the date reading started.
      * @return day of the reading year relative to the current date.
      */
     public static int getDayOfReadingYear(LocalDate startDate, LocalDate currentDate) {
@@ -78,9 +84,9 @@ public class BookUtils {
     /**
      * Determine if the given page date is within the reading dates.
      *
-     * @param pageDate the current page date.
+     * @param pageDate  the current page date.
      * @param startDate the reading start date.
-     * @param endDate the reading end date.
+     * @param endDate   the reading end date.
      * @return true if the page date is equal to startDate or endDate, or if
      * the page date is after startDate and before endDate.
      */
@@ -94,5 +100,42 @@ public class BookUtils {
         return isPageDateInReadingRange(book.getPageDate(),
                 LocalDate.parse(book.getReadingStartDate(), Formatters.shortISOFormatter),
                 LocalDate.parse(book.getReadingEndDate(), Formatters.shortISOFormatter));
+    }
+
+
+    public static void unzip(Path zipFile, Path targetDirectory) throws IOException {
+        if (!Files.exists(targetDirectory)) {
+            throw new IOException("Target directory does not exist.");
+        }
+
+        try (ZipInputStream zipIn = new ZipInputStream(
+                Files.newInputStream(zipFile))) {
+            ZipEntry entry = zipIn.getNextEntry();
+
+            while (entry != null) {
+                Path outPath = targetDirectory.resolve(entry.getName()).normalize();
+
+                // Prevent Zip Slip vulnerability
+                if (!outPath.startsWith(targetDirectory)) {
+                    throw new IOException("Entry is outside of target directory: " + entry.getName());
+                }
+
+                if (entry.isDirectory()) {
+                    Files.createDirectories(outPath);
+                } else {
+                    Files.createDirectories(outPath.getParent());
+                    try (BufferedOutputStream bos = new BufferedOutputStream(
+                            Files.newOutputStream(outPath))) {
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = zipIn.read(buffer)) != -1) {
+                            bos.write(buffer, 0, bytesRead);
+                        }
+                    }
+                }
+                zipIn.closeEntry();
+                entry = zipIn.getNextEntry();
+            }
+        }
     }
 }

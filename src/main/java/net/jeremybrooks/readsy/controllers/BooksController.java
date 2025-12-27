@@ -21,6 +21,7 @@
 
 package net.jeremybrooks.readsy.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -35,6 +36,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
+import javafx.stage.FileChooser;
 import net.jeremybrooks.readsy.ActiveState;
 import net.jeremybrooks.readsy.BitHelper;
 import net.jeremybrooks.readsy.BookUtils;
@@ -50,6 +52,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -57,6 +60,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Stream;
 
 public class BooksController {
     private static final Logger logger = LogManager.getLogger();
@@ -64,14 +68,22 @@ public class BooksController {
     private final AppModel appModel;
     @FXML
     private ListView<Book> bookList;
-    @FXML private SplitPane splitPane;
-    @FXML private Label lblDate;
-    @FXML private Label lblHeading;
-    @FXML private TextArea txtText;
-    @FXML private CheckBox cbxRead;
-    @FXML private Button btnPreviousDay;
-    @FXML private Button btnToday;
-    @FXML private Button btnNextDay;
+    @FXML
+    private SplitPane splitPane;
+    @FXML
+    private Label lblDate;
+    @FXML
+    private Label lblHeading;
+    @FXML
+    private TextArea txtText;
+    @FXML
+    private CheckBox cbxRead;
+    @FXML
+    private Button btnPreviousDay;
+    @FXML
+    private Button btnToday;
+    @FXML
+    private Button btnNextDay;
     private final ObjectProperty<Page> pageObjectProperty = new SimpleObjectProperty<>();
 
     private final ObservableList<Book> books = FXCollections.observableArrayList();
@@ -125,23 +137,29 @@ public class BooksController {
         loadPageForSelectedBook();
     }
 
-    @FXML public void previousDay() {
+    @FXML
+    public void previousDay() {
         Book book = bookList.getSelectionModel().getSelectedItem();
         book.setPageDate(book.getPageDate().minusDays(1));
         loadPageForSelectedBook();
     }
-    @FXML public void today() {
+
+    @FXML
+    public void today() {
         Book book = bookList.getSelectionModel().getSelectedItem();
         book.setPageDate(LocalDate.now());
         loadPageForSelectedBook();
     }
-    @FXML public void nextDay() {
+
+    @FXML
+    public void nextDay() {
         Book book = bookList.getSelectionModel().getSelectedItem();
         book.setPageDate(book.getPageDate().plusDays(1));
         loadPageForSelectedBook();
     }
 
-    @FXML public void bookListClicked() {
+    @FXML
+    public void bookListClicked() {
         loadPageForSelectedBook();
     }
 
@@ -161,12 +179,12 @@ public class BooksController {
                 page.setText(String.format("There was an error reading the page.%n%n%s", ioe.getMessage()));
             }
         } else {
-           page = new Page();
-           page.setHeading("Outside Reading Year");
-           page.setText(String.format("The requested date of %s is outside the reading year for this book%n%nThis book is scheduled to be read from %s through %s.",
-                   Formatters.longMonthAndDayAndYearFormatter.format(book.getPageDate()),
-                   Formatters.longMonthAndDayAndYearFormatter.format(LocalDate.parse(book.getReadingStartDate(), Formatters.shortISOFormatter)),
-                   Formatters.longMonthAndDayAndYearFormatter.format(LocalDate.parse(book.getReadingEndDate(), Formatters.shortISOFormatter))));
+            page = new Page();
+            page.setHeading("Outside Reading Year");
+            page.setText(String.format("The requested date of %s is outside the reading year for this book%n%nThis book is scheduled to be read from %s through %s.",
+                    Formatters.longMonthAndDayAndYearFormatter.format(book.getPageDate()),
+                    Formatters.longMonthAndDayAndYearFormatter.format(LocalDate.parse(book.getReadingStartDate(), Formatters.shortISOFormatter)),
+                    Formatters.longMonthAndDayAndYearFormatter.format(LocalDate.parse(book.getReadingEndDate(), Formatters.shortISOFormatter))));
         }
         pageObjectProperty.setValue(page);
     }
@@ -174,7 +192,8 @@ public class BooksController {
     /**
      * Mark a page read or unread when the user clicks the checkbox.
      */
-    @FXML public void checkboxToggle() {
+    @FXML
+    public void checkboxToggle() {
         Book book = bookList.getSelectionModel().getSelectedItem();
         int dayOfReadingYear = BookUtils.getDayOfReadingYear(book);
         BitHelper bh = new BitHelper(book.getStatusFlags());
@@ -204,17 +223,74 @@ public class BooksController {
         appModel.setActiveState(ActiveState.NEW_BOOK);
     }
 
-    @FXML private void addBook() {
-        Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("TODO");
-        a.setHeaderText("Add Book");
-        a.showAndWait();
+    @FXML
+    private void addBook() {
+        FileChooser chooser = new FileChooser();
+        chooser.setInitialDirectory(Paths.get(System.getProperty("user.home"), "Downloads").toFile());
+        chooser.setTitle("Open a Readsy Book");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Readsy files", "*.readsy"));
+        File file = chooser.showOpenDialog(appModel.getStage());
+        if (file != null) {
+            try {
+                // unzip to temp dir, getting book directory name
+                Path source = Paths.get(file.getAbsolutePath());
+                Path tempDir = Files.createTempDirectory("readsy");
+                BookUtils.unzip(source, tempDir);
+                Path newBookDir;
+                try (Stream<Path> files = Files.list(tempDir)) {
+                    newBookDir = files.findFirst().orElseThrow();
+                }
+
+                // load the book.json file
+                ObjectMapper mapper = MapperFactory.getObjectMapper();
+                Book newBook = mapper.readValue(Paths.get(String.valueOf(newBookDir), "book.json").toFile(), Book.class);
+
+                // check to see if the book exists
+                if (bookList.getItems().stream()
+                        .anyMatch(book -> book.getTitle().equals(newBook.getTitle()))) {
+                    logger.error("Book {} already exists, can't add it again.", newBook.getTitle());
+                    Alert errorAlert = new Alert(Alert.AlertType.INFORMATION);
+                    errorAlert.setTitle("Book Exists");
+                    errorAlert.setHeaderText(String.format("The book \"%s\" is already in your library.",
+                            newBook.getTitle()));
+                    errorAlert.showAndWait();
+                } else {
+                    // set fields in book
+                    LocalDate now = LocalDate.now();
+                    newBook.setReadingStartDate(Formatters.shortISOFormatter.format(now));
+                    newBook.setReadingEndDate(Formatters.shortISOFormatter.format(now.plusYears(1).minusDays(1)));
+                    newBook.setBookPath(String.valueOf(Paths.get(appModel.getConfiguration().getBookDirectory(), String.valueOf(newBookDir.getFileName()))));
+
+                    // write the updated book.json file
+                    mapper.writeValue(Paths.get(String.valueOf(newBookDir), "book.json").toFile(), newBook);
+
+                    // move the new book directory to the book directory
+                    FileUtils.moveDirectory(newBookDir.toFile(), new File(newBook.getBookPath()));
+
+                    // reload book list
+                    books.clear();
+                    Platform.runLater(new RefreshBooksWorker(books, appModel));
+                }
+            } catch (Exception ioe) {
+                logger.error("Error while adding book {}", file, ioe);
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setTitle("Error");
+                errorAlert.setHeaderText("There was an error when trying to add the book.");
+                errorAlert.setContentText(String.format("""
+                         File: %s
+                        Error: %s
+                        See the logs for more detail.""", file.getAbsolutePath(), ioe.getMessage()));
+                errorAlert.showAndWait();
+            }
+        }
     }
-    @FXML private void deleteBook() {
+
+    @FXML
+    private void deleteBook() {
         Book book = bookList.getSelectionModel().getSelectedItem();
         Alert a = new Alert(Alert.AlertType.CONFIRMATION);
         a.setTitle("Delete Book?");
-        a.setHeaderText(String.format("You are about to delete the book %s.%nAre you sure?", book.getTitle()));
+        a.setHeaderText(String.format("You are about to delete the book \"%s\".%nAre you sure?", book.getTitle()));
         a.showAndWait();
         if (a.getResult() == ButtonType.OK) {
             try {
@@ -236,7 +312,9 @@ public class BooksController {
             }
         }
     }
-    @FXML private void close() {
+
+    @FXML
+    private void close() {
         appModel.getStage().close();
     }
 }
