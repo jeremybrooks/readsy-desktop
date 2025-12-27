@@ -8,6 +8,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -45,11 +46,18 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-                  <MenuItem mnemonicParsing="false" onAction="#addBook" text="Add Book" />
-                  <MenuItem mnemonicParsing="false" onAction="#deleteBook" text="Delete Book" />
               <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Book">
+              <items>
+                  <MenuItem mnemonicParsing="false" onAction="#addBook" text="Add Book" />
+                  <MenuItem mnemonicParsing="false" onAction="#deleteBook" text="Delete Book" />
+                  <MenuItem mnemonicParsing="false" onAction="#showBookInfo" text="Book Information" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#mnuGetBooksAction" text="Get Books" />
+              </items>
+            </Menu>
           <Menu mnemonicParsing="false" text="Edit">
             <items>
                   <MenuItem fx:id="openEditorMenuItem" mnemonicParsing="false" onAction="#menuOpenEditor" text="Open Editor" />
@@ -58,7 +66,6 @@
           <Menu mnemonicParsing="false" text="Help">
             <items>
               <MenuItem mnemonicParsing="false" text="About" />
-                  <MenuItem mnemonicParsing="false" onAction="#mnuGetBooksAction" text="Get Books" />
             </items>
           </Menu>
         </menus>

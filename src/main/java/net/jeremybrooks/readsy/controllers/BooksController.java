@@ -129,7 +129,7 @@ public class BooksController {
                     cbxRead.setDisable(true);
                 } else {
                     String date = String.format("%s - Day %s/%s",
-                        Formatters.fullDateFormatter.format(book.getPageDate()),
+                            Formatters.fullDateFormatter.format(book.getPageDate()),
                             BookUtils.getDayOfReadingYear(book),
                             BookUtils.getDaysInReadingYear(book));
 
@@ -359,5 +359,26 @@ public class BooksController {
         } catch (Exception e) {
             logger.error("Error trying to open {}", Constants.READSY_DOWNLOAD_PAGE, e);
         }
+    }
+
+    @FXML
+    private void showBookInfo() {
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setTitle("Book Information");
+        Book book = bookList.getSelectionModel().getSelectedItem();
+        if (book == null) {
+            a.setHeaderText("Please select a book first.");
+        } else {
+            a.setHeaderText(String.format("%s by %s", book.getTitle(), book.getAuthor()));
+            a.setContentText(String.format("""
+                            Valid for %s
+                            Reading from %s - %s
+                            Book Version: %s""",
+                    book.getValidYear() == 0 ? "any year" : "the year " + book.getValidYear(),
+                    Formatters.longMonthAndDayAndYearFormatter.format(LocalDate.parse(book.getReadingStartDate(), Formatters.shortISOFormatter)),
+                    Formatters.longMonthAndDayAndYearFormatter.format(LocalDate.parse(book.getReadingEndDate(), Formatters.shortISOFormatter)),
+                    book.getVersion()));
+        }
+        a.showAndWait();
     }
 }
