@@ -29,6 +29,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -45,6 +46,7 @@ import net.jeremybrooks.readsy.model.Book;
 import net.jeremybrooks.readsy.model.Page;
 import net.jeremybrooks.readsy.workers.RefreshBooksWorker;
 import net.jeremybrooks.readsy.workers.SaveConfigWorker;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -77,7 +79,7 @@ public class BooksController {
     public BooksController(AppModel appModel) {
         this.appModel = appModel;
         appModel.getStage().setTitle("Readsy - " + appModel.getVersion());
-        appModel.getStage().setOnCloseRequest(event -> {
+        appModel.getStage().setOnHiding(event -> {
             // Handle the close event
             appModel.getConfiguration().setWindowX(appModel.getStage().xProperty().intValue());
             appModel.getConfiguration().setWindowY(appModel.getStage().yProperty().intValue());
@@ -97,17 +99,25 @@ public class BooksController {
         }
 
         pageObjectProperty.addListener((observable, oldValue, newValue) -> {
-            lblHeading.setText(newValue.getHeading());
-            txtText.setText(newValue.getText());
-            Book book = bookList.getSelectionModel().getSelectedItem();
-            lblDate.setText(Formatters.fullDateFormatter.format(book.getPageDate()));
-            if (BookUtils.isPageDateInReadingRange(book)) {
-                cbxRead.setDisable(false);
-                BitHelper bh = new BitHelper(book.getStatusFlags());
-                cbxRead.setSelected(bh.isRead(BookUtils.getDayOfReadingYear(book)));
-            } else {
+            if (newValue == null) {
+                lblHeading.setText("");
+                txtText.setText("");
+                lblDate.setText("");
                 cbxRead.setSelected(false);
                 cbxRead.setDisable(true);
+            } else {
+                lblHeading.setText(newValue.getHeading());
+                txtText.setText(newValue.getText());
+                Book book = bookList.getSelectionModel().getSelectedItem();
+                lblDate.setText(Formatters.fullDateFormatter.format(book.getPageDate()));
+                if (BookUtils.isPageDateInReadingRange(book)) {
+                    cbxRead.setDisable(false);
+                    BitHelper bh = new BitHelper(book.getStatusFlags());
+                    cbxRead.setSelected(bh.isRead(BookUtils.getDayOfReadingYear(book)));
+                } else {
+                    cbxRead.setSelected(false);
+                    cbxRead.setDisable(true);
+                }
             }
         });
         bookList.getSelectionModel().selectFirst();
@@ -192,5 +202,41 @@ public class BooksController {
     @FXML
     private void menuOpenEditor() {
         appModel.setActiveState(ActiveState.NEW_BOOK);
+    }
+
+    @FXML private void addBook() {
+        Alert a = new Alert(Alert.AlertType.ERROR);
+        a.setTitle("TODO");
+        a.setHeaderText("Add Book");
+        a.showAndWait();
+    }
+    @FXML private void deleteBook() {
+        Book book = bookList.getSelectionModel().getSelectedItem();
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+        a.setTitle("Delete Book?");
+        a.setHeaderText(String.format("You are about to delete the book %s.%nAre you sure?", book.getTitle()));
+        a.showAndWait();
+        if (a.getResult() == ButtonType.OK) {
+            try {
+                FileUtils.deleteDirectory(Paths.get(book.getBookPath()).getParent().toFile());
+                pageObjectProperty.setValue(null);
+                books.clear();
+                Platform.runLater(new RefreshBooksWorker(books, appModel));
+            } catch (Exception e) {
+                logger.error("Error while deleting book from {}", book.getBookPath(), e);
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setTitle("Error");
+                errorAlert.setHeaderText("There was an error when trying to delete the book.");
+                errorAlert.setContentText(String.format("""
+                        Title: %s
+                         Path: %s
+                        Error: %s
+                        See the logs for more detail.""", book.getTitle(), book.getBookPath(), e.getMessage()));
+                errorAlert.showAndWait();
+            }
+        }
+    }
+    @FXML private void close() {
+        appModel.getStage().close();
     }
 }

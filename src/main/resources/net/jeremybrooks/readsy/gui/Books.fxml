@@ -45,14 +45,13 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-                  <MenuItem mnemonicParsing="false" text="Add Book" />
-                  <MenuItem mnemonicParsing="false" text="Delete Book" />
-              <MenuItem mnemonicParsing="false" text="Close" />
+                  <MenuItem mnemonicParsing="false" onAction="#addBook" text="Add Book" />
+                  <MenuItem mnemonicParsing="false" onAction="#deleteBook" text="Delete Book" />
+              <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
                   <MenuItem fx:id="openEditorMenuItem" mnemonicParsing="false" onAction="#menuOpenEditor" text="Open Editor" />
             </items>
           </Menu>
