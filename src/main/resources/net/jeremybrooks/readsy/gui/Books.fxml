@@ -56,7 +56,9 @@
                   <MenuItem mnemonicParsing="false" onAction="#mnuGetBooksAction" text="Get Books" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#showBookInfo" text="Book Information" />
+                  <MenuItem mnemonicParsing="false" onAction="#markPreviousDaysRead" text="Mark Previous Days Read" />
                   <MenuItem mnemonicParsing="false" onAction="#resetStatus" text="Reset Reading Status" />
+                  <MenuItem mnemonicParsing="false" onAction="#changeStartDate" text="Change Start Date" />
               </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Edit">

@@ -32,6 +32,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
@@ -109,9 +110,6 @@ public class BooksController {
         bookList.setItems(books);
         bookList.setCellFactory(lv -> new BookCell());
         reloadBooksAndSelect("");
-//        try (ExecutorService executor = Executors.newSingleThreadExecutor()) {
-//            executor.execute(new RefreshBooksWorker(books, appModel));
-//        }
 
         pageObjectProperty.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
@@ -246,8 +244,6 @@ public class BooksController {
             Files.write(Paths.get(book.getBookPath()),
                     MapperFactory.getObjectMapper().writeValueAsBytes(book));
             reloadBooksAndSelect(book.getTitle());
-//            books.clear();
-//            Platform.runLater(new RefreshBooksWorker(books, appModel));
         } catch (Exception ex) {
             logger.error("Error while writing book {} to file {}", book.getTitle(), book.getBookPath(), ex);
             Alert a = new Alert(Alert.AlertType.ERROR);
@@ -300,9 +296,16 @@ public class BooksController {
                     errorAlert.showAndWait();
                 } else {
                     // set fields in book
-                    LocalDate now = LocalDate.now();
-                    newBook.setReadingStartDate(Formatters.shortISOFormatter.format(now));
-                    newBook.setReadingEndDate(Formatters.shortISOFormatter.format(now.plusYears(1).minusDays(1)));
+                    if (newBook.getValidYear() == 0) {
+                        LocalDate now = LocalDate.now();
+                        newBook.setReadingStartDate(Formatters.shortISOFormatter.format(now));
+                        newBook.setReadingEndDate(Formatters.shortISOFormatter.format(now.plusYears(1).minusDays(1)));
+                    } else {
+                        newBook.setReadingStartDate(LocalDate.of(newBook.getValidYear(), 1, 1)
+                                .format(Formatters.shortISOFormatter));
+                        newBook.setReadingEndDate(LocalDate.of(newBook.getValidYear(), 12, 31)
+                                .format(Formatters.shortISOFormatter));
+                    }
                     newBook.setBookPath(String.valueOf(Paths.get(appModel.getConfiguration().getBookDirectory(), String.valueOf(newBookDir.getFileName()))));
 
                     // write the updated book.json file
@@ -313,20 +316,6 @@ public class BooksController {
 
                     // reload book list
                     reloadBooksAndSelect(newBook.getTitle());
-//                    books.clear();
-//                    Platform.runLater(new RefreshBooksWorker(books, appModel));
-//
-//                    Platform.runLater(() -> {
-//                         select the new book
-//                        Optional<Book> newBookInList = bookList.getItems()
-//                                .stream()
-//                                .filter(book -> book.getTitle().equals(newBook.getTitle()))
-//                                .findFirst();
-//                        newBookInList.ifPresent(book -> {
-//                            bookList.getSelectionModel().select(book);
-//                            loadPageForSelectedBook();
-//                        });
-//                    });
                 }
             } catch (Exception ioe) {
                 logger.error("Error while adding book {}", file, ioe);
@@ -353,10 +342,6 @@ public class BooksController {
             try {
                 FileUtils.deleteDirectory(Paths.get(book.getBookPath()).getParent().toFile());
                 reloadBooksAndSelect("");
-//                books.clear();
-//                Platform.runLater(new RefreshBooksWorker(books, appModel));
-//                Platform.runLater(this::loadPageForSelectedBook);
-//                reloadBooksAndSelect("");
             } catch (Exception e) {
                 logger.error("Error while deleting book from {}", book.getBookPath(), e);
                 Alert errorAlert = new Alert(Alert.AlertType.ERROR);
@@ -417,7 +402,7 @@ public class BooksController {
         } else {
             Alert a = new Alert(Alert.AlertType.CONFIRMATION);
             a.setTitle("Reset Status?");
-            a.setHeaderText(String.format("Reset readig status for %s by %s", book.getTitle(), book.getAuthor()));
+            a.setHeaderText(String.format("Reset reading status for %s by %s", book.getTitle(), book.getAuthor()));
             a.setContentText("This will reset the reading status for the book. Your current progress will be lost. Are you sure?");
             Optional<ButtonType> result = a.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -434,6 +419,66 @@ public class BooksController {
                     ea.showAndWait();
                 }
             }
+        }
+    }
+
+    // todo
+    @FXML
+    private void markPreviousDaysRead() {
+
+    }
+
+    // todo
+    @FXML
+    private void changeStartDate() {
+        Book book = bookList.getSelectionModel().getSelectedItem();
+        if (book == null) {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setTitle("No Book Selected");
+            a.setHeaderText("Please select a book first.");
+            a.showAndWait();
+        } else if (book.getValidYear() != 0) {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setTitle("Invalid Operation");
+            a.setHeaderText("Unable To Change Start Date");
+            a.setContentText(String.format("""
+                    This book is only valid for the year %s.
+                    The start and end reading dates cannot be altered.""", book.getValidYear()));
+            a.showAndWait();
+        } else {
+            DatePicker datePicker = new DatePicker(LocalDate.parse(book.getReadingStartDate(), Formatters.shortISOFormatter));
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Select A Date");
+            alert.setHeaderText("""
+                    Select a new reading start date for this book.
+                    This will reset the reading status and make
+                    the first reading day the selected date.""");
+
+            // Set the DatePicker as the dialog's content
+            alert.getDialogPane().setContent(datePicker);
+
+            // Show the dialog and wait for user response
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    // todo check the date to make sure it makes sense
+                    LocalDate selectedDate = datePicker.getValue();
+                    book.setStatusFlags(Constants.NOTHING_READ);
+                    book.setReadingStartDate(selectedDate.format(Formatters.shortISOFormatter));
+                    book.setReadingEndDate(selectedDate.plusYears(1).minusDays(1)
+                            .format(Formatters.shortISOFormatter));
+                    try {
+                        MapperFactory.getObjectMapper().writeValue(Paths.get(book.getBookPath()).toFile(), book);
+                        reloadBooksAndSelect(book.getTitle());
+                    } catch (Exception e) {
+                        logger.error("Error while changing reading start date.", e);
+                        Alert ea = new Alert(Alert.AlertType.ERROR);
+                        ea.setTitle("Error Changing Date");
+                        ea.setHeaderText("There was an error while trying to change the reading start date.");
+                        ea.setContentText(String.format("Error message %s%nSee logs for details.", e.getMessage()));
+                        ea.showAndWait();
+                    }
+                }
+            });
         }
     }
 }
