@@ -53,9 +53,10 @@
               <items>
                   <MenuItem mnemonicParsing="false" onAction="#addBook" text="Add Book" />
                   <MenuItem mnemonicParsing="false" onAction="#deleteBook" text="Delete Book" />
-                  <MenuItem mnemonicParsing="false" onAction="#showBookInfo" text="Book Information" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#mnuGetBooksAction" text="Get Books" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#showBookInfo" text="Book Information" />
+                  <MenuItem mnemonicParsing="false" onAction="#resetStatus" text="Reset Reading Status" />
               </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Edit">

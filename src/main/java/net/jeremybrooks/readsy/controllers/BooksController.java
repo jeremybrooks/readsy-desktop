@@ -62,8 +62,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
 public class BooksController {
@@ -110,9 +108,10 @@ public class BooksController {
     public void initialize() {
         bookList.setItems(books);
         bookList.setCellFactory(lv -> new BookCell());
-        try (ExecutorService executor = Executors.newSingleThreadExecutor()) {
-            executor.execute(new RefreshBooksWorker(books, appModel));
-        }
+        reloadBooksAndSelect("");
+//        try (ExecutorService executor = Executors.newSingleThreadExecutor()) {
+//            executor.execute(new RefreshBooksWorker(books, appModel));
+//        }
 
         pageObjectProperty.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
@@ -176,6 +175,28 @@ public class BooksController {
         loadPageForSelectedBook();
     }
 
+    private void reloadBooksAndSelect(String selectedBookTitle) {
+        books.clear();
+        Platform.runLater(new RefreshBooksWorker(books, appModel));
+        if (selectedBookTitle != null && !selectedBookTitle.isEmpty()) {
+            Platform.runLater(() -> {
+                // select the new book
+                Optional<Book> bookToSelect = bookList.getItems()
+                        .stream()
+                        .filter(book -> book.getTitle().equals(selectedBookTitle))
+                        .findFirst();
+                bookToSelect.ifPresent(book -> {
+                    bookList.getSelectionModel().select(book);
+                });
+            });
+        } else if (selectedBookTitle != null) {
+            Platform.runLater(() -> {
+                bookList.getSelectionModel().selectFirst();
+            });
+        }
+        Platform.runLater(this::loadPageForSelectedBook);
+    }
+
     private void loadPageForSelectedBook() {
         Page page;
         if (bookList.getItems().isEmpty()) {
@@ -224,8 +245,9 @@ public class BooksController {
         try {
             Files.write(Paths.get(book.getBookPath()),
                     MapperFactory.getObjectMapper().writeValueAsBytes(book));
-            books.clear();
-            Platform.runLater(new RefreshBooksWorker(books, appModel));
+            reloadBooksAndSelect(book.getTitle());
+//            books.clear();
+//            Platform.runLater(new RefreshBooksWorker(books, appModel));
         } catch (Exception ex) {
             logger.error("Error while writing book {} to file {}", book.getTitle(), book.getBookPath(), ex);
             Alert a = new Alert(Alert.AlertType.ERROR);
@@ -290,20 +312,21 @@ public class BooksController {
                     FileUtils.moveDirectory(newBookDir.toFile(), new File(newBook.getBookPath()));
 
                     // reload book list
-                    books.clear();
-                    Platform.runLater(new RefreshBooksWorker(books, appModel));
-
-                    Platform.runLater(() -> {
-                        // select the new book
-                        Optional<Book> newBookInList = bookList.getItems()
-                                .stream()
-                                .filter(book -> book.getTitle().equals(newBook.getTitle()))
-                                .findFirst();
-                        newBookInList.ifPresent(book -> {
-                            bookList.getSelectionModel().select(book);
-                            loadPageForSelectedBook();
-                        });
-                    });
+                    reloadBooksAndSelect(newBook.getTitle());
+//                    books.clear();
+//                    Platform.runLater(new RefreshBooksWorker(books, appModel));
+//
+//                    Platform.runLater(() -> {
+//                         select the new book
+//                        Optional<Book> newBookInList = bookList.getItems()
+//                                .stream()
+//                                .filter(book -> book.getTitle().equals(newBook.getTitle()))
+//                                .findFirst();
+//                        newBookInList.ifPresent(book -> {
+//                            bookList.getSelectionModel().select(book);
+//                            loadPageForSelectedBook();
+//                        });
+//                    });
                 }
             } catch (Exception ioe) {
                 logger.error("Error while adding book {}", file, ioe);
@@ -329,9 +352,11 @@ public class BooksController {
         if (a.getResult() == ButtonType.OK) {
             try {
                 FileUtils.deleteDirectory(Paths.get(book.getBookPath()).getParent().toFile());
-                books.clear();
-                Platform.runLater(new RefreshBooksWorker(books, appModel));
-                Platform.runLater(this::loadPageForSelectedBook);
+                reloadBooksAndSelect("");
+//                books.clear();
+//                Platform.runLater(new RefreshBooksWorker(books, appModel));
+//                Platform.runLater(this::loadPageForSelectedBook);
+//                reloadBooksAndSelect("");
             } catch (Exception e) {
                 logger.error("Error while deleting book from {}", book.getBookPath(), e);
                 Alert errorAlert = new Alert(Alert.AlertType.ERROR);
@@ -380,5 +405,35 @@ public class BooksController {
                     book.getVersion()));
         }
         a.showAndWait();
+    }
+
+    @FXML
+    private void resetStatus() {
+        Book book = bookList.getSelectionModel().getSelectedItem();
+        if (book == null) {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setTitle("Book Information");
+            a.setHeaderText("Please select a book first.");
+        } else {
+            Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+            a.setTitle("Reset Status?");
+            a.setHeaderText(String.format("Reset readig status for %s by %s", book.getTitle(), book.getAuthor()));
+            a.setContentText("This will reset the reading status for the book. Your current progress will be lost. Are you sure?");
+            Optional<ButtonType> result = a.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                book.setStatusFlags(Constants.NOTHING_READ);
+                try {
+                    MapperFactory.getObjectMapper().writeValue(Paths.get(book.getBookPath()).toFile(), book);
+                    reloadBooksAndSelect(book.getTitle());
+                } catch (Exception e) {
+                    logger.error("Error while resetting reading status.", e);
+                    Alert ea = new Alert(Alert.AlertType.ERROR);
+                    ea.setTitle("Error Saving Status");
+                    ea.setHeaderText("There was an error while trying to save the new status.");
+                    ea.setContentText(String.format("Error message %s%nSee logs for details.", e.getMessage()));
+                    ea.showAndWait();
+                }
+            }
+        }
     }
 }
