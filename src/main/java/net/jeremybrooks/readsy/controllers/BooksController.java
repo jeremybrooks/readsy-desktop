@@ -174,7 +174,7 @@ public class BooksController {
     }
 
     private void reloadBooksAndSelect(String selectedBookTitle) {
-        books.clear();
+//        books.clear();
         Platform.runLater(new RefreshBooksWorker(books, appModel));
         if (selectedBookTitle != null && !selectedBookTitle.isEmpty()) {
             Platform.runLater(() -> {
@@ -428,7 +428,6 @@ public class BooksController {
 
     }
 
-    // todo
     @FXML
     private void changeStartDate() {
         Book book = bookList.getSelectionModel().getSelectedItem();
@@ -460,7 +459,6 @@ public class BooksController {
             // Show the dialog and wait for user response
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
-                    // todo check the date to make sure it makes sense
                     LocalDate selectedDate = datePicker.getValue();
                     book.setStatusFlags(Constants.NOTHING_READ);
                     book.setReadingStartDate(selectedDate.format(Formatters.shortISOFormatter));

@@ -23,8 +23,8 @@ package net.jeremybrooks.readsy.workers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.collections.ObservableList;
-import net.jeremybrooks.readsy.model.AppModel;
 import net.jeremybrooks.readsy.MapperFactory;
+import net.jeremybrooks.readsy.model.AppModel;
 import net.jeremybrooks.readsy.model.Book;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,6 +33,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class RefreshBooksWorker implements Runnable {
@@ -48,6 +50,9 @@ public class RefreshBooksWorker implements Runnable {
 
     @Override
     public void run() {
+        Map<String, Book> existingBookMap = new HashMap<>();
+        list.forEach(book -> existingBookMap.put(book.getShortTitle(), book));
+
         ObjectMapper mapper = MapperFactory.getObjectMapper();
         try {
             try (Stream<Path> pathStream =
@@ -61,6 +66,11 @@ public class RefreshBooksWorker implements Runnable {
                             try (InputStream in = Files.newInputStream(path)) {
                                 Book b = mapper.readValue(in, Book.class);
                                 b.setBookPath(path.toString());
+                                // if the newly loaded book was already in the book list,
+                                // preserve the page date and remove the old one from the list
+                                if (existingBookMap.containsKey(b.getShortTitle())) {
+                                    b.setPageDate(existingBookMap.get(b.getShortTitle()).getPageDate());
+                                }
                                 list.add(b);
                             } catch (Exception e) {
                                 logger.error("Error reading book from {}", path, e);
@@ -70,5 +80,6 @@ public class RefreshBooksWorker implements Runnable {
         } catch (Exception e) {
             logger.error("Error while searching for books.", e);
         }
+        list.removeAll(existingBookMap.values());
     }
 }

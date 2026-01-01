@@ -27,6 +27,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import net.jeremybrooks.readsy.BitHelper;
 import net.jeremybrooks.readsy.BookUtils;
+import net.jeremybrooks.readsy.Formatters;
 import net.jeremybrooks.readsy.model.Book;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,6 +37,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
 
 public class BookCellController {
     @FXML
@@ -50,7 +52,10 @@ public class BookCellController {
     public void setBook(Book book) {
         title.setText(book.getTitle());
         author.setText(book.getAuthor());
-        if (BookUtils.isBookValid(book.getValidYear())) {
+        if (LocalDate.parse(book.getReadingStartDate(), Formatters.shortISOFormatter)
+                .isAfter(ChronoLocalDate.from(LocalDate.now().atStartOfDay()))) {
+            status.setText("Reading start date is " + book.getReadingStartDate());
+        } else if (BookUtils.isBookValid(book.getValidYear())) {
             BitHelper bitHelper = new BitHelper(book.getStatusFlags());
             status.setText("Unread: " + bitHelper.getUnreadItemCount(
                     LocalDate.parse(book.getReadingStartDate()), LocalDate.now()));
